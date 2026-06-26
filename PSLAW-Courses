@@ -1,0 +1,3 @@
+mkdir pslaw-courses
+cd pslaw-courses
+# then drag pslaw_course_generator.py into that folder
