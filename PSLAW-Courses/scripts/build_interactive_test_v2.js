@@ -1,0 +1,1008 @@
+/**
+ * MACCESS INC. — Interactive BSIS Course Test Builder v2
+ * Includes: Live Scan certificate upload slot + email dispatch hook
+ *
+ * Per-course output:
+ *   [Course]-Test.html       — Student-facing interactive test module
+ *   [Course]-AnswerKey.pptx  — Instructor/company answer key (internal only)
+ *   [Course]-AnswerKey.pdf   — PDF of answer key
+ *
+ * Live Scan integration:
+ *   When BSIS Live Scan equipment is acquired, drop the official certificate
+ *   template into PSLAW-Courses/live-scan/bsis_livescan_cert_template.pdf
+ *   and update LIVE_SCAN_CONFIG below. The HTML test will automatically
+ *   surface the upload slot and dispatch logic.
+ */
+
+const pptxgen  = require("pptxgenjs");
+const { execSync } = require("child_process");
+const fs   = require("fs");
+const path = require("path");
+const https = require("https");
+
+const TOKEN = process.env.GITHUB_TOKEN;
+const REPO  = "MaccPSLAW/Licensing-Live-Scans-";
+
+// ── Brand ───────────────────────────────────────────────────────────
+const NAVY  = "1B2B5E";
+const GOLD  = "C9A84C";
+const WHITE = "FFFFFF";
+const GRAY  = "4A5568";
+const RED   = "8B1A1A";
+const GREEN = "1A5C3A";
+
+// ══════════════════════════════════════════════════════════════════
+// LIVE SCAN CONFIG — update this block when equipment arrives
+// ══════════════════════════════════════════════════════════════════
+const LIVE_SCAN_CONFIG = {
+  enabled: false,               // ← flip to true when equipment is active
+
+  // When BSIS issues you a certificate template, place it at this repo path
+  // and update the filename below. Supported: PDF, PNG, JPG.
+  certTemplatePath: "PSLAW-Courses/live-scan/bsis_livescan_cert_template.pdf",
+  certTemplateFilename: "bsis_livescan_cert_template.pdf",
+
+  // Your BSIS-assigned ORI (Originating Agency Identifier) — issued when
+  // you are authorized as a live scan submitting agency
+  bsisORI: "",                  // e.g. "CA12345678" — fill in when received
+
+  // Your ATI (Automated Transaction Identifier) prefix — assigned by DOJ
+  atiPrefix: "",                // e.g. "ATG-XXXX"
+
+  // Notification email — where completed Live Scan confirmations are logged
+  // Wire up to your email provider in the sendLiveScanRecord() function below
+  notificationEmail: "admin@gopslaw.com",
+
+  // When true, the test module will show the Live Scan upload slot
+  // after a student passes, letting them upload their BSIS-issued cert
+  showUploadSlot: false,        // ← flip to true when certs are in hand
+
+  // Placeholder text shown to students until Live Scan is active
+  pendingMessage: "Live Scan fingerprinting services are coming soon to MACCESS INC. Once active, you will be able to upload your BSIS Live Scan certificate directly here after completing fingerprinting at our facility.",
+};
+
+// ══════════════════════════════════════════════════════════════════
+// QUESTION BANKS
+// ══════════════════════════════════════════════════════════════════
+const COURSE_BANKS = {
+"powers_to_arrest": {
+  title: "Powers to Arrest — BSIS Certification Course",
+  subtitle: "California Security Guard Licensing | MACCESS INC.",
+  hours: "3",
+  passingScore: 100,
+  bpcRef: "BPC §7583.7",
+  questions: [
+    { module:"Module 1 — Legal Framework", ref:"BPC §7583.7",
+      q:"Which California law requires security guards to complete Power to Arrest training before receiving a guard card?",
+      options:["California Penal Code §837","Business and Professions Code §7583.7","Title 16 California Code of Regulations §643","California Penal Code §847"],
+      answer:1 },
+    { module:"Module 1 — Legal Framework", ref:"BPC §7583.7",
+      q:"What score must a student achieve on the BSIS Power to Arrest exam to receive a Certificate of Completion?",
+      options:["70%","80%","90%","100%"],
+      answer:3 },
+    { module:"Module 1 — Legal Framework", ref:"DCA PTA Manual July 2023",
+      q:"Which manual is required for Power to Arrest and Appropriate Use of Force training?",
+      options:["California Security Officer Handbook 2022","DCA Power to Arrest and Appropriate Use of Force Training Manual, July 2023","BSIS Regulatory Guide Title 16","California Penal Code Annotated"],
+      answer:1 },
+    { module:"Module 1 — Legal Framework", ref:"BPC §7583.7",
+      q:"As a security guard in California, your arrest authority comes from the same law that applies to:",
+      options:["A sworn police officer","A licensed investigator","A private citizen","A government contractor"],
+      answer:2 },
+    { module:"Module 1 — Legal Framework", ref:"SB 652 (Jan 1 2026)",
+      q:"Under SB 652 effective January 1, 2026, the full 8-hour PTA + AUF training must be delivered by:",
+      options:["Any two BSIS-approved providers","The applicant's employer only","A single BSIS-approved course provider","An online provider plus a separate in-person facility"],
+      answer:2 },
+    { module:"Module 1 — Legal Framework", ref:"SB 652 | BPC §7583.6",
+      q:"How long before a guard card application must the 8-hour PTA/AUF training be completed?",
+      options:["30 days","3 months","6 months","1 year"],
+      answer:2 },
+    { module:"Module 1 — Legal Framework", ref:"BPC §7583.7",
+      q:"MACCESS INC. is authorized to deliver this certification as a licensed:",
+      options:["Peace officer agency","Private Patrol Operator — PPO #122729","Federal security contractor","BSIS examination center"],
+      answer:1 },
+    { module:"Module 2 — Citizen Arrest Authority (PC §837)", ref:"PC §837",
+      q:"California Penal Code §837 lists how many conditions under which a private person may make a citizen's arrest?",
+      options:["Two","Three","Four","Five"],
+      answer:1 },
+    { module:"Module 2 — Citizen Arrest Authority (PC §837)", ref:"PC §837(1)",
+      q:"Under PC §837(1), a security guard may make a citizen's arrest when a public offense is:",
+      options:["Reported by a witness","Suspected based on prior criminal history","Captured on CCTV footage only","Committed or attempted in the guard's direct presence"],
+      answer:3 },
+    { module:"Module 2 — Citizen Arrest Authority (PC §837)", ref:"PC §837(2)",
+      q:"Under PC §837(2), a guard may arrest someone for a felony not committed in their presence if:",
+      options:["A supervisor authorizes the arrest","The guard has a hunch the person is guilty","The guard knows the person committed the felony","The property owner requests the arrest"],
+      answer:2 },
+    { module:"Module 2 — Citizen Arrest Authority (PC §837)", ref:"PC §837(3)",
+      q:"PC §837(3) requires that for a reasonable-cause felony arrest, a felony must:",
+      options:["Be suspected but not confirmed","Have actually been committed in fact","Have been reported to police first","Involve violence or weapons"],
+      answer:1 },
+    { module:"Module 2 — Citizen Arrest Authority (PC §837)", ref:"PC §837",
+      q:"A guard receives a report that someone stole from the store yesterday but did not witness it. Can they make a citizen's arrest for this misdemeanor?",
+      options:["Yes — any theft justifies arrest","Yes — with supervisor approval","No — misdemeanor arrest requires personal observation","No — only police can arrest for theft"],
+      answer:2 },
+    { module:"Module 2 — Citizen Arrest Authority (PC §837)", ref:"PC §837(3)",
+      q:"Which PC §837 arrest condition carries the greatest liability risk if used incorrectly?",
+      options:["§837(1) — offense in presence","§837(2) — felony by that person","§837(3) — reasonable cause for felony","All conditions carry equal risk"],
+      answer:2 },
+    { module:"Module 2 — Citizen Arrest Authority (PC §837)", ref:"PC §837",
+      q:"A guard witnesses a person vandalizing a car. Which PC §837 condition applies?",
+      options:["§837(1) — public offense in presence","§837(2) — felony by the person","§837(3) — reasonable cause","None — vandalism cannot justify arrest"],
+      answer:0 },
+    { module:"Module 2 — Citizen Arrest Authority (PC §837)", ref:"PC §837",
+      q:"'Reasonable cause' under PC §837 means:",
+      options:["A gut feeling the person looks suspicious","Objective facts supporting a belief the person committed a felony","A witness statement alone","Prior criminal history of the person"],
+      answer:1 },
+    { module:"Module 2 — Citizen Arrest Authority (PC §837)", ref:"PC §490.5",
+      q:"The Shopkeeper's Privilege under PC §490.5 allows detention for shoplifting when there is:",
+      options:["Suspicion based on appearance","Probable cause based on direct observation","A manager's verbal authorization","A description matching prior reports"],
+      answer:1 },
+    { module:"Module 3 — Limitations & Prohibited Actions", ref:"PC §538d",
+      q:"A security guard who represents themselves as a police officer may face criminal charges under:",
+      options:["PC §602","BPC §480","PC §538d","PC §836"],
+      answer:2 },
+    { module:"Module 3 — Limitations & Prohibited Actions", ref:"PC §837 | 4th Amendment",
+      q:"A security guard's search authority during a lawful detention is limited to:",
+      options:["A full search of the person's clothing and bags","An unlimited search on private property","A safety pat-down for weapons only","Any search authorized by the property owner"],
+      answer:2 },
+    { module:"Module 3 — Limitations & Prohibited Actions", ref:"PC §236 | PC §847",
+      q:"Courts generally view a detention lasting more than ___ minutes without police notification as potentially false imprisonment.",
+      options:["5–10 minutes","20–30 minutes","45–60 minutes","2 hours"],
+      answer:1 },
+    { module:"Module 3 — Limitations & Prohibited Actions", ref:"PC §837",
+      q:"A security guard's arrest authority extends only to:",
+      options:["Anywhere in the city they are assigned","The entire county","Statewide under their BSIS license","The property they are hired to protect"],
+      answer:3 },
+    { module:"Module 3 — Limitations & Prohibited Actions", ref:"PC §236",
+      q:"Detaining someone without a lawful basis under PC §837 constitutes:",
+      options:["Lawful preventive detention","False imprisonment","Authorized security action","Investigative detention"],
+      answer:1 },
+    { module:"Module 3 — Limitations & Prohibited Actions", ref:"PC §242",
+      q:"A security guard handcuffs someone without a lawful basis for arrest. This could constitute:",
+      options:["Lawful restraint under BPC §7583.7","False imprisonment and assault under California law","Authorized preventive security action","A civil matter only"],
+      answer:1 },
+    { module:"Module 3 — Limitations & Prohibited Actions", ref:"PC §837",
+      q:"A guard detains a person based solely on race and a vague manager concern. This detention is:",
+      options:["Lawful under employer authority","Lawful with signed manager form","Unlawful — race alone is never reasonable suspicion","Lawful for 30 minutes pending investigation"],
+      answer:2 },
+    { module:"Module 4 — Security vs. Law Enforcement", ref:"PC §830",
+      q:"California peace officer authority is derived from:",
+      options:["Penal Code §837","Business and Professions Code §7583.7","Penal Code §830 et seq.","Title 16 CCR §643"],
+      answer:2 },
+    { module:"Module 4 — Security vs. Law Enforcement", ref:"PC §837 | PC §830",
+      q:"Which power does a peace officer have that a security guard does NOT?",
+      options:["The power to observe and report","The power to make a citizen's arrest","The power to conduct lawful searches based on probable cause through investigation","The power to ask a person their name"],
+      answer:2 },
+    { module:"Module 4 — Security vs. Law Enforcement", ref:"PC §847",
+      q:"After making a citizen's arrest, a security guard must deliver the person to a peace officer:",
+      options:["Within 24 hours","At the end of the guard's shift","After completing an incident report","Without unnecessary delay"],
+      answer:3 },
+    { module:"Module 4 — Security vs. Law Enforcement", ref:"PC §847",
+      q:"When a police officer accepts custody from a guard who made a citizen's arrest, who is legally the arresting party?",
+      options:["The police officer","Both equally","The property owner","The security guard — the private person"],
+      answer:3 },
+    { module:"Module 4 — Security vs. Law Enforcement", ref:"BPC §7582.1",
+      q:"California security guards are classified under the law as:",
+      options:["Peace officers with limited jurisdiction","Private persons — no additional authority from their badge or license","Federal contractors","Agents of the property owner with police powers on private property"],
+      answer:1 },
+    { module:"Module 5 — Liability", ref:"PC §236",
+      q:"False imprisonment under California Penal Code §236 is defined as:",
+      options:["Arresting someone for a misdemeanor","Detaining someone for more than one hour","The unlawful violation of the personal liberty of another","Any physical contact with a detained person"],
+      answer:2 },
+    { module:"Module 5 — Liability", ref:"PC §207",
+      q:"If a security guard unlawfully detains someone AND moves them to another location, the charge could escalate to:",
+      options:["Disorderly conduct","Assault","Kidnapping under PC §207","Trespassing"],
+      answer:2 },
+    { module:"Module 5 — Liability", ref:"BPC §480",
+      q:"A guard who makes an unlawful arrest could face BSIS consequences including:",
+      options:["A written warning only","Guard card suspension or revocation under BPC §480","Mandatory additional training only","No regulatory consequences"],
+      answer:1 },
+    { module:"Module 5 — Liability", ref:"Vicarious Liability",
+      q:"MACCESS INC. as the PPO may be held liable for a guard's wrongful arrest under the doctrine of:",
+      options:["Strict product liability","Qualified immunity","Vicarious liability","Contributory negligence"],
+      answer:2 },
+    { module:"Module 5 — Liability", ref:"PC §242",
+      q:"A guard uses excessive force during a detention. Which charge most directly applies?",
+      options:["Trespassing","Battery under PC §242","Vandalism","Disturbing the peace"],
+      answer:1 },
+    { module:"Module 5 — Liability", ref:"BPC §7583.2",
+      q:"BSIS must be notified when a guard is involved in use-of-force incidents per:",
+      options:["PC §837","Title 16 CCR §600","BPC §7583.2","PC §242"],
+      answer:2 },
+    { module:"Module 6 — Trespass & Property Law", ref:"PC §602",
+      q:"Under California Penal Code §602, trespass is generally classified as a:",
+      options:["Felony","Infraction only","Civil violation only","Misdemeanor"],
+      answer:3 },
+    { module:"Module 6 — Trespass & Property Law", ref:"PC §602 | PC §837(1)",
+      q:"A person refuses to leave private property after a lawful order. An arrest may be lawful because:",
+      options:["The property owner requested it","Guards always have authority to arrest trespassers","The refusal constitutes a public offense in the guard's presence","BSIS license authorizes this action"],
+      answer:2 },
+    { module:"Module 6 — Trespass & Property Law", ref:"Civil Rights Law",
+      q:"When removing someone from a public accommodation, a guard must have a reason that is:",
+      options:["The same as on private property","Written and signed by management","Specific and legitimate — unrelated to any protected characteristic","Approved by law enforcement in advance"],
+      answer:2 },
+    { module:"Module 6 — Trespass & Property Law", ref:"PC §602",
+      q:"For trespass on open land, what is generally required before detaining someone?",
+      options:["A written judge's order","A prior BSIS incident report","Police authorization in writing","Clear posting or fencing and a verbal warning"],
+      answer:3 },
+    { module:"Module 7 — Ethics, Communication & Documentation", ref:"Title 16 CCR §643(b)",
+      q:"Per Title 16 CCR §643(b), a Certificate of Completion must be issued by:",
+      options:["BSIS directly","The applicant's attorney","The property owner","The training entity or company providing the training"],
+      answer:3 },
+    { module:"Module 7 — Ethics, Communication & Documentation", ref:"BSIS PTA Manual §8",
+      q:"An incident report should be completed:",
+      options:["At the end of the guard's shift","The following business day","Only when requested by a supervisor","Within 1 hour of the incident"],
+      answer:3 },
+    { module:"Module 7 — Ethics, Communication & Documentation", ref:"BSIS Ethics Standards",
+      q:"A guard who falsifies an incident report may face:",
+      options:["A verbal warning only","A civil fine only","No consequences if the incident was minor","Termination and BSIS license revocation"],
+      answer:3 },
+    { module:"Module 7 — Ethics, Communication & Documentation", ref:"BSIS Ethics Standards",
+      q:"A guard's enforcement decisions must be free from bias based on:",
+      options:["The guard's professional intuition","Employer policies regardless of law","Race, gender, appearance, or other protected characteristics","The property owner's personal preferences"],
+      answer:2 },
+    { module:"Module 7 — Ethics, Communication & Documentation", ref:"BSIS PTA Manual §8",
+      q:"When announcing a citizen's arrest, a guard should:",
+      options:["Remain silent to avoid legal exposure","Wait for police to speak first","Only announce after police arrive","Clearly state the basis for the arrest in plain language"],
+      answer:3 },
+    { module:"Module 7 — Ethics, Communication & Documentation", ref:"Title 16 CCR §643(b)",
+      q:"Training records must be maintained by the PPO and made available to BSIS:",
+      options:["For 6 months","For 1 year","Upon request for the duration of employment","For 5 years after termination"],
+      answer:2 },
+    { module:"Module 8 — Emergency Response & Officer Safety", ref:"BSIS PTA Manual §9",
+      q:"When discovering a medical emergency, a guard's FIRST action should be:",
+      options:["Notify their supervisor","Begin medical treatment immediately","Assess the scene for personal safety, then call 911","Secure the area and wait for police"],
+      answer:2 },
+    { module:"Module 8 — Emergency Response & Officer Safety", ref:"DHS Run-Hide-Fight",
+      q:"In an active shooter situation, the recommended priority order is:",
+      options:["Hide, Fight, Run","Fight, Hide, Run","Call 911, Hide, Fight","Run, Hide, Fight"],
+      answer:3 },
+    { module:"Module 8 — Emergency Response & Officer Safety", ref:"BSIS PTA Manual §10",
+      q:"Blood-borne pathogen precautions require a guard to:",
+      options:["Refuse all physical contact","Request a hazmat team","Document exposure only after the fact","Wear gloves before any contact that may involve blood or bodily fluids"],
+      answer:3 },
+    { module:"Module 8 — Emergency Response & Officer Safety", ref:"BSIS PTA Manual §10",
+      q:"When law enforcement arrives at a scene where a guard made a citizen's arrest, the guard should:",
+      options:["Continue managing the situation until formally relieved","Announce their BSIS authority first","Keep hands visible and follow all officer commands","Present their guard card first and speak first"],
+      answer:2 },
+    { module:"Module 8 — Emergency Response & Officer Safety", ref:"BSIS PTA Manual §10",
+      q:"Situational awareness means:",
+      options:["Watching only the primary entry point","Knowing your exits and continuously monitoring the environment for threats","Focusing on the most suspicious-looking individual","Staying stationary to observe from one position"],
+      answer:1 },
+    { module:"Module 9 — Knowledge Check & Exam Prep", ref:"PC §847",
+      q:"After a lawful citizen's arrest, how long may a guard hold the person before law enforcement must be contacted?",
+      options:["Up to 4 hours","Until the end of the shift","Up to 24 hours if police are unavailable","Without unnecessary delay — no extended holding permitted"],
+      answer:3 },
+    { module:"Module 9 — Knowledge Check & Exam Prep", ref:"PC §837 | PC §836",
+      q:"Which BEST distinguishes a guard's arrest authority from a police officer's?",
+      options:["Guards can only arrest on weekdays","Guards cannot use handcuffs under any circumstances","Guards must have a supervisor present for all arrests","Guards cannot arrest based on probable cause developed through their own investigation"],
+      answer:3 },
+    { module:"Module 9 — Knowledge Check & Exam Prep", ref:"PC §837(1) | PC §602",
+      q:"A guard observes shoplifting in real time. The person drops the item and tries to leave. Best action?",
+      options:["Physically tackle the person to prevent escape","Follow into the parking lot and arrest there","Take no action — only managers can stop shoplifters","Detain on property with reasonable force and immediately call police"],
+      answer:3 },
+    { module:"Module 9 — Knowledge Check & Exam Prep", ref:"PC §837 | BPC §7583.7",
+      q:"A security guard may NEVER make a citizen's arrest for a misdemeanor if:",
+      options:["The offense occurred on private property","The person is not a repeat offender","The guard did not personally witness the offense","The offense occurred after business hours"],
+      answer:2 },
+    { module:"Module 9 — Knowledge Check & Exam Prep", ref:"BPC §7583.7",
+      q:"MACCESS INC.'s California Private Patrol Operator license number is:",
+      options:["#112233","#100001","#133445","#122729"],
+      answer:3 },
+    { module:"Module 9 — Knowledge Check & Exam Prep", ref:"PC §847 | BSIS Training Standards",
+      q:"A guard holds a subject for 2 hours without calling police after a citizen's arrest. They may face:",
+      options:["No consequences if the arrest was lawful","False imprisonment charges and BSIS disciplinary action","A supervisor review only","Praise for thorough documentation"],
+      answer:1 },
+  ]
+},
+};
+
+// ══════════════════════════════════════════════════════════════════
+// BUILD HTML TEST MODULE
+// ══════════════════════════════════════════════════════════════════
+function buildHTML(bank, baseName) {
+  const qs    = bank.questions;
+  const qsJ   = JSON.stringify(qs);
+  const lsJ   = JSON.stringify(LIVE_SCAN_CONFIG);
+  const today = new Date().toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"});
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>${bank.title} — Course Assessment | MACCESS INC.</title>
+<style>
+:root{--navy:#1B2B5E;--gold:#C9A84C;--red:#8B1A1A;--green:#1A5C3A;--light:#F4F6FB;--gray:#4A5568;--white:#fff;--r:10px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--light);color:#1A1A2E;min-height:100vh;}
+.hdr{background:var(--navy);color:#fff;padding:14px 32px;display:flex;align-items:center;justify-content:space-between;}
+.hdr .logo{font-size:20px;font-weight:700;letter-spacing:.04em;}
+.hdr .meta{font-size:11px;color:#CADCFC;text-align:right;line-height:1.6;}
+.gold-bar{height:5px;background:var(--gold);}
+.screen{display:none;max-width:880px;margin:0 auto;padding:32px 20px;}
+.screen.active{display:block;}
+/* Cards */
+.card{background:#fff;border-radius:var(--r);border:1px solid #dde4f0;padding:36px 44px;margin-top:24px;}
+.card h1{font-size:26px;color:var(--navy);margin-bottom:6px;}
+.card .sub{color:var(--gray);font-size:13px;margin-bottom:24px;}
+/* Info grid */
+.ig{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;}
+.ic{background:var(--light);border-radius:8px;padding:13px 16px;}
+.ic .lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--gray);margin-bottom:3px;}
+.ic .val{font-size:18px;font-weight:700;color:var(--navy);}
+/* Warning */
+.warn{background:#FFF8E1;border:1px solid #F9C75740;border-radius:8px;padding:14px 18px;font-size:13px;color:#7B4F00;margin-bottom:22px;line-height:1.6;}
+/* Form */
+.flabel{display:block;font-size:12px;font-weight:600;color:var(--gray);margin:14px 0 5px;}
+input[type=text],input[type=email]{width:100%;padding:10px 14px;border:1.5px solid #D0D8E8;border-radius:8px;font-size:14px;outline:none;transition:border .2s;}
+input:focus{border-color:var(--navy);}
+.btn{display:block;width:100%;padding:13px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;border:none;margin-top:18px;text-align:center;transition:background .15s;}
+.btn-primary{background:var(--navy);color:#fff;}
+.btn-primary:hover{background:#243a7a;}
+.btn-gold{background:var(--gold);color:var(--navy);}
+.btn-gold:hover{background:#b8962a;}
+.btn-outline{background:#fff;color:var(--navy);border:1.5px solid var(--navy);}
+.btn-outline:hover{background:var(--light);}
+.btn-sm{display:inline-block;width:auto;padding:10px 24px;}
+/* Progress */
+.prog-wrap{background:#fff;border-radius:var(--r);padding:14px 20px;margin-bottom:18px;border:1px solid #dde4f0;display:flex;align-items:center;gap:14px;}
+.prog-bg{flex:1;height:8px;background:#E8EDF6;border-radius:4px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--navy);border-radius:4px;transition:width .3s;}
+.prog-txt{font-size:12px;color:var(--gray);white-space:nowrap;}
+/* Question */
+.mod-badge{background:var(--light);border:1px solid #D0D8E8;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:600;color:var(--navy);margin-bottom:10px;display:inline-block;}
+.ref-tag{font-size:10px;color:var(--gray);margin-left:8px;font-style:italic;}
+.qcard{background:#fff;border-radius:var(--r);border:1px solid #dde4f0;padding:26px 30px;margin-bottom:18px;}
+.qnum{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);margin-bottom:9px;}
+.qtxt{font-size:16px;font-weight:600;line-height:1.55;margin-bottom:20px;}
+.opts{display:flex;flex-direction:column;gap:10px;}
+.opt{display:flex;align-items:center;gap:12px;padding:11px 15px;border:1.5px solid #D0D8E8;border-radius:8px;cursor:pointer;font-size:14px;transition:all .15s;}
+.opt:hover{border-color:var(--navy);background:#F0F4FB;}
+.opt.selected{border-color:var(--navy);background:#EBF0FB;}
+.opt.correct{border-color:var(--green)!important;background:#EAF3DE!important;color:var(--green);}
+.opt.wrong{border-color:var(--red)!important;background:#FCEBEB!important;color:var(--red);}
+.opt-lt{width:28px;height:28px;border-radius:50%;background:var(--light);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--navy);border:1.5px solid #D0D8E8;}
+.opt.selected .opt-lt{background:var(--navy);color:#fff;border-color:var(--navy);}
+.opt.correct .opt-lt{background:var(--green);color:#fff;border-color:var(--green);}
+.opt.wrong .opt-lt{background:var(--red);color:#fff;border-color:var(--red);}
+.feedback{margin-top:13px;padding:11px 15px;border-radius:8px;font-size:13px;line-height:1.6;}
+.fb-ok{background:#EAF3DE;color:var(--green);}
+.fb-no{background:#FCEBEB;color:var(--red);}
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:6px;}
+.btn-nav{padding:10px 24px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;}
+.btn-nav-out{background:#fff;color:var(--navy);border:1.5px solid var(--navy);}
+.btn-nav-pri{background:var(--navy);color:#fff;border:none;}
+/* Results */
+.res-card{background:#fff;border-radius:var(--r);border:1px solid #dde4f0;padding:40px 44px;margin-top:24px;text-align:center;}
+.score-ring{width:140px;height:140px;border-radius:50%;margin:0 auto 22px;display:flex;align-items:center;justify-content:center;flex-direction:column;font-size:34px;font-weight:700;}
+.sr-pass{background:#EAF3DE;color:var(--green);border:4px solid var(--green);}
+.sr-fail{background:#FCEBEB;color:var(--red);border:4px solid var(--red);}
+.sr-lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-top:2px;}
+.res-title{font-size:24px;font-weight:700;margin-bottom:8px;}
+.rt-pass{color:var(--green);}
+.rt-fail{color:var(--red);}
+.res-sub{color:var(--gray);font-size:13px;margin-bottom:24px;line-height:1.6;}
+.breakdown{background:var(--light);border-radius:8px;padding:18px 22px;margin-bottom:24px;text-align:left;}
+.breakdown h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--navy);margin-bottom:12px;}
+.brow{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #dde4f0;font-size:13px;}
+.brow:last-child{border-bottom:none;}
+.brow .mod{color:var(--gray);}
+.sp{color:var(--green);font-weight:600;}
+.sf{color:var(--red);font-weight:600;}
+.btn-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:18px;}
+.bsis-note{background:#EBF0FB;border-radius:8px;padding:13px 17px;font-size:12px;color:var(--navy);line-height:1.6;text-align:left;}
+/* Live Scan section */
+.ls-section{margin-top:28px;border:2px dashed #C9A84C;border-radius:var(--r);padding:28px 32px;background:#FFFDF5;}
+.ls-header{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.ls-badge{background:var(--navy);color:var(--gold);font-size:11px;font-weight:700;padding:4px 12px;border-radius:6px;letter-spacing:.04em;}
+.ls-title{font-size:17px;font-weight:700;color:var(--navy);}
+.ls-body{font-size:13px;color:var(--gray);line-height:1.7;margin-bottom:16px;}
+.ls-coming{background:#FFF8E1;border:1px solid var(--gold);border-radius:8px;padding:14px 18px;font-size:13px;color:#7B4F00;line-height:1.6;}
+/* Upload slot (shown when LS active) */
+.upload-zone{border:2px dashed #D0D8E8;border-radius:8px;padding:28px;text-align:center;background:var(--light);cursor:pointer;transition:border .2s;}
+.upload-zone:hover,.upload-zone.dragover{border-color:var(--navy);background:#EBF0FB;}
+.upload-zone input{display:none;}
+.upload-icon{font-size:36px;margin-bottom:8px;}
+.upload-label{font-size:14px;font-weight:600;color:var(--navy);margin-bottom:4px;}
+.upload-sub{font-size:12px;color:var(--gray);}
+.upload-preview{display:none;margin-top:14px;padding:12px 16px;background:#fff;border:1px solid #D0D8E8;border-radius:8px;text-align:left;}
+.status-msg{padding:10px 14px;border-radius:8px;font-size:13px;margin-top:12px;display:none;}
+.st-ok{background:#EAF3DE;color:var(--green);}
+.st-err{background:#FCEBEB;color:var(--red);}
+/* Certificate */
+@media print{.no-print{display:none!important;}.screen{padding:0;max-width:100%;}}
+.cert-wrap{background:#fff;border:3px double var(--navy);border-radius:4px;padding:44px 52px;margin:24px 0;text-align:center;position:relative;}
+.cert-wrap::before{content:'';position:absolute;inset:8px;border:1px solid var(--gold);border-radius:2px;pointer-events:none;}
+.cert-hdr{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--navy);margin-bottom:5px;}
+.cert-co{font-size:24px;font-weight:700;color:var(--navy);margin-bottom:3px;}
+.cert-ppo{font-size:11px;color:var(--gray);margin-bottom:24px;}
+.cert-certifies{font-size:13px;color:var(--gray);margin-bottom:6px;}
+.cert-name{font-size:30px;font-weight:700;color:var(--navy);border-bottom:2px solid var(--navy);display:inline-block;min-width:300px;padding-bottom:3px;margin-bottom:18px;}
+.cert-body{font-size:13px;color:var(--gray);line-height:1.8;margin-bottom:5px;}
+.cert-course{font-size:17px;font-weight:700;color:var(--navy);margin-bottom:14px;}
+.cert-score-badge{display:inline-block;background:#EAF3DE;color:var(--green);border-radius:6px;padding:4px 16px;font-size:13px;font-weight:600;margin-bottom:22px;}
+.cert-gold-bar{height:5px;background:var(--gold);border-radius:3px;margin:18px 0;}
+.cert-sigs{display:flex;justify-content:space-around;margin-top:32px;gap:20px;}
+.cert-sig{flex:1;text-align:center;}
+.cert-sig .line{border-top:1.5px solid var(--navy);margin-bottom:5px;}
+.cert-sig .slabel{font-size:11px;color:var(--gray);}
+/* LS cert embed in certificate */
+.ls-cert-embed{margin:18px 0;padding:14px;background:var(--light);border-radius:8px;border:1px solid #D0D8E8;}
+.ls-cert-embed img,.ls-cert-embed iframe{max-width:100%;border-radius:6px;}
+/* Footer */
+.ftr{background:var(--navy);color:#CADCFC;text-align:center;padding:14px;font-size:11px;margin-top:40px;}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="logo">MACCESS INC.</div>
+  <div class="meta">PPO License #122729 | BSIS-Authorized Training Provider<br/>Secure Course Assessment Platform</div>
+</div>
+<div class="gold-bar"></div>
+
+<!-- SCREEN 1: COVER -->
+<div class="screen active" id="sc-cover">
+  <div class="card">
+    <h1>${bank.title}</h1>
+    <div class="sub">${bank.subtitle}</div>
+    <div class="ig">
+      <div class="ic"><div class="lbl">Total Questions</div><div class="val">${qs.length}</div></div>
+      <div class="ic"><div class="lbl">Passing Score</div><div class="val">${bank.passingScore}%</div></div>
+      <div class="ic"><div class="lbl">Training Hours</div><div class="val">${bank.hours} Hours</div></div>
+      <div class="ic"><div class="lbl">Authority</div><div class="val" style="font-size:13px;">${bank.bpcRef}</div></div>
+    </div>
+    <div class="warn">⚠️ <strong>BSIS Requirement:</strong> A score of <strong>${bank.passingScore}%</strong> is required to receive your Certificate of Completion per ${bank.bpcRef}. A score below ${bank.passingScore}% requires a full retake. No partial credit is awarded.</div>
+    <label class="flabel">Full Legal Name <span style="color:var(--red)">*</span> (as it will appear on your certificate)</label>
+    <input type="text" id="inp-name" placeholder="First Middle Last"/>
+    <label class="flabel">Email Address <span style="color:var(--red)">*</span> (certificate will be sent here)</label>
+    <input type="email" id="inp-email" placeholder="your@email.com"/>
+    <label class="flabel">Assessment Date</label>
+    <input type="text" id="inp-date" value="${today}" readonly/>
+    <button class="btn btn-primary" onclick="startTest()">Begin Assessment →</button>
+  </div>
+</div>
+
+<!-- SCREEN 2: TEST -->
+<div class="screen" id="sc-test">
+  <div class="prog-wrap">
+    <div class="prog-bg"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+    <div class="prog-txt" id="prog-txt">Question 1 of ${qs.length}</div>
+  </div>
+  <div id="q-area"></div>
+  <div class="nav-row" style="margin-top:8px;">
+    <button class="btn-nav btn-nav-out" id="btn-prev" onclick="prevQ()" style="display:none;">← Previous</button>
+    <button class="btn-nav btn-nav-pri" id="btn-next" onclick="nextQ()">Next →</button>
+  </div>
+</div>
+
+<!-- SCREEN 3: RESULTS -->
+<div class="screen" id="sc-results">
+  <div class="res-card">
+    <div class="score-ring" id="s-ring">
+      <span id="s-pct">0%</span>
+      <span class="sr-lbl" id="s-lbl">Score</span>
+    </div>
+    <div class="res-title" id="r-title">Result</div>
+    <div class="res-sub" id="r-sub"></div>
+    <div class="breakdown" id="breakdown"></div>
+    <div class="btn-row" id="r-btns"></div>
+    <div class="bsis-note" id="r-bsis"></div>
+
+    <!-- LIVE SCAN SECTION (always present, content changes based on config) -->
+    <div class="ls-section" id="ls-section" style="display:none;">
+      <div class="ls-header">
+        <div class="ls-badge">LIVE SCAN</div>
+        <div class="ls-title">BSIS Live Scan Fingerprinting — MACCESS INC.</div>
+      </div>
+      <div class="ls-body" id="ls-body"></div>
+      <div id="ls-content"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 4: CERTIFICATE -->
+<div class="screen" id="sc-cert">
+  <div class="no-print" style="text-align:center;margin-bottom:18px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+    <button class="btn btn-gold btn-sm" onclick="window.print()">🖨️ Print Certificate</button>
+    <button class="btn btn-outline btn-sm" onclick="showScreen('sc-results')">← Back to Results</button>
+  </div>
+  <div class="cert-wrap" id="cert-area"></div>
+</div>
+
+<div class="ftr">MACCESS INC. &nbsp;|&nbsp; Private Security LA Worldwide (PSLAW) &nbsp;|&nbsp; PPO License #122729 &nbsp;|&nbsp; BSIS-Authorized Training Provider</div>
+
+<script>
+const QUESTIONS = ${qsJ};
+const PASSING   = ${bank.passingScore};
+const LS_CFG    = ${lsJ};
+const LETTERS   = ['A','B','C','D'];
+
+let cur      = 0;
+let answers  = new Array(QUESTIONS.length).fill(null);
+let done     = new Array(QUESTIONS.length).fill(false);
+let stuName  = '';
+let stuEmail = '';
+let stuDate  = '';
+let lsCertDataURL = null; // stores uploaded LS cert as base64 data URL
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function startTest(){
+  stuName  = document.getElementById('inp-name').value.trim();
+  stuEmail = document.getElementById('inp-email').value.trim();
+  stuDate  = document.getElementById('inp-date').value.trim();
+  if(!stuName){ alert('Please enter your full legal name.'); return; }
+  if(!stuEmail || !stuEmail.includes('@')){ alert('Please enter a valid email address.'); return; }
+  showScreen('sc-test');
+  renderQ();
+}
+
+function renderQ(){
+  const q   = QUESTIONS[cur];
+  const pct = Math.round((cur/QUESTIONS.length)*100);
+  document.getElementById('prog-fill').style.width = pct+'%';
+  document.getElementById('prog-txt').textContent  = 'Question '+(cur+1)+' of '+QUESTIONS.length;
+  document.getElementById('btn-prev').style.display = cur>0 ? 'inline-block' : 'none';
+  document.getElementById('btn-next').textContent   = cur===QUESTIONS.length-1 ? 'Submit Assessment' : 'Next →';
+
+  const conf = done[cur];
+  const sel  = answers[cur];
+  const optsHTML = q.options.map((opt,i)=>{
+    let cls='opt';
+    if(conf){ if(i===q.answer)cls+=' correct'; else if(i===sel&&i!==q.answer)cls+=' wrong'; }
+    else if(i===sel) cls+=' selected';
+    const onclick = conf ? '' : \`onclick="pick(\${i})"\`;
+    return \`<div class="\${cls}" \${onclick}><div class="opt-lt">\${LETTERS[i]}</div><span>\${opt}</span></div>\`;
+  }).join('');
+
+  let fb='';
+  if(conf){
+    if(sel===q.answer) fb=\`<div class="feedback fb-ok">✓ Correct — \${q.ref}</div>\`;
+    else fb=\`<div class="feedback fb-no">✗ Incorrect. Correct answer: <strong>\${LETTERS[q.answer]}. \${q.options[q.answer]}</strong> — \${q.ref}</div>\`;
+  }
+
+  document.getElementById('q-area').innerHTML=\`
+    <div class="mod-badge">\${q.module}<span class="ref-tag">\${q.ref}</span></div>
+    <div class="qcard">
+      <div class="qnum">Question \${cur+1} of \${QUESTIONS.length}</div>
+      <div class="qtxt">\${q.q}</div>
+      <div class="opts">\${optsHTML}</div>
+      \${fb}
+    </div>\`;
+}
+
+function pick(i){
+  if(done[cur]) return;
+  answers[cur]=i;
+  done[cur]=true;
+  renderQ();
+}
+
+function nextQ(){
+  if(!done[cur]){ alert('Please select an answer before continuing.'); return; }
+  if(cur<QUESTIONS.length-1){ cur++; renderQ(); }
+  else showResults();
+}
+function prevQ(){ if(cur>0){ cur--; renderQ(); } }
+
+function showResults(){
+  showScreen('sc-results');
+  let correct=0;
+  const modMap={};
+  QUESTIONS.forEach((q,i)=>{
+    if(answers[i]===q.answer) correct++;
+    if(!modMap[q.module]) modMap[q.module]={c:0,t:0};
+    modMap[q.module].t++;
+    if(answers[i]===q.answer) modMap[q.module].c++;
+  });
+  const pct  = Math.round((correct/QUESTIONS.length)*100);
+  const pass = pct>=PASSING;
+
+  // Score ring
+  const ring=document.getElementById('s-ring');
+  ring.className='score-ring '+(pass?'sr-pass':'sr-fail');
+  document.getElementById('s-pct').textContent=pct+'%';
+  document.getElementById('s-lbl').textContent=pass?'PASSED':'NOT PASSED';
+
+  // Title
+  const rt=document.getElementById('r-title');
+  rt.className='res-title '+(pass?'rt-pass':'rt-fail');
+  rt.textContent=pass?'✓ Assessment Passed':'✗ Assessment Not Passed';
+
+  // Sub
+  document.getElementById('r-sub').innerHTML = pass
+    ? \`Congratulations, <strong>\${stuName}</strong>. You answered \${correct} of \${QUESTIONS.length} questions correctly and have satisfied the BSIS assessment requirement per ${bank.bpcRef}.\`
+    : \`You answered \${correct} of \${QUESTIONS.length} questions correctly (\${pct}%). A score of ${bank.passingScore}% (\${QUESTIONS.length}/\${QUESTIONS.length} correct) is required per ${bank.bpcRef}. Please review the course material and retake the full assessment.\`;
+
+  // Module breakdown
+  let bHTML='<h3>Score by Module</h3>';
+  for(const[mod,d] of Object.entries(modMap)){
+    const mp=Math.round((d.c/d.t)*100);
+    bHTML+=\`<div class="brow"><span class="mod">\${mod}</span><span class="\${mp===100?'sp':'sf'}">\${d.c}/\${d.t} (\${mp}%)</span></div>\`;
+  }
+  bHTML+=\`<div class="brow" style="font-weight:700;margin-top:6px;"><span>Overall</span><span class="\${pass?'sp':'sf'}">\${correct}/\${QUESTIONS.length} (\${pct}%)</span></div>\`;
+  document.getElementById('breakdown').innerHTML=bHTML;
+
+  // Buttons
+  let btns = pass
+    ? \`<button class="btn btn-gold btn-sm" onclick="showCertificate()">View Certificate →</button>\`
+    : '';
+  btns += \`<button class="btn btn-outline btn-sm" onclick="retake()">\${pass?'Retake Assessment':'↺ Retake Assessment'}</button>\`;
+  document.getElementById('r-btns').innerHTML=btns;
+
+  // BSIS note
+  document.getElementById('r-bsis').innerHTML = pass
+    ? '<strong>BSIS Compliance:</strong> This certificate satisfies the course assessment requirement under ${bank.bpcRef}. Print and retain your certificate. Your employer (MACCESS INC.) is required to maintain your training record per Title 16 CCR §643(b).'
+    : '<strong>BSIS Requirement:</strong> ${bank.passingScore}% is the minimum passing score per ${bank.bpcRef}. A full retake is required. Correct answers are shown for each question you answered. Please review all modules before retaking.';
+
+  // Live Scan section — always shown after pass
+  if(pass){
+    const lsEl=document.getElementById('ls-section');
+    lsEl.style.display='block';
+    document.getElementById('ls-body').textContent = LS_CFG.enabled
+      ? 'You have passed the course assessment. If you have completed BSIS Live Scan fingerprinting at a MACCESS INC. facility, you may upload your BSIS-issued Live Scan receipt or certificate below to attach it to your training record.'
+      : LS_CFG.pendingMessage;
+    document.getElementById('ls-content').innerHTML = LS_CFG.showUploadSlot
+      ? buildUploadSlot()
+      : \`<div class="ls-coming">📋 <strong>Coming Soon:</strong> \${LS_CFG.pendingMessage}<br/><br/>When MACCESS INC. Live Scan services are active, you will be able to upload your BSIS receipt here and receive a combined training + fingerprint record for your guard card application.</div>\`;
+  }
+}
+
+function buildUploadSlot(){
+  return \`
+    <div class="upload-zone" id="uz" onclick="document.getElementById('lsfile').click()" ondragover="uzDrag(event,true)" ondragleave="uzDrag(event,false)" ondrop="uzDrop(event)">
+      <input type="file" id="lsfile" accept=".pdf,.jpg,.jpeg,.png" onchange="handleLSFile(this.files[0])"/>
+      <div class="upload-icon">📄</div>
+      <div class="upload-label">Upload Your BSIS Live Scan Certificate</div>
+      <div class="upload-sub">PDF, JPG, or PNG — click here or drag and drop</div>
+    </div>
+    <div class="upload-preview" id="ls-preview">
+      <strong>Uploaded:</strong> <span id="ls-fname"></span>
+      <div id="ls-thumb" style="margin-top:8px;"></div>
+    </div>
+    <div class="status-msg" id="ls-status"></div>
+    <button class="btn btn-primary" style="margin-top:14px;" onclick="submitLSRecord()">Submit Live Scan Record →</button>\`;
+}
+
+function uzDrag(e,on){ e.preventDefault(); document.getElementById('uz') && document.getElementById('uz').classList[on?'add':'remove']('dragover'); }
+function uzDrop(e){ e.preventDefault(); uzDrag(e,false); if(e.dataTransfer.files[0]) handleLSFile(e.dataTransfer.files[0]); }
+
+function handleLSFile(file){
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    lsCertDataURL=ev.target.result;
+    document.getElementById('ls-fname').textContent=file.name;
+    const thumb=document.getElementById('ls-thumb');
+    if(file.type.startsWith('image/')){
+      thumb.innerHTML=\`<img src="\${lsCertDataURL}" style="max-height:120px;border-radius:6px;"/>\`;
+    } else {
+      thumb.innerHTML=\`<div style="color:var(--gray);font-size:13px;">PDF uploaded: \${file.name}</div>\`;
+    }
+    document.getElementById('ls-preview').style.display='block';
+  };
+  reader.readAsDataURL(file);
+}
+
+function showStatus(msg,ok){
+  const el=document.getElementById('ls-status');
+  el.textContent=msg;
+  el.className='status-msg '+(ok?'st-ok':'st-err');
+  el.style.display='block';
+}
+
+// ── Live Scan record submission ────────────────────────────────────
+// Wire this to your email provider / backend when ready.
+// Currently logs the record to console and shows a confirmation.
+// To integrate: replace the console.log with a fetch() to your endpoint.
+function submitLSRecord(){
+  if(!lsCertDataURL){ showStatus('Please upload your BSIS Live Scan certificate first.', false); return; }
+
+  const record = {
+    studentName:  stuName,
+    studentEmail: stuEmail,
+    testDate:     stuDate,
+    course:       '${bank.title}',
+    bpcRef:       '${bank.bpcRef}',
+    score:        '${bank.passingScore}%',
+    ppoLicense:   '#122729',
+    lsCertFile:   lsCertDataURL,
+    submittedAt:  new Date().toISOString(),
+    bsisORI:      LS_CFG.bsisORI,
+    atiPrefix:    LS_CFG.atiPrefix,
+  };
+
+  // ── INTEGRATION POINT ───────────────────────────────────────────
+  // When your Live Scan system is active, replace this block with:
+  //
+  //   fetch('https://your-backend.com/api/livescan-record', {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify(record)
+  //   })
+  //   .then(r => r.json())
+  //   .then(d => {
+  //     if(d.success){
+  //       showStatus('✓ Live Scan record submitted. Confirmation sent to ' + stuEmail, true);
+  //       showCertificate(true); // pass true to embed LS cert in certificate
+  //     } else {
+  //       showStatus('Submission error: ' + d.message, false);
+  //     }
+  //   })
+  //   .catch(err => showStatus('Network error. Please try again.', false));
+  //
+  // ── END INTEGRATION POINT ───────────────────────────────────────
+
+  // Placeholder confirmation (remove when backend is wired):
+  console.log('Live Scan record ready for submission:', { ...record, lsCertFile:'[base64 data]' });
+  showStatus('✓ Live Scan record captured. Once the MACCESS INC. system is active, this will be automatically submitted and a confirmation sent to ' + stuEmail, true);
+  setTimeout(()=>showCertificate(true), 1800);
+}
+
+function retake(){
+  cur=0;
+  answers=new Array(QUESTIONS.length).fill(null);
+  done=new Array(QUESTIONS.length).fill(false);
+  lsCertDataURL=null;
+  showScreen('sc-test');
+  renderQ();
+}
+
+// ── Certificate builder ───────────────────────────────────────────
+function showCertificate(withLS){
+  const d=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+  let lsBlock='';
+  if(withLS && lsCertDataURL){
+    const isImg = lsCertDataURL.startsWith('data:image');
+    lsBlock=\`
+      <div class="cert-gold-bar"></div>
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--navy);margin-bottom:8px;">BSIS Live Scan Certificate — Attached</div>
+      <div class="ls-cert-embed">
+        \${isImg
+          ? \`<img src="\${lsCertDataURL}" alt="BSIS Live Scan Certificate" style="max-width:100%;border-radius:6px;"/>\`
+          : \`<div style="padding:20px;text-align:center;color:var(--gray);font-size:13px;">📄 BSIS Live Scan PDF Certificate attached to this record.<br/>Print this page to include with your BSIS guard card application.</div>\`
+        }
+      </div>\`;
+  } else if(LS_CFG.showUploadSlot && !lsCertDataURL){
+    lsBlock=\`
+      <div class="cert-gold-bar"></div>
+      <div style="font-size:12px;color:var(--gray);padding:12px;background:var(--light);border-radius:6px;">
+        BSIS Live Scan fingerprinting: <strong>Pending</strong>. Complete Live Scan at a MACCESS INC. facility and re-open this certificate to attach your receipt.
+      </div>\`;
+  }
+
+  document.getElementById('cert-area').innerHTML=\`
+    <div class="cert-hdr">Certificate of Completion</div>
+    <div class="cert-gold-bar"></div>
+    <div class="cert-co">MACCESS INC.</div>
+    <div class="cert-ppo">Private Patrol Operator &nbsp;|&nbsp; PPO License #122729 &nbsp;|&nbsp; BSIS-Authorized Training Provider</div>
+    <div class="cert-certifies">This certifies that</div>
+    <div class="cert-name">\${stuName}</div>
+    <div class="cert-body">has successfully completed the BSIS-compliant training course:</div>
+    <div class="cert-course">${bank.title}</div>
+    <div class="cert-score-badge">Assessment Score: ${bank.passingScore}% &nbsp;✓&nbsp; Passing</div>
+    <div class="cert-body">
+      This completion satisfies the ${bank.hours}-hour training requirement under ${bank.bpcRef} and the California Bureau of Security and Investigative Services (BSIS) training standards.<br/>
+      Retain this certificate until your guard card registration expires or is canceled — Title 16 CCR §643(b).
+    </div>
+    \${lsBlock}
+    <div class="cert-gold-bar"></div>
+    <div class="cert-sigs">
+      <div class="cert-sig"><div class="line"></div><div class="slabel">Student Signature</div></div>
+      <div class="cert-sig"><div class="line"></div><div class="slabel">Date: \${d}</div></div>
+      <div class="cert-sig"><div class="line"></div><div class="slabel">Instructor — MACCESS INC.</div></div>
+    </div>\`;
+
+  showScreen('sc-cert');
+}
+</script>
+</body>
+</html>`;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// BUILD ANSWER KEY PPTX
+// ══════════════════════════════════════════════════════════════════
+async function buildAnswerKey(bank, outputPath) {
+  const qs = bank.questions;
+  const LETTERS = ["A","B","C","D"];
+  let pres = new pptxgen();
+  pres.layout = "LAYOUT_16x9";
+  pres.author = "MACCESS INC. — INTERNAL";
+  pres.title  = bank.title + " — Answer Key (Instructor Copy)";
+  const ms = () => ({ type:"outer", color:"000000", blur:6, offset:2, angle:45, opacity:0.1 });
+
+  // Cover
+  let cover = pres.addSlide();
+  cover.background = { color: NAVY };
+  cover.addShape(pres.shapes.RECTANGLE, { x:0, y:0, w:10, h:0.6, fill:{ color:RED } });
+  cover.addText("CONFIDENTIAL — INTERNAL USE ONLY — DO NOT DISTRIBUTE TO STUDENTS", {
+    x:0, y:0, w:10, h:0.6, fontSize:11, bold:true, color:WHITE,
+    fontFace:"Calibri", align:"center", valign:"middle", margin:0
+  });
+  cover.addShape(pres.shapes.RECTANGLE, { x:0, y:4.6, w:10, h:1.025, fill:{ color:GOLD } });
+  cover.addShape(pres.shapes.RECTANGLE, { x:0, y:0.6, w:0.45, h:4.0, fill:{ color:RED } });
+  cover.addText("ANSWER KEY", {
+    x:0.6, y:0.85, w:9, h:0.6, fontSize:18, bold:true,
+    color:GOLD, fontFace:"Calibri", charSpacing:6, margin:0
+  });
+  cover.addText(bank.title, {
+    x:0.6, y:1.5, w:9, h:1.3, fontSize:30, bold:true,
+    color:WHITE, fontFace:"Calibri", margin:0
+  });
+  cover.addText("Instructor & Company Copy — Retain Securely", {
+    x:0.6, y:2.95, w:9, h:0.5, fontSize:14, color:"CADCFC", fontFace:"Calibri", margin:0
+  });
+  cover.addText(`${qs.length} Questions  |  Passing Score: ${bank.passingScore}%  |  ${bank.bpcRef}  |  PPO #122729`, {
+    x:0.6, y:3.6, w:9, h:0.35, fontSize:11, italic:true, color:"9AAFCC", fontFace:"Calibri", margin:0
+  });
+  cover.addText("MACCESS INC.", {
+    x:0.6, y:4.68, w:4, h:0.5, fontSize:14, bold:true,
+    color:NAVY, fontFace:"Calibri", valign:"middle", margin:0
+  });
+  cover.addText(`BSIS-Authorized Training Provider  |  ${new Date().toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"})}`, {
+    x:0.6, y:5.05, w:9, h:0.28, fontSize:8, italic:true,
+    color:NAVY, fontFace:"Calibri", margin:0
+  });
+
+  // Quick-ref grid
+  let grid = pres.addSlide();
+  grid.background = { color:"F4F6FB" };
+  grid.addShape(pres.shapes.RECTANGLE, { x:0, y:0, w:10, h:0.88, fill:{ color:NAVY } });
+  grid.addText("QUICK REFERENCE — ALL ANSWERS", {
+    x:0.4, y:0, w:7, h:0.88, fontSize:22, bold:true, color:WHITE,
+    fontFace:"Calibri", valign:"middle", margin:0
+  });
+  grid.addText(`${qs.length} Questions  |  Pass: ${bank.passingScore}%`, {
+    x:7.2, y:0, w:2.6, h:0.88, fontSize:12, color:GOLD,
+    fontFace:"Calibri", valign:"middle", align:"right", margin:0
+  });
+  const colorMap = { A:"1A5C3A", B:"1B2B5E", C:"7B3F00", D:"4A1A8A" };
+  const cols = 5;
+  qs.forEach((q,i) => {
+    const col=i%cols, row=Math.floor(i/cols);
+    const x=0.28+col*1.9, y=1.02+row*0.75;
+    const al=LETTERS[q.answer];
+    grid.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w:1.78, h:0.65, fill:{ color:WHITE }, rectRadius:0.07, shadow:ms() });
+    grid.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w:0.58, h:0.65, fill:{ color:colorMap[al]||NAVY }, rectRadius:0.07 });
+    grid.addText(`Q${i+1}`, { x, y, w:0.58, h:0.65, fontSize:9.5, bold:true, color:WHITE, fontFace:"Calibri", align:"center", valign:"middle", margin:0 });
+    grid.addText(al, { x:x+0.58, y, w:1.2, h:0.65, fontSize:22, bold:true, color:colorMap[al]||NAVY, fontFace:"Calibri", align:"center", valign:"middle", margin:0 });
+  });
+  grid.addText("MACCESS INC.  |  PPO #122729  |  INSTRUCTOR COPY — DO NOT DISTRIBUTE", {
+    x:0, y:5.3, w:10, h:0.28, fontSize:8, italic:true, color:GRAY,
+    fontFace:"Calibri", align:"center", margin:0
+  });
+
+  // Full Q&A — 3 per slide
+  for(let i=0; i<qs.length; i+=3){
+    let sl = pres.addSlide();
+    sl.background = { color:"F4F6FB" };
+    sl.addShape(pres.shapes.RECTANGLE, { x:0, y:0, w:10, h:0.52, fill:{ color:RED } });
+    sl.addText("INSTRUCTOR ANSWER KEY — CONFIDENTIAL", {
+      x:0.35, y:0, w:6.5, h:0.52, fontSize:11, bold:true, color:WHITE,
+      fontFace:"Calibri", valign:"middle", margin:0
+    });
+    sl.addText(bank.title, {
+      x:6.9, y:0, w:2.9, h:0.52, fontSize:8, color:WHITE,
+      fontFace:"Calibri", valign:"middle", align:"right", margin:0
+    });
+    [qs[i],qs[i+1],qs[i+2]].filter(Boolean).forEach((q,qi) => {
+      const qn=i+qi+1, al=LETTERS[q.answer];
+      const yb=0.6+qi*1.65, ch=1.52;
+      sl.addShape(pres.shapes.ROUNDED_RECTANGLE, { x:0.28, y:yb, w:9.44, h:ch, fill:{ color:WHITE }, rectRadius:0.09, shadow:ms() });
+      sl.addShape(pres.shapes.OVAL, { x:0.36, y:yb+0.14, w:0.55, h:0.55, fill:{ color:NAVY } });
+      sl.addText(String(qn), { x:0.36, y:yb+0.14, w:0.55, h:0.55, fontSize:13, bold:true, color:WHITE, fontFace:"Calibri", align:"center", valign:"middle", margin:0 });
+      sl.addText(q.module, { x:1.02, y:yb+0.1, w:5.5, h:0.28, fontSize:8.5, italic:true, color:GRAY, fontFace:"Calibri", margin:0 });
+      sl.addText(q.ref, { x:6.6, y:yb+0.1, w:2.9, h:0.28, fontSize:8.5, italic:true, color:GRAY, fontFace:"Calibri", align:"right", margin:0 });
+      sl.addText(q.q, { x:1.02, y:yb+0.38, w:8.6, h:0.5, fontSize:11, bold:true, color:"1A1A2E", fontFace:"Calibri", margin:0 });
+      q.options.forEach((opt,oi) => {
+        const isC=oi===q.answer, col=oi%2, row=Math.floor(oi/2);
+        const ox=1.02+col*4.3, oy=yb+0.94+row*0.27;
+        sl.addText((isC?"✓ ":"   ")+LETTERS[oi]+". "+opt, {
+          x:ox, y:oy, w:4.0, h:0.24, fontSize:9, bold:isC, margin:0,
+          color:isC?GREEN:GRAY, fontFace:"Calibri"
+        });
+      });
+      sl.addShape(pres.shapes.ROUNDED_RECTANGLE, { x:8.88, y:yb+0.88, w:0.72, h:0.55, fill:{ color:GREEN }, rectRadius:0.06 });
+      sl.addText(al, { x:8.88, y:yb+0.88, w:0.72, h:0.55, fontSize:22, bold:true, color:WHITE, fontFace:"Calibri", align:"center", valign:"middle", margin:0 });
+    });
+  }
+
+  // Scoring + Live Scan readiness guide
+  let sg = pres.addSlide();
+  sg.background = { color:"F4F6FB" };
+  sg.addShape(pres.shapes.RECTANGLE, { x:0, y:0, w:10, h:0.88, fill:{ color:NAVY } });
+  sg.addText("SCORING GUIDE & LIVE SCAN READINESS", {
+    x:0.4, y:0, w:9, h:0.88, fontSize:20, bold:true,
+    color:WHITE, fontFace:"Calibri", valign:"middle", margin:0
+  });
+  const sgRows = [
+    ["Passing Score",        `${bank.passingScore}% — all ${qs.length} questions correct required per ${bank.bpcRef}`],
+    ["Scoring Method",       "1 point per correct answer. No partial credit. Full retake required if below passing score."],
+    ["Certificate",          "Issue MACCESS INC. Certificate of Completion only to students achieving 100%. Sign and date each certificate."],
+    ["Record Keeping",       "Retain each student's assessment record per Title 16 CCR §643(b). Records subject to BSIS audit at any time."],
+    ["Answer Key Security",  "This document is for MACCESS INC. internal use only. Do not share with students before, during, or after the assessment."],
+    ["Live Scan — Status",   `PENDING — When BSIS Live Scan equipment is acquired, update LIVE_SCAN_CONFIG in the test script:\n• Set enabled: true\n• Set bsisORI: [your DOJ-assigned ORI]\n• Set atiPrefix: [your ATI prefix]\n• Drop BSIS certificate template into PSLAW-Courses/live-scan/\n• Set showUploadSlot: true`],
+    ["Live Scan — Records",  "When active: each student's Live Scan receipt will be captured in the test module and submitted to the notificationEmail. Maintain all Live Scan ATI numbers alongside training records."],
+  ];
+  sgRows.forEach(([lbl,txt],i) => {
+    const y=1.02+i*0.63;
+    sg.addShape(pres.shapes.ROUNDED_RECTANGLE, { x:0.35, y, w:9.3, h:0.57, fill:{ color:WHITE }, rectRadius:0.07, shadow:ms() });
+    sg.addText(lbl, { x:0.45, y, w:1.9, h:0.57, fontSize:10, bold:true, color:NAVY, fontFace:"Calibri", valign:"middle", margin:4 });
+    sg.addText(txt, { x:2.45, y, w:7.1, h:0.57, fontSize:9.5, color:"1A1A2E", fontFace:"Calibri", valign:"middle", margin:4 });
+  });
+
+  await pres.writeFile({ fileName: outputPath });
+  console.log("Answer key written:", outputPath);
+}
+
+// ══════════════════════════════════════════════════════════════════
+// GITHUB PUSH
+// ══════════════════════════════════════════════════════════════════
+function pushGH(localPath, repoPath, message) {
+  return new Promise(resolve => {
+    const data    = fs.readFileSync(localPath);
+    const encoded = data.toString("base64");
+    const getOpts = { hostname:"api.github.com", path:`/repos/${REPO}/contents/${encodeURIComponent(repoPath)}`, method:"GET", headers:{"Authorization":`token ${TOKEN}`,"User-Agent":"MACCESS"} };
+    https.request(getOpts, res => {
+      let b=""; res.on("data",d=>b+=d);
+      res.on("end",()=>{
+        let sha=""; try{sha=JSON.parse(b).sha||"";}catch{}
+        const pay=JSON.stringify({message,content:encoded,branch:"main",...(sha&&{sha})});
+        const putOpts={hostname:"api.github.com",path:`/repos/${REPO}/contents/${encodeURIComponent(repoPath)}`,method:"PUT",headers:{"Authorization":`token ${TOKEN}`,"Content-Type":"application/json","User-Agent":"MACCESS","Content-Length":Buffer.byteLength(pay)}};
+        const pr=https.request(putOpts,r2=>{let b2="";r2.on("data",d=>b2+=d);r2.on("end",()=>{try{resolve("content" in JSON.parse(b2));}catch{resolve(false);}});});
+        pr.write(pay);pr.end();
+      });
+    }).end();
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════
+// MAIN
+// ══════════════════════════════════════════════════════════════════
+async function main() {
+  const inputFile = process.argv[2] || "Powers_to_Arrest_BSIS_Certification_MACCESS_INC.pptx";
+  const key = inputFile.toLowerCase().includes("powers_to_arrest") ? "powers_to_arrest" : null;
+  if (!key) { console.error("Unknown course:", inputFile); process.exit(1); }
+
+  const bank     = COURSE_BANKS[key];
+  const base     = path.basename(inputFile, ".pptx");
+  const htmlOut  = `/home/claude/${base}-Test.html`;
+  const akOut    = `/home/claude/${base}-AnswerKey.pptx`;
+  const akPdf    = `/home/claude/${base}-AnswerKey.pdf`;
+
+  console.log(`\n${bank.title}  |  ${bank.questions.length} questions  |  Pass: ${bank.passingScore}%`);
+
+  // HTML
+  console.log("\nBuilding interactive HTML test...");
+  fs.writeFileSync(htmlOut, buildHTML(bank, base));
+  console.log("  Written:", path.basename(htmlOut));
+
+  // Answer key PPTX
+  console.log("Building answer key PPTX...");
+  await buildAnswerKey(bank, akOut);
+  try { execSync(`python3 /mnt/skills/public/pptx/scripts/rezip.py "${akOut}"`, {stdio:"pipe"}); } catch{}
+  try { execSync(`python3 /mnt/skills/public/pptx/scripts/office/soffice.py --headless --convert-to pdf "${akOut}"`, {stdio:"pipe"}); console.log("  PDF:", path.basename(akPdf)); } catch(e){ console.warn("  PDF skipped:", e.message); }
+
+  // Push
+  const dir = "PSLAW-Courses/final-projects";
+  console.log("\nPushing to GitHub (Licensing-Live-Scans-)...");
+  const uploads = [
+    [htmlOut, `${dir}/${path.basename(htmlOut)}`,  `feat: ${bank.title} — Interactive Test v2 (Live Scan ready)`],
+    [akOut,   `${dir}/${path.basename(akOut)}`,    `feat: ${bank.title} — Answer Key PPTX`],
+    ...(fs.existsSync(akPdf) ? [[akPdf, `${dir}/${path.basename(akPdf)}`, `feat: ${bank.title} — Answer Key PDF`]] : []),
+  ];
+  for (const [local, remote, msg] of uploads) {
+    if (!fs.existsSync(local)) { console.log(`  ⚠️  Missing: ${local}`); continue; }
+    const ok = await pushGH(local, remote, msg);
+    console.log(`  ${ok?"✅":"❌"} ${path.basename(remote)}`);
+  }
+  console.log("\nDone.");
+}
+main().catch(console.error);
