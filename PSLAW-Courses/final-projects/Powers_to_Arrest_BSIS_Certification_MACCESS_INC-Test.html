@@ -5,365 +5,494 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Powers to Arrest — BSIS Certification Course — Course Assessment | MACCESS INC.</title>
 <style>
-:root{--navy:#1B2B5E;--gold:#C9A84C;--red:#8B1A1A;--green:#1A5C3A;--light:#F4F6FB;--gray:#4A5568;--white:#FFFFFF;--radius:10px;}
+:root{--navy:#1B2B5E;--gold:#C9A84C;--red:#8B1A1A;--green:#1A5C3A;--light:#F4F6FB;--gray:#4A5568;--white:#fff;--r:10px;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Segoe UI',Arial,sans-serif;background:var(--light);color:#1A1A2E;min-height:100vh;}
-
-/* HEADER */
-.site-header{background:var(--navy);color:#fff;padding:14px 32px;display:flex;align-items:center;justify-content:space-between;}
-.site-header .logo{font-size:20px;font-weight:700;letter-spacing:.04em;}
-.site-header .meta{font-size:11px;color:#CADCFC;text-align:right;}
+.hdr{background:var(--navy);color:#fff;padding:14px 32px;display:flex;align-items:center;justify-content:space-between;}
+.hdr .logo{font-size:20px;font-weight:700;letter-spacing:.04em;}
+.hdr .meta{font-size:11px;color:#CADCFC;text-align:right;line-height:1.6;}
 .gold-bar{height:5px;background:var(--gold);}
-
-/* SCREENS */
-.screen{display:none;max-width:860px;margin:0 auto;padding:32px 20px;}
+.screen{display:none;max-width:880px;margin:0 auto;padding:32px 20px;}
 .screen.active{display:block;}
-
-/* COVER */
-.cover-box{background:#fff;border-radius:var(--radius);border:1px solid #dde4f0;padding:40px 44px;margin-top:24px;}
-.cover-box h1{font-size:28px;color:var(--navy);margin-bottom:8px;}
-.cover-box .sub{color:var(--gray);font-size:14px;margin-bottom:28px;}
-.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px;}
-.info-card{background:var(--light);border-radius:8px;padding:14px 18px;}
-.info-card .label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--gray);margin-bottom:4px;}
-.info-card .value{font-size:18px;font-weight:700;color:var(--navy);}
-.warning-box{background:#FFF8E1;border:1px solid #F9C75740;border-radius:8px;padding:14px 18px;font-size:13px;color:#7B4F00;margin-bottom:28px;line-height:1.6;}
-.student-form label{display:block;font-size:12px;font-weight:600;color:var(--gray);margin-bottom:5px;margin-top:14px;}
-.student-form input{width:100%;padding:10px 14px;border:1.5px solid #D0D8E8;border-radius:8px;font-size:14px;outline:none;transition:border .2s;}
-.student-form input:focus{border-color:var(--navy);}
-.btn{display:inline-block;padding:12px 32px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;border:none;transition:background .18s,transform .1s;}
-.btn:active{transform:scale(.98);}
-.btn-primary{background:var(--navy);color:#fff;width:100%;margin-top:24px;text-align:center;}
+/* Cards */
+.card{background:#fff;border-radius:var(--r);border:1px solid #dde4f0;padding:36px 44px;margin-top:24px;}
+.card h1{font-size:26px;color:var(--navy);margin-bottom:6px;}
+.card .sub{color:var(--gray);font-size:13px;margin-bottom:24px;}
+/* Info grid */
+.ig{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;}
+.ic{background:var(--light);border-radius:8px;padding:13px 16px;}
+.ic .lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--gray);margin-bottom:3px;}
+.ic .val{font-size:18px;font-weight:700;color:var(--navy);}
+/* Warning */
+.warn{background:#FFF8E1;border:1px solid #F9C75740;border-radius:8px;padding:14px 18px;font-size:13px;color:#7B4F00;margin-bottom:22px;line-height:1.6;}
+/* Form */
+.flabel{display:block;font-size:12px;font-weight:600;color:var(--gray);margin:14px 0 5px;}
+input[type=text],input[type=email]{width:100%;padding:10px 14px;border:1.5px solid #D0D8E8;border-radius:8px;font-size:14px;outline:none;transition:border .2s;}
+input:focus{border-color:var(--navy);}
+.btn{display:block;width:100%;padding:13px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;border:none;margin-top:18px;text-align:center;transition:background .15s;}
+.btn-primary{background:var(--navy);color:#fff;}
 .btn-primary:hover{background:#243a7a;}
-
-/* PROGRESS */
-.progress-wrap{background:#fff;border-radius:var(--radius);padding:14px 20px;margin-bottom:18px;border:1px solid #dde4f0;display:flex;align-items:center;gap:14px;}
-.progress-bar-bg{flex:1;height:8px;background:#E8EDF6;border-radius:4px;overflow:hidden;}
-.progress-bar-fill{height:100%;background:var(--navy);border-radius:4px;transition:width .3s;}
-.progress-text{font-size:12px;color:var(--gray);white-space:nowrap;}
-.module-badge{background:var(--light);border:1px solid #D0D8E8;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:600;color:var(--navy);margin-bottom:10px;display:inline-block;}
-.ref-badge{font-size:10px;color:var(--gray);margin-left:8px;font-style:italic;}
-
-/* QUESTION CARD */
-.q-card{background:#fff;border-radius:var(--radius);border:1px solid #dde4f0;padding:28px 32px;margin-bottom:20px;}
-.q-number{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);margin-bottom:10px;}
-.q-text{font-size:17px;font-weight:600;color:#1A1A2E;line-height:1.5;margin-bottom:22px;}
-.options{display:flex;flex-direction:column;gap:10px;}
-.opt{display:flex;align-items:center;gap:12px;padding:12px 16px;border:1.5px solid #D0D8E8;border-radius:8px;cursor:pointer;transition:all .18s;font-size:14px;}
+.btn-gold{background:var(--gold);color:var(--navy);}
+.btn-gold:hover{background:#b8962a;}
+.btn-outline{background:#fff;color:var(--navy);border:1.5px solid var(--navy);}
+.btn-outline:hover{background:var(--light);}
+.btn-sm{display:inline-block;width:auto;padding:10px 24px;}
+/* Progress */
+.prog-wrap{background:#fff;border-radius:var(--r);padding:14px 20px;margin-bottom:18px;border:1px solid #dde4f0;display:flex;align-items:center;gap:14px;}
+.prog-bg{flex:1;height:8px;background:#E8EDF6;border-radius:4px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--navy);border-radius:4px;transition:width .3s;}
+.prog-txt{font-size:12px;color:var(--gray);white-space:nowrap;}
+/* Question */
+.mod-badge{background:var(--light);border:1px solid #D0D8E8;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:600;color:var(--navy);margin-bottom:10px;display:inline-block;}
+.ref-tag{font-size:10px;color:var(--gray);margin-left:8px;font-style:italic;}
+.qcard{background:#fff;border-radius:var(--r);border:1px solid #dde4f0;padding:26px 30px;margin-bottom:18px;}
+.qnum{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);margin-bottom:9px;}
+.qtxt{font-size:16px;font-weight:600;line-height:1.55;margin-bottom:20px;}
+.opts{display:flex;flex-direction:column;gap:10px;}
+.opt{display:flex;align-items:center;gap:12px;padding:11px 15px;border:1.5px solid #D0D8E8;border-radius:8px;cursor:pointer;font-size:14px;transition:all .15s;}
 .opt:hover{border-color:var(--navy);background:#F0F4FB;}
 .opt.selected{border-color:var(--navy);background:#EBF0FB;}
 .opt.correct{border-color:var(--green)!important;background:#EAF3DE!important;color:var(--green);}
 .opt.wrong{border-color:var(--red)!important;background:#FCEBEB!important;color:var(--red);}
-.opt-letter{width:28px;height:28px;border-radius:50%;background:var(--light);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--navy);border:1.5px solid #D0D8E8;}
-.opt.selected .opt-letter{background:var(--navy);color:#fff;border-color:var(--navy);}
-.opt.correct .opt-letter{background:var(--green);color:#fff;border-color:var(--green);}
-.opt.wrong .opt-letter{background:var(--red);color:#fff;border-color:var(--red);}
-.feedback{margin-top:14px;padding:12px 16px;border-radius:8px;font-size:13px;display:none;line-height:1.6;}
-.feedback.correct{background:#EAF3DE;color:var(--green);display:block;}
-.feedback.wrong{background:#FCEBEB;color:var(--red);display:block;}
-.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:8px;}
-.btn-nav{padding:11px 26px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:1.5px solid var(--navy);background:#fff;color:var(--navy);}
-.btn-nav:hover{background:var(--light);}
-.btn-nav.primary{background:var(--navy);color:#fff;border-color:var(--navy);}
-.btn-nav.primary:hover{background:#243a7a;}
-
-/* RESULTS */
-.results-box{background:#fff;border-radius:var(--radius);border:1px solid #dde4f0;padding:40px 44px;margin-top:24px;text-align:center;}
-.score-ring{width:140px;height:140px;border-radius:50%;margin:0 auto 24px;display:flex;align-items:center;justify-content:center;flex-direction:column;font-size:36px;font-weight:700;}
-.score-ring.pass{background:#EAF3DE;color:var(--green);border:4px solid var(--green);}
-.score-ring.fail{background:#FCEBEB;color:var(--red);border:4px solid var(--red);}
-.score-ring .label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-top:2px;}
-.result-title{font-size:24px;font-weight:700;margin-bottom:8px;}
-.result-title.pass{color:var(--green);}
-.result-title.fail{color:var(--red);}
-.result-sub{color:var(--gray);font-size:14px;margin-bottom:28px;line-height:1.6;}
-.breakdown{background:var(--light);border-radius:8px;padding:20px 24px;margin-bottom:28px;text-align:left;}
-.breakdown h3{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--navy);margin-bottom:14px;}
-.breakdown-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #dde4f0;font-size:13px;}
-.breakdown-row:last-child{border-bottom:none;}
-.breakdown-row .mod{color:var(--gray);}
-.breakdown-row .score{font-weight:600;}
-.score-pass{color:var(--green);}
-.score-fail{color:var(--red);}
-.btn-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
-.btn-cert{background:var(--gold);color:var(--navy);padding:13px 28px;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;border:none;}
-.btn-retake{background:#fff;color:var(--navy);padding:13px 28px;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;border:1.5px solid var(--navy);}
-.bsis-note{background:#EBF0FB;border-radius:8px;padding:14px 18px;font-size:12px;color:var(--navy);margin-top:20px;line-height:1.6;text-align:left;}
-
-/* CERTIFICATE */
-@media print{.no-print{display:none!important;}.screen{padding:0;}.cert-wrap{box-shadow:none;}}
-.cert-wrap{background:#fff;border:3px double var(--navy);border-radius:4px;padding:48px 56px;margin:24px 0;text-align:center;position:relative;}
+.opt-lt{width:28px;height:28px;border-radius:50%;background:var(--light);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--navy);border:1.5px solid #D0D8E8;}
+.opt.selected .opt-lt{background:var(--navy);color:#fff;border-color:var(--navy);}
+.opt.correct .opt-lt{background:var(--green);color:#fff;border-color:var(--green);}
+.opt.wrong .opt-lt{background:var(--red);color:#fff;border-color:var(--red);}
+.feedback{margin-top:13px;padding:11px 15px;border-radius:8px;font-size:13px;line-height:1.6;}
+.fb-ok{background:#EAF3DE;color:var(--green);}
+.fb-no{background:#FCEBEB;color:var(--red);}
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:6px;}
+.btn-nav{padding:10px 24px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;}
+.btn-nav-out{background:#fff;color:var(--navy);border:1.5px solid var(--navy);}
+.btn-nav-pri{background:var(--navy);color:#fff;border:none;}
+/* Results */
+.res-card{background:#fff;border-radius:var(--r);border:1px solid #dde4f0;padding:40px 44px;margin-top:24px;text-align:center;}
+.score-ring{width:140px;height:140px;border-radius:50%;margin:0 auto 22px;display:flex;align-items:center;justify-content:center;flex-direction:column;font-size:34px;font-weight:700;}
+.sr-pass{background:#EAF3DE;color:var(--green);border:4px solid var(--green);}
+.sr-fail{background:#FCEBEB;color:var(--red);border:4px solid var(--red);}
+.sr-lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-top:2px;}
+.res-title{font-size:24px;font-weight:700;margin-bottom:8px;}
+.rt-pass{color:var(--green);}
+.rt-fail{color:var(--red);}
+.res-sub{color:var(--gray);font-size:13px;margin-bottom:24px;line-height:1.6;}
+.breakdown{background:var(--light);border-radius:8px;padding:18px 22px;margin-bottom:24px;text-align:left;}
+.breakdown h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--navy);margin-bottom:12px;}
+.brow{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #dde4f0;font-size:13px;}
+.brow:last-child{border-bottom:none;}
+.brow .mod{color:var(--gray);}
+.sp{color:var(--green);font-weight:600;}
+.sf{color:var(--red);font-weight:600;}
+.btn-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:18px;}
+.bsis-note{background:#EBF0FB;border-radius:8px;padding:13px 17px;font-size:12px;color:var(--navy);line-height:1.6;text-align:left;}
+/* Live Scan section */
+.ls-section{margin-top:28px;border:2px dashed #C9A84C;border-radius:var(--r);padding:28px 32px;background:#FFFDF5;}
+.ls-header{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.ls-badge{background:var(--navy);color:var(--gold);font-size:11px;font-weight:700;padding:4px 12px;border-radius:6px;letter-spacing:.04em;}
+.ls-title{font-size:17px;font-weight:700;color:var(--navy);}
+.ls-body{font-size:13px;color:var(--gray);line-height:1.7;margin-bottom:16px;}
+.ls-coming{background:#FFF8E1;border:1px solid var(--gold);border-radius:8px;padding:14px 18px;font-size:13px;color:#7B4F00;line-height:1.6;}
+/* Upload slot (shown when LS active) */
+.upload-zone{border:2px dashed #D0D8E8;border-radius:8px;padding:28px;text-align:center;background:var(--light);cursor:pointer;transition:border .2s;}
+.upload-zone:hover,.upload-zone.dragover{border-color:var(--navy);background:#EBF0FB;}
+.upload-zone input{display:none;}
+.upload-icon{font-size:36px;margin-bottom:8px;}
+.upload-label{font-size:14px;font-weight:600;color:var(--navy);margin-bottom:4px;}
+.upload-sub{font-size:12px;color:var(--gray);}
+.upload-preview{display:none;margin-top:14px;padding:12px 16px;background:#fff;border:1px solid #D0D8E8;border-radius:8px;text-align:left;}
+.status-msg{padding:10px 14px;border-radius:8px;font-size:13px;margin-top:12px;display:none;}
+.st-ok{background:#EAF3DE;color:var(--green);}
+.st-err{background:#FCEBEB;color:var(--red);}
+/* Certificate */
+@media print{.no-print{display:none!important;}.screen{padding:0;max-width:100%;}}
+.cert-wrap{background:#fff;border:3px double var(--navy);border-radius:4px;padding:44px 52px;margin:24px 0;text-align:center;position:relative;}
 .cert-wrap::before{content:'';position:absolute;inset:8px;border:1px solid var(--gold);border-radius:2px;pointer-events:none;}
-.cert-header{color:var(--navy);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;}
-.cert-company{font-size:26px;font-weight:700;color:var(--navy);margin-bottom:4px;}
-.cert-ppo{font-size:11px;color:var(--gray);margin-bottom:28px;}
-.cert-title{font-size:14px;color:var(--gray);margin-bottom:6px;}
-.cert-name{font-size:32px;font-weight:700;color:var(--navy);border-bottom:2px solid var(--navy);display:inline-block;min-width:320px;padding-bottom:4px;margin-bottom:20px;}
-.cert-body{font-size:13px;color:var(--gray);line-height:1.8;margin-bottom:6px;}
-.cert-course{font-size:18px;font-weight:700;color:var(--navy);margin-bottom:16px;}
-.cert-score{display:inline-block;background:#EAF3DE;color:var(--green);border-radius:6px;padding:5px 18px;font-size:13px;font-weight:600;margin-bottom:24px;}
-.cert-sigs{display:flex;justify-content:space-around;margin-top:36px;gap:24px;}
+.cert-hdr{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--navy);margin-bottom:5px;}
+.cert-co{font-size:24px;font-weight:700;color:var(--navy);margin-bottom:3px;}
+.cert-ppo{font-size:11px;color:var(--gray);margin-bottom:24px;}
+.cert-certifies{font-size:13px;color:var(--gray);margin-bottom:6px;}
+.cert-name{font-size:30px;font-weight:700;color:var(--navy);border-bottom:2px solid var(--navy);display:inline-block;min-width:300px;padding-bottom:3px;margin-bottom:18px;}
+.cert-body{font-size:13px;color:var(--gray);line-height:1.8;margin-bottom:5px;}
+.cert-course{font-size:17px;font-weight:700;color:var(--navy);margin-bottom:14px;}
+.cert-score-badge{display:inline-block;background:#EAF3DE;color:var(--green);border-radius:6px;padding:4px 16px;font-size:13px;font-weight:600;margin-bottom:22px;}
+.cert-gold-bar{height:5px;background:var(--gold);border-radius:3px;margin:18px 0;}
+.cert-sigs{display:flex;justify-content:space-around;margin-top:32px;gap:20px;}
 .cert-sig{flex:1;text-align:center;}
-.cert-sig .line{border-top:1.5px solid var(--navy);margin-bottom:6px;}
+.cert-sig .line{border-top:1.5px solid var(--navy);margin-bottom:5px;}
 .cert-sig .slabel{font-size:11px;color:var(--gray);}
-.cert-gold-bar{height:6px;background:var(--gold);border-radius:3px;margin:20px 0;}
-
-/* FOOTER */
-.site-footer{background:var(--navy);color:#CADCFC;text-align:center;padding:14px;font-size:11px;margin-top:40px;}
+/* LS cert embed in certificate */
+.ls-cert-embed{margin:18px 0;padding:14px;background:var(--light);border-radius:8px;border:1px solid #D0D8E8;}
+.ls-cert-embed img,.ls-cert-embed iframe{max-width:100%;border-radius:6px;}
+/* Footer */
+.ftr{background:var(--navy);color:#CADCFC;text-align:center;padding:14px;font-size:11px;margin-top:40px;}
 </style>
 </head>
 <body>
 
-<div class="site-header">
+<div class="hdr">
   <div class="logo">MACCESS INC.</div>
-  <div class="meta">PPO License #122729 | BSIS-Authorized Training Provider<br/>Course Assessment Platform</div>
+  <div class="meta">PPO License #122729 | BSIS-Authorized Training Provider<br/>Secure Course Assessment Platform</div>
 </div>
 <div class="gold-bar"></div>
 
-<!-- ── SCREEN 1: COVER ─────────────────────────────────── -->
-<div class="screen active" id="screen-cover">
-  <div style="max-width:860px;margin:0 auto;padding:32px 20px;">
-    <div class="cover-box">
-      <h1>Powers to Arrest — BSIS Certification Course</h1>
-      <div class="sub">California Security Guard Licensing | MACCESS INC.</div>
-      <div class="info-grid">
-        <div class="info-card"><div class="label">Total Questions</div><div class="value">55</div></div>
-        <div class="info-card"><div class="label">Passing Score</div><div class="value">100%</div></div>
-        <div class="info-card"><div class="label">Training Hours</div><div class="value">3 Hours</div></div>
-        <div class="info-card"><div class="label">Regulatory Basis</div><div class="value" style="font-size:14px;">BPC §7583.7</div></div>
+<!-- SCREEN 1: COVER -->
+<div class="screen active" id="sc-cover">
+  <div class="card">
+    <h1>Powers to Arrest — BSIS Certification Course</h1>
+    <div class="sub">California Security Guard Licensing | MACCESS INC.</div>
+    <div class="ig">
+      <div class="ic"><div class="lbl">Total Questions</div><div class="val">55</div></div>
+      <div class="ic"><div class="lbl">Passing Score</div><div class="val">100%</div></div>
+      <div class="ic"><div class="lbl">Training Hours</div><div class="val">3 Hours</div></div>
+      <div class="ic"><div class="lbl">Authority</div><div class="val" style="font-size:13px;">BPC §7583.7</div></div>
+    </div>
+    <div class="warn">⚠️ <strong>BSIS Requirement:</strong> A score of <strong>100%</strong> is required to receive your Certificate of Completion per BPC §7583.7. A score below 100% requires a full retake. No partial credit is awarded.</div>
+    <label class="flabel">Full Legal Name <span style="color:var(--red)">*</span> (as it will appear on your certificate)</label>
+    <input type="text" id="inp-name" placeholder="First Middle Last"/>
+    <label class="flabel">Email Address <span style="color:var(--red)">*</span> (certificate will be sent here)</label>
+    <input type="email" id="inp-email" placeholder="your@email.com"/>
+    <label class="flabel">Assessment Date</label>
+    <input type="text" id="inp-date" value="June 27, 2026" readonly/>
+    <button class="btn btn-primary" onclick="startTest()">Begin Assessment →</button>
+  </div>
+</div>
+
+<!-- SCREEN 2: TEST -->
+<div class="screen" id="sc-test">
+  <div class="prog-wrap">
+    <div class="prog-bg"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+    <div class="prog-txt" id="prog-txt">Question 1 of 55</div>
+  </div>
+  <div id="q-area"></div>
+  <div class="nav-row" style="margin-top:8px;">
+    <button class="btn-nav btn-nav-out" id="btn-prev" onclick="prevQ()" style="display:none;">← Previous</button>
+    <button class="btn-nav btn-nav-pri" id="btn-next" onclick="nextQ()">Next →</button>
+  </div>
+</div>
+
+<!-- SCREEN 3: RESULTS -->
+<div class="screen" id="sc-results">
+  <div class="res-card">
+    <div class="score-ring" id="s-ring">
+      <span id="s-pct">0%</span>
+      <span class="sr-lbl" id="s-lbl">Score</span>
+    </div>
+    <div class="res-title" id="r-title">Result</div>
+    <div class="res-sub" id="r-sub"></div>
+    <div class="breakdown" id="breakdown"></div>
+    <div class="btn-row" id="r-btns"></div>
+    <div class="bsis-note" id="r-bsis"></div>
+
+    <!-- LIVE SCAN SECTION (always present, content changes based on config) -->
+    <div class="ls-section" id="ls-section" style="display:none;">
+      <div class="ls-header">
+        <div class="ls-badge">LIVE SCAN</div>
+        <div class="ls-title">BSIS Live Scan Fingerprinting — MACCESS INC.</div>
       </div>
-      <div class="warning-box">
-        ⚠️ <strong>BSIS Requirement:</strong> A score of <strong>100%</strong> is required to receive your Certificate of Completion per BPC §7583.7. Students who do not achieve 100% must retake the full assessment. No partial credit is awarded.
-      </div>
-      <div class="student-form">
-        <label>Full Legal Name (as it will appear on your certificate)</label>
-        <input type="text" id="studentName" placeholder="First Middle Last"/>
-        <label>Date</label>
-        <input type="text" id="testDate" value="June 27, 2026" readonly/>
-      </div>
-      <button class="btn btn-primary" onclick="startTest()">Begin Assessment →</button>
+      <div class="ls-body" id="ls-body"></div>
+      <div id="ls-content"></div>
     </div>
   </div>
 </div>
 
-<!-- ── SCREEN 2: TEST ──────────────────────────────────── -->
-<div class="screen" id="screen-test">
-  <div style="max-width:860px;margin:0 auto;padding:28px 20px;">
-    <div class="progress-wrap">
-      <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
-      <div class="progress-text" id="progress-text">Question 1 of 55</div>
-    </div>
-    <div id="question-area"></div>
-    <div class="nav-row">
-      <button class="btn-nav" id="btn-prev" onclick="prevQ()" style="display:none;">← Previous</button>
-      <button class="btn-nav primary" id="btn-next" onclick="nextQ()">Next →</button>
-    </div>
+<!-- SCREEN 4: CERTIFICATE -->
+<div class="screen" id="sc-cert">
+  <div class="no-print" style="text-align:center;margin-bottom:18px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+    <button class="btn btn-gold btn-sm" onclick="window.print()">🖨️ Print Certificate</button>
+    <button class="btn btn-outline btn-sm" onclick="showScreen('sc-results')">← Back to Results</button>
   </div>
+  <div class="cert-wrap" id="cert-area"></div>
 </div>
 
-<!-- ── SCREEN 3: RESULTS ───────────────────────────────── -->
-<div class="screen" id="screen-results">
-  <div style="max-width:860px;margin:0 auto;padding:32px 20px;">
-    <div class="results-box">
-      <div class="score-ring" id="score-ring"><span id="score-pct">0%</span><span class="label" id="score-label">Score</span></div>
-      <div class="result-title" id="result-title">Result</div>
-      <div class="result-sub" id="result-sub"></div>
-      <div class="breakdown" id="breakdown"></div>
-      <div class="btn-row" id="result-btns"></div>
-      <div class="bsis-note" id="bsis-note"></div>
-    </div>
-  </div>
-</div>
-
-<!-- ── SCREEN 4: CERTIFICATE ──────────────────────────── -->
-<div class="screen" id="screen-cert">
-  <div style="max-width:860px;margin:0 auto;padding:32px 20px;">
-    <div class="no-print" style="text-align:center;margin-bottom:20px;">
-      <button class="btn-cert" onclick="window.print()">🖨️ Print Certificate</button>
-      <button class="btn-retake" style="margin-left:12px;" onclick="showScreen('screen-results')">← Back to Results</button>
-    </div>
-    <div class="cert-wrap" id="cert-content"></div>
-  </div>
-</div>
-
-<div class="site-footer">
-  MACCESS INC. &nbsp;|&nbsp; Private Security LA Worldwide (PSLAW) &nbsp;|&nbsp; PPO License #122729 &nbsp;|&nbsp; BSIS-Authorized Training Provider
-</div>
+<div class="ftr">MACCESS INC. &nbsp;|&nbsp; Private Security LA Worldwide (PSLAW) &nbsp;|&nbsp; PPO License #122729 &nbsp;|&nbsp; BSIS-Authorized Training Provider</div>
 
 <script>
-const QUESTIONS = [{"module":"Module 1 — Legal Framework","ref":"BPC §7583.7","q":"Which California law requires security guards to complete Power to Arrest training before receiving a guard card?","options":["California Penal Code §837","Business and Professions Code §7583.7","Title 16 California Code of Regulations §643","California Penal Code §847"],"answer":1},{"module":"Module 1 — Legal Framework","ref":"BPC §7583.7","q":"What score must a student achieve on the BSIS Power to Arrest exam to receive a Certificate of Completion?","options":["70%","80%","90%","100%"],"answer":3},{"module":"Module 1 — Legal Framework","ref":"DCA PTA Manual July 2023","q":"Which manual is required to be used for Power to Arrest and Appropriate Use of Force training?","options":["California Security Officer Handbook 2022","DCA Power to Arrest and Appropriate Use of Force Training Manual, July 2023","BSIS Regulatory Guide Title 16","California Penal Code Annotated"],"answer":1},{"module":"Module 1 — Legal Framework","ref":"BPC §7583.7","q":"As a security guard in California, your arrest authority comes from the same law that applies to:","options":["A sworn police officer","A licensed investigator","A private citizen","A government contractor"],"answer":2},{"module":"Module 1 — Legal Framework","ref":"SB 652 (Jan 1 2026)","q":"Under SB 652 effective January 1, 2026, the full 8-hour PTA + AUF training must be delivered by:","options":["Any two BSIS-approved providers","The applicant's employer only","A single BSIS-approved course provider","An online provider plus a separate in-person facility"],"answer":2},{"module":"Module 1 — Legal Framework","ref":"SB 652 | BPC §7583.6","q":"How long before a guard card application must the 8-hour PTA/AUF training be completed?","options":["30 days","3 months","6 months","1 year"],"answer":2},{"module":"Module 1 — Legal Framework","ref":"BPC §7583.7","q":"MACCESS INC. is authorized to deliver this certification as a licensed:","options":["Peace officer agency","Private Patrol Operator — PPO #122729","Federal security contractor","BSIS examination center"],"answer":1},{"module":"Module 2 — Citizen Arrest Authority (PC §837)","ref":"PC §837","q":"California Penal Code §837 lists how many conditions under which a private person may make a citizen's arrest?","options":["Two","Three","Four","Five"],"answer":1},{"module":"Module 2 — Citizen Arrest Authority (PC §837)","ref":"PC §837(1)","q":"Under PC §837(1), a security guard may make a citizen's arrest when a public offense is:","options":["Reported by a witness","Suspected based on prior criminal history","Captured on CCTV footage only","Committed or attempted in the guard's direct presence"],"answer":3},{"module":"Module 2 — Citizen Arrest Authority (PC §837)","ref":"PC §837(2)","q":"Under PC §837(2), a guard may arrest someone for a felony not committed in their presence if:","options":["A supervisor authorizes the arrest","The guard has a hunch the person is guilty","The guard knows the person committed the felony","The property owner requests the arrest"],"answer":2},{"module":"Module 2 — Citizen Arrest Authority (PC §837)","ref":"PC §837(3)","q":"PC §837(3) requires that for a reasonable-cause felony arrest, a felony must:","options":["Be suspected but not confirmed","Have actually been committed in fact","Have been reported to police first","Involve violence or weapons"],"answer":1},{"module":"Module 2 — Citizen Arrest Authority (PC §837)","ref":"PC §837","q":"A guard receives a report that someone stole from the store yesterday. The guard did not witness it. Can the guard make a citizen's arrest for this misdemeanor?","options":["Yes — any theft justifies arrest","Yes — with supervisor approval","No — misdemeanor arrest requires personal observation","No — only police can arrest for theft"],"answer":2},{"module":"Module 2 — Citizen Arrest Authority (PC §837)","ref":"PC §837(3)","q":"Which PC §837 arrest condition carries the greatest risk of personal liability if used incorrectly?","options":["§837(1) — offense in presence","§837(2) — felony committed by that person","§837(3) — reasonable cause for felony","All conditions carry equal risk"],"answer":2},{"module":"Module 2 — Citizen Arrest Authority (PC §837)","ref":"PC §837","q":"A security guard witnesses a person vandalizing a car in the parking lot. Which PC §837 condition applies?","options":["§837(1) — public offense in presence","§837(2) — felony committed by the person","§837(3) — reasonable cause","None — vandalism cannot justify arrest"],"answer":0},{"module":"Module 2 — Citizen Arrest Authority (PC §837)","ref":"PC §837","q":"\"Reasonable cause\" under PC §837 means:","options":["A gut feeling the person looks suspicious","Objective facts supporting a belief the person committed a felony","A witness statement alone","Prior criminal history of the person"],"answer":1},{"module":"Module 2 — Citizen Arrest Authority (PC §837)","ref":"PC §837 | PC §490.5","q":"The Shopkeeper's Privilege under PC §490.5 allows detention for shoplifting when there is:","options":["Suspicion based on appearance","Probable cause based on direct observation","A manager's verbal authorization","A description matching prior theft reports"],"answer":1},{"module":"Module 3 — Limitations & Prohibited Actions","ref":"PC §538d","q":"A security guard who represents themselves as a police officer may face criminal charges under:","options":["PC §602","BPC §480","PC §538d","PC §836"],"answer":2},{"module":"Module 3 — Limitations & Prohibited Actions","ref":"PC §837 | 4th Amendment","q":"A security guard's search authority during a lawful detention is limited to:","options":["A full search of the person's clothing and bags","An unlimited search on private property","A safety pat-down for weapons only","Any search authorized by the property owner"],"answer":2},{"module":"Module 3 — Limitations & Prohibited Actions","ref":"PC §236 | PC §847","q":"Courts generally view a detention lasting more than ___ minutes without police notification as potentially false imprisonment.","options":["5–10 minutes","20–30 minutes","45–60 minutes","2 hours"],"answer":1},{"module":"Module 3 — Limitations & Prohibited Actions","ref":"PC §837","q":"A security guard's arrest authority extends:","options":["Anywhere in the city they are assigned","Throughout the entire county","Statewide under their BSIS license","Only on the property they are hired to protect"],"answer":3},{"module":"Module 3 — Limitations & Prohibited Actions","ref":"PC §236","q":"Detaining someone without a lawful basis under PC §837 constitutes:","options":["Lawful preventive detention","False imprisonment","Authorized security action","Investigative detention"],"answer":1},{"module":"Module 3 — Limitations & Prohibited Actions","ref":"PC §242","q":"A security guard handcuffs someone without a lawful basis for arrest. This action could constitute:","options":["Lawful restraint under BPC §7583.7","False imprisonment and assault under California law","Authorized preventive security action","A civil matter only with no criminal exposure"],"answer":1},{"module":"Module 3 — Limitations & Prohibited Actions","ref":"PC §837","q":"A guard detains a person based solely on their race and a manager's vague concern. This detention is:","options":["Lawful under employer authority","Lawful if the manager signed a form","Unlawful — race alone is never reasonable suspicion","Lawful for 30 minutes pending investigation"],"answer":2},{"module":"Module 4 — Security vs. Law Enforcement","ref":"PC §830","q":"California peace officer authority is derived from:","options":["Penal Code §837","Business and Professions Code §7583.7","Penal Code §830 et seq.","Title 16 CCR §643"],"answer":2},{"module":"Module 4 — Security vs. Law Enforcement","ref":"PC §837 | PC §830","q":"Which power does a peace officer have that a security guard does NOT?","options":["The power to observe and report","The power to make a citizen's arrest","The power to conduct lawful searches based on probable cause developed through investigation","The power to ask a person their name"],"answer":2},{"module":"Module 4 — Security vs. Law Enforcement","ref":"PC §847","q":"After making a citizen's arrest, a security guard must deliver the person to a peace officer:","options":["Within 24 hours","At the end of the guard's shift","After completing an incident report","Without unnecessary delay"],"answer":3},{"module":"Module 4 — Security vs. Law Enforcement","ref":"PC §847","q":"When a police officer accepts custody from a security guard who made a citizen's arrest, who is legally the arresting party?","options":["The police officer","Both equally","The property owner who authorized the guard","The security guard — the private person"],"answer":3},{"module":"Module 4 — Security vs. Law Enforcement","ref":"BPC §7582.1","q":"California security guards are classified under the law as:","options":["Peace officers with limited jurisdiction","Private persons — no additional authority from their badge","Federal contractors","Agents of the property owner with police powers on private property"],"answer":1},{"module":"Module 5 — Liability","ref":"PC §236","q":"False imprisonment under California Penal Code §236 is defined as:","options":["Arresting someone for a misdemeanor","Detaining someone for more than one hour","The unlawful violation of the personal liberty of another","Any physical contact with a detained person"],"answer":2},{"module":"Module 5 — Liability","ref":"PC §207","q":"If a security guard unlawfully detains someone AND moves them to another location, the charge could escalate to:","options":["Disorderly conduct","Assault","Kidnapping under PC §207","Trespassing"],"answer":2},{"module":"Module 5 — Liability","ref":"BPC §480","q":"A guard who makes an unlawful arrest could face BSIS consequences including:","options":["A written warning only","Guard card suspension or revocation under BPC §480","Mandatory additional training only","No regulatory consequences — only civil liability"],"answer":1},{"module":"Module 5 — Liability","ref":"Vicarious Liability","q":"MACCESS INC. as the PPO may be held liable for a guard's wrongful arrest under the doctrine of:","options":["Strict product liability","Qualified immunity","Vicarious liability","Contributory negligence"],"answer":2},{"module":"Module 5 — Liability","ref":"PC §242","q":"A guard uses excessive force during a detention. Which criminal charge most directly applies?","options":["Trespassing","Battery under PC §242","Vandalism","Disturbing the peace"],"answer":1},{"module":"Module 5 — Liability","ref":"BPC §7583.2","q":"BSIS must be notified when a security guard is involved in certain incidents including use of force per:","options":["PC §837","Title 16 CCR §600","BPC §7583.2","PC §242"],"answer":2},{"module":"Module 6 — Trespass & Property Law","ref":"PC §602","q":"Under California Penal Code §602, trespass is generally classified as a:","options":["Felony","Infraction only","Civil violation only","Misdemeanor"],"answer":3},{"module":"Module 6 — Trespass & Property Law","ref":"PC §602 | PC §837(1)","q":"A person refuses to leave private property after a lawful order. Under PC §837(1), an arrest may be lawful because:","options":["The property owner requested it","Guards always have authority to arrest trespassers","The refusal constitutes a public offense in the guard's presence","BSIS license authorizes this action"],"answer":2},{"module":"Module 6 — Trespass & Property Law","ref":"Civil Rights Law","q":"When removing someone from a public accommodation, a security guard must have a reason that is:","options":["The same authority as on private property","Written and approved by the property manager","Specific and legitimate — unrelated to any protected characteristic","Approved by law enforcement in advance"],"answer":2},{"module":"Module 6 — Trespass & Property Law","ref":"PC §602","q":"For trespass enforcement on open land, what is generally required before detaining a person?","options":["A written order from a judge","A prior BSIS incident report","Police authorization in writing","Clear posting or fencing and a verbal warning first"],"answer":3},{"module":"Module 7 — Ethics, Communication & Documentation","ref":"Title 16 CCR §643(b)","q":"Per Title 16 CCR §643(b), a Certificate of Completion must be issued for each course completed by:","options":["BSIS directly to the guard","The applicant's attorney","The property owner","The training entity or company providing the training"],"answer":3},{"module":"Module 7 — Ethics, Communication & Documentation","ref":"BSIS PTA Manual §8","q":"An incident report should ideally be completed:","options":["At the end of the guard's shift","The following business day","Only when requested by a supervisor","Within 1 hour of the incident"],"answer":3},{"module":"Module 7 — Ethics, Communication & Documentation","ref":"BSIS Ethics Standards","q":"A security guard who falsifies an incident report may face:","options":["A verbal warning only","A civil fine only","No consequences if the incident was minor","Termination and BSIS license revocation"],"answer":3},{"module":"Module 7 — Ethics, Communication & Documentation","ref":"BSIS Ethics Standards","q":"A security guard's enforcement decisions must be free from bias based on:","options":["The guard's professional intuition","Employer policies regardless of law","Race, gender, appearance, or other protected characteristics","The property owner's personal preferences"],"answer":2},{"module":"Module 7 — Ethics, Communication & Documentation","ref":"BSIS PTA Manual §8","q":"When a security guard announces a citizen's arrest, they should:","options":["Remain silent to avoid legal exposure","Wait for police to make any statement","Only announce after police arrive","Clearly state the basis for the arrest in plain language"],"answer":3},{"module":"Module 7 — Ethics, Communication & Documentation","ref":"Title 16 CCR §643(b)","q":"Training records must be maintained by the PPO and made available to BSIS for:","options":["6 months","1 year","Audit upon request — for the duration of employment","5 years after termination"],"answer":2},{"module":"Module 8 — Emergency Response & Officer Safety","ref":"BSIS PTA Manual §9","q":"When a security guard discovers a medical emergency, their FIRST action should be:","options":["Notify their supervisor","Begin medical treatment immediately regardless of training","Assess the scene for personal safety, then call 911","Secure the area and wait for police"],"answer":2},{"module":"Module 8 — Emergency Response & Officer Safety","ref":"DHS Run-Hide-Fight","q":"In an active shooter situation, the recommended priority order of actions is:","options":["Hide, Fight, Run","Fight, Hide, Run","Call 911, Hide, Fight","Run, Hide, Fight"],"answer":3},{"module":"Module 8 — Emergency Response & Officer Safety","ref":"BSIS PTA Manual §10","q":"Blood-borne pathogen precautions require a security guard to:","options":["Refuse all physical contact with subjects","Request a hazmat team for all incidents","Document exposure only after the fact","Wear gloves before any physical contact that may involve blood or bodily fluids"],"answer":3},{"module":"Module 8 — Emergency Response & Officer Safety","ref":"BSIS PTA Manual §10","q":"When law enforcement arrives at a scene where a security guard has made a citizen's arrest, the guard should:","options":["Continue managing the situation until formally relieved","Announce their BSIS authority first","Keep hands visible and follow all officer commands","Present their guard card immediately and speak first"],"answer":2},{"module":"Module 8 — Emergency Response & Officer Safety","ref":"BSIS PTA Manual §10","q":"Situational awareness means:","options":["Watching only the primary entry point","Knowing your exits and continuously monitoring your environment for threats","Focusing on the most suspicious-looking individual","Staying stationary to observe from one position"],"answer":1},{"module":"Module 9 — Knowledge Check & Exam Prep","ref":"PC §847","q":"A security guard makes a lawful citizen's arrest. How long may the guard hold the person before law enforcement must be contacted?","options":["Up to 4 hours","Until the end of the shift","Up to 24 hours if police are unavailable","Without unnecessary delay — no extended holding permitted"],"answer":3},{"module":"Module 9 — Knowledge Check & Exam Prep","ref":"PC §837 | PC §836","q":"Which BEST distinguishes a security guard's arrest authority from a police officer's?","options":["Guards can only arrest on weekdays","Guards cannot use handcuffs under any circumstances","Guards must have a supervisor present for all arrests","Guards cannot arrest based on probable cause developed through their own investigation"],"answer":3},{"module":"Module 9 — Knowledge Check & Exam Prep","ref":"PC §837(1) | PC §602","q":"A guard observes shoplifting in real time. The person drops the item and tries to leave. Best course of action?","options":["Physically tackle the person to prevent escape","Follow the person into the parking lot and arrest there","Take no action — only managers can stop shoplifters","Detain on property with reasonable force and immediately call police"],"answer":3},{"module":"Module 9 — Knowledge Check & Exam Prep","ref":"PC §837 | BPC §7583.7","q":"A security guard may NEVER make a citizen's arrest for a misdemeanor if:","options":["The offense occurred on private property","The person is not a repeat offender","The guard did not personally witness the offense","The offense occurred after business hours"],"answer":2},{"module":"Module 9 — Knowledge Check & Exam Prep","ref":"BPC §7583.7","q":"MACCESS INC.'s California Private Patrol Operator license number is:","options":["#112233","#100001","#133445","#122729"],"answer":3},{"module":"Module 9 — Knowledge Check & Exam Prep","ref":"PC §847 | BSIS Training Standards","q":"After a citizen's arrest, a guard who holds the subject for 2 hours without calling police may face:","options":["No consequences if the arrest was lawful","Praise for thorough documentation","False imprisonment charges and BSIS disciplinary action","A supervisor review only"],"answer":1}];
+const QUESTIONS = [{"module":"Module 1 — Legal Framework","ref":"BPC §7583.7","q":"Which California law requires security guards to complete Power to Arrest training before receiving a guard card?","options":["California Penal Code §837","Business and Professions Code §7583.7","Title 16 California Code of Regulations §643","California Penal Code §847"],"answer":1},{"module":"Module 1 — Legal Framework","ref":"BPC §7583.7","q":"What score must a student achieve on the BSIS Power to Arrest exam to receive a Certificate of Completion?","options":["70%","80%","90%","100%"],"answer":3},{"module":"Module 1 — Legal Framework","ref":"DCA PTA Manual July 2023","q":"Which manual is required for Power to Arrest and Appropriate Use of Force training?","options":["California Security Officer Handbook 2022","DCA Power to Arrest and Appropriate Use of Force Training Manual, July 2023","BSIS Regulatory Guide Title 16","California Penal Code Annotated"],"answer":1},{"module":"Module 1 — Legal Framework","ref":"BPC §7583.7","q":"As a security guard in California, your arrest authority comes from the same law that applies to:","options":["A sworn police officer","A licensed investigator","A private citizen","A government contractor"],"answer":2},{"module":"Module 1 — Legal Framework","ref":"SB 652 (Jan 1 2026)","q":"Under SB 652 effective January 1, 2026, the full 8-hour PTA + AUF training must be delivered by:","options":["Any two BSIS-approved providers","The applicant's employer only","A single BSIS-approved course provider","An online provider plus a separate in-person facility"],"answer":2},{"module":"Module 1 — Legal Framework","ref":"SB 652 | BPC §7583.6","q":"How long before a guard card application must the 8-hour PTA/AUF training be completed?","options":["30 days","3 months","6 months","1 year"],"answer":2},{"module":"Module 1 — Legal Framework","ref":"BPC §7583.7","q":"MACCESS INC. is authorized to deliver this certification as a licensed:","options":["Peace officer agency","Private Patrol Operator — PPO #122729","Federal security contractor","BSIS examination center"],"answer":1},{"module":"Module 2 — Citizen Arrest Authority (PC §837)","ref":"PC §837","q":"California Penal Code §837 lists how many conditions under which a private person may make a citizen's arrest?","options":["Two","Three","Four","Five"],"answer":1},{"module":"Module 2 — Citizen Arrest Authority (PC §837)","ref":"PC §837(1)","q":"Under PC §837(1), a security guard may make a citizen's arrest when a public offense is:","options":["Reported by a witness","Suspected based on prior criminal history","Captured on CCTV footage only","Committed or attempted in the guard's direct presence"],"answer":3},{"module":"Module 2 — Citizen Arrest Authority (PC §837)","ref":"PC §837(2)","q":"Under PC §837(2), a guard may arrest someone for a felony not committed in their presence if:","options":["A supervisor authorizes the arrest","The guard has a hunch the person is guilty","The guard knows the person committed the felony","The property owner requests the arrest"],"answer":2},{"module":"Module 2 — Citizen Arrest Authority (PC §837)","ref":"PC §837(3)","q":"PC §837(3) requires that for a reasonable-cause felony arrest, a felony must:","options":["Be suspected but not confirmed","Have actually been committed in fact","Have been reported to police first","Involve violence or weapons"],"answer":1},{"module":"Module 2 — Citizen Arrest Authority (PC §837)","ref":"PC §837","q":"A guard receives a report that someone stole from the store yesterday but did not witness it. Can they make a citizen's arrest for this misdemeanor?","options":["Yes — any theft justifies arrest","Yes — with supervisor approval","No — misdemeanor arrest requires personal observation","No — only police can arrest for theft"],"answer":2},{"module":"Module 2 — Citizen Arrest Authority (PC §837)","ref":"PC §837(3)","q":"Which PC §837 arrest condition carries the greatest liability risk if used incorrectly?","options":["§837(1) — offense in presence","§837(2) — felony by that person","§837(3) — reasonable cause for felony","All conditions carry equal risk"],"answer":2},{"module":"Module 2 — Citizen Arrest Authority (PC §837)","ref":"PC §837","q":"A guard witnesses a person vandalizing a car. Which PC §837 condition applies?","options":["§837(1) — public offense in presence","§837(2) — felony by the person","§837(3) — reasonable cause","None — vandalism cannot justify arrest"],"answer":0},{"module":"Module 2 — Citizen Arrest Authority (PC §837)","ref":"PC §837","q":"'Reasonable cause' under PC §837 means:","options":["A gut feeling the person looks suspicious","Objective facts supporting a belief the person committed a felony","A witness statement alone","Prior criminal history of the person"],"answer":1},{"module":"Module 2 — Citizen Arrest Authority (PC §837)","ref":"PC §490.5","q":"The Shopkeeper's Privilege under PC §490.5 allows detention for shoplifting when there is:","options":["Suspicion based on appearance","Probable cause based on direct observation","A manager's verbal authorization","A description matching prior reports"],"answer":1},{"module":"Module 3 — Limitations & Prohibited Actions","ref":"PC §538d","q":"A security guard who represents themselves as a police officer may face criminal charges under:","options":["PC §602","BPC §480","PC §538d","PC §836"],"answer":2},{"module":"Module 3 — Limitations & Prohibited Actions","ref":"PC §837 | 4th Amendment","q":"A security guard's search authority during a lawful detention is limited to:","options":["A full search of the person's clothing and bags","An unlimited search on private property","A safety pat-down for weapons only","Any search authorized by the property owner"],"answer":2},{"module":"Module 3 — Limitations & Prohibited Actions","ref":"PC §236 | PC §847","q":"Courts generally view a detention lasting more than ___ minutes without police notification as potentially false imprisonment.","options":["5–10 minutes","20–30 minutes","45–60 minutes","2 hours"],"answer":1},{"module":"Module 3 — Limitations & Prohibited Actions","ref":"PC §837","q":"A security guard's arrest authority extends only to:","options":["Anywhere in the city they are assigned","The entire county","Statewide under their BSIS license","The property they are hired to protect"],"answer":3},{"module":"Module 3 — Limitations & Prohibited Actions","ref":"PC §236","q":"Detaining someone without a lawful basis under PC §837 constitutes:","options":["Lawful preventive detention","False imprisonment","Authorized security action","Investigative detention"],"answer":1},{"module":"Module 3 — Limitations & Prohibited Actions","ref":"PC §242","q":"A security guard handcuffs someone without a lawful basis for arrest. This could constitute:","options":["Lawful restraint under BPC §7583.7","False imprisonment and assault under California law","Authorized preventive security action","A civil matter only"],"answer":1},{"module":"Module 3 — Limitations & Prohibited Actions","ref":"PC §837","q":"A guard detains a person based solely on race and a vague manager concern. This detention is:","options":["Lawful under employer authority","Lawful with signed manager form","Unlawful — race alone is never reasonable suspicion","Lawful for 30 minutes pending investigation"],"answer":2},{"module":"Module 4 — Security vs. Law Enforcement","ref":"PC §830","q":"California peace officer authority is derived from:","options":["Penal Code §837","Business and Professions Code §7583.7","Penal Code §830 et seq.","Title 16 CCR §643"],"answer":2},{"module":"Module 4 — Security vs. Law Enforcement","ref":"PC §837 | PC §830","q":"Which power does a peace officer have that a security guard does NOT?","options":["The power to observe and report","The power to make a citizen's arrest","The power to conduct lawful searches based on probable cause through investigation","The power to ask a person their name"],"answer":2},{"module":"Module 4 — Security vs. Law Enforcement","ref":"PC §847","q":"After making a citizen's arrest, a security guard must deliver the person to a peace officer:","options":["Within 24 hours","At the end of the guard's shift","After completing an incident report","Without unnecessary delay"],"answer":3},{"module":"Module 4 — Security vs. Law Enforcement","ref":"PC §847","q":"When a police officer accepts custody from a guard who made a citizen's arrest, who is legally the arresting party?","options":["The police officer","Both equally","The property owner","The security guard — the private person"],"answer":3},{"module":"Module 4 — Security vs. Law Enforcement","ref":"BPC §7582.1","q":"California security guards are classified under the law as:","options":["Peace officers with limited jurisdiction","Private persons — no additional authority from their badge or license","Federal contractors","Agents of the property owner with police powers on private property"],"answer":1},{"module":"Module 5 — Liability","ref":"PC §236","q":"False imprisonment under California Penal Code §236 is defined as:","options":["Arresting someone for a misdemeanor","Detaining someone for more than one hour","The unlawful violation of the personal liberty of another","Any physical contact with a detained person"],"answer":2},{"module":"Module 5 — Liability","ref":"PC §207","q":"If a security guard unlawfully detains someone AND moves them to another location, the charge could escalate to:","options":["Disorderly conduct","Assault","Kidnapping under PC §207","Trespassing"],"answer":2},{"module":"Module 5 — Liability","ref":"BPC §480","q":"A guard who makes an unlawful arrest could face BSIS consequences including:","options":["A written warning only","Guard card suspension or revocation under BPC §480","Mandatory additional training only","No regulatory consequences"],"answer":1},{"module":"Module 5 — Liability","ref":"Vicarious Liability","q":"MACCESS INC. as the PPO may be held liable for a guard's wrongful arrest under the doctrine of:","options":["Strict product liability","Qualified immunity","Vicarious liability","Contributory negligence"],"answer":2},{"module":"Module 5 — Liability","ref":"PC §242","q":"A guard uses excessive force during a detention. Which charge most directly applies?","options":["Trespassing","Battery under PC §242","Vandalism","Disturbing the peace"],"answer":1},{"module":"Module 5 — Liability","ref":"BPC §7583.2","q":"BSIS must be notified when a guard is involved in use-of-force incidents per:","options":["PC §837","Title 16 CCR §600","BPC §7583.2","PC §242"],"answer":2},{"module":"Module 6 — Trespass & Property Law","ref":"PC §602","q":"Under California Penal Code §602, trespass is generally classified as a:","options":["Felony","Infraction only","Civil violation only","Misdemeanor"],"answer":3},{"module":"Module 6 — Trespass & Property Law","ref":"PC §602 | PC §837(1)","q":"A person refuses to leave private property after a lawful order. An arrest may be lawful because:","options":["The property owner requested it","Guards always have authority to arrest trespassers","The refusal constitutes a public offense in the guard's presence","BSIS license authorizes this action"],"answer":2},{"module":"Module 6 — Trespass & Property Law","ref":"Civil Rights Law","q":"When removing someone from a public accommodation, a guard must have a reason that is:","options":["The same as on private property","Written and signed by management","Specific and legitimate — unrelated to any protected characteristic","Approved by law enforcement in advance"],"answer":2},{"module":"Module 6 — Trespass & Property Law","ref":"PC §602","q":"For trespass on open land, what is generally required before detaining someone?","options":["A written judge's order","A prior BSIS incident report","Police authorization in writing","Clear posting or fencing and a verbal warning"],"answer":3},{"module":"Module 7 — Ethics, Communication & Documentation","ref":"Title 16 CCR §643(b)","q":"Per Title 16 CCR §643(b), a Certificate of Completion must be issued by:","options":["BSIS directly","The applicant's attorney","The property owner","The training entity or company providing the training"],"answer":3},{"module":"Module 7 — Ethics, Communication & Documentation","ref":"BSIS PTA Manual §8","q":"An incident report should be completed:","options":["At the end of the guard's shift","The following business day","Only when requested by a supervisor","Within 1 hour of the incident"],"answer":3},{"module":"Module 7 — Ethics, Communication & Documentation","ref":"BSIS Ethics Standards","q":"A guard who falsifies an incident report may face:","options":["A verbal warning only","A civil fine only","No consequences if the incident was minor","Termination and BSIS license revocation"],"answer":3},{"module":"Module 7 — Ethics, Communication & Documentation","ref":"BSIS Ethics Standards","q":"A guard's enforcement decisions must be free from bias based on:","options":["The guard's professional intuition","Employer policies regardless of law","Race, gender, appearance, or other protected characteristics","The property owner's personal preferences"],"answer":2},{"module":"Module 7 — Ethics, Communication & Documentation","ref":"BSIS PTA Manual §8","q":"When announcing a citizen's arrest, a guard should:","options":["Remain silent to avoid legal exposure","Wait for police to speak first","Only announce after police arrive","Clearly state the basis for the arrest in plain language"],"answer":3},{"module":"Module 7 — Ethics, Communication & Documentation","ref":"Title 16 CCR §643(b)","q":"Training records must be maintained by the PPO and made available to BSIS:","options":["For 6 months","For 1 year","Upon request for the duration of employment","For 5 years after termination"],"answer":2},{"module":"Module 8 — Emergency Response & Officer Safety","ref":"BSIS PTA Manual §9","q":"When discovering a medical emergency, a guard's FIRST action should be:","options":["Notify their supervisor","Begin medical treatment immediately","Assess the scene for personal safety, then call 911","Secure the area and wait for police"],"answer":2},{"module":"Module 8 — Emergency Response & Officer Safety","ref":"DHS Run-Hide-Fight","q":"In an active shooter situation, the recommended priority order is:","options":["Hide, Fight, Run","Fight, Hide, Run","Call 911, Hide, Fight","Run, Hide, Fight"],"answer":3},{"module":"Module 8 — Emergency Response & Officer Safety","ref":"BSIS PTA Manual §10","q":"Blood-borne pathogen precautions require a guard to:","options":["Refuse all physical contact","Request a hazmat team","Document exposure only after the fact","Wear gloves before any contact that may involve blood or bodily fluids"],"answer":3},{"module":"Module 8 — Emergency Response & Officer Safety","ref":"BSIS PTA Manual §10","q":"When law enforcement arrives at a scene where a guard made a citizen's arrest, the guard should:","options":["Continue managing the situation until formally relieved","Announce their BSIS authority first","Keep hands visible and follow all officer commands","Present their guard card first and speak first"],"answer":2},{"module":"Module 8 — Emergency Response & Officer Safety","ref":"BSIS PTA Manual §10","q":"Situational awareness means:","options":["Watching only the primary entry point","Knowing your exits and continuously monitoring the environment for threats","Focusing on the most suspicious-looking individual","Staying stationary to observe from one position"],"answer":1},{"module":"Module 9 — Knowledge Check & Exam Prep","ref":"PC §847","q":"After a lawful citizen's arrest, how long may a guard hold the person before law enforcement must be contacted?","options":["Up to 4 hours","Until the end of the shift","Up to 24 hours if police are unavailable","Without unnecessary delay — no extended holding permitted"],"answer":3},{"module":"Module 9 — Knowledge Check & Exam Prep","ref":"PC §837 | PC §836","q":"Which BEST distinguishes a guard's arrest authority from a police officer's?","options":["Guards can only arrest on weekdays","Guards cannot use handcuffs under any circumstances","Guards must have a supervisor present for all arrests","Guards cannot arrest based on probable cause developed through their own investigation"],"answer":3},{"module":"Module 9 — Knowledge Check & Exam Prep","ref":"PC §837(1) | PC §602","q":"A guard observes shoplifting in real time. The person drops the item and tries to leave. Best action?","options":["Physically tackle the person to prevent escape","Follow into the parking lot and arrest there","Take no action — only managers can stop shoplifters","Detain on property with reasonable force and immediately call police"],"answer":3},{"module":"Module 9 — Knowledge Check & Exam Prep","ref":"PC §837 | BPC §7583.7","q":"A security guard may NEVER make a citizen's arrest for a misdemeanor if:","options":["The offense occurred on private property","The person is not a repeat offender","The guard did not personally witness the offense","The offense occurred after business hours"],"answer":2},{"module":"Module 9 — Knowledge Check & Exam Prep","ref":"BPC §7583.7","q":"MACCESS INC.'s California Private Patrol Operator license number is:","options":["#112233","#100001","#133445","#122729"],"answer":3},{"module":"Module 9 — Knowledge Check & Exam Prep","ref":"PC §847 | BSIS Training Standards","q":"A guard holds a subject for 2 hours without calling police after a citizen's arrest. They may face:","options":["No consequences if the arrest was lawful","False imprisonment charges and BSIS disciplinary action","A supervisor review only","Praise for thorough documentation"],"answer":1}];
 const PASSING   = 100;
+const LS_CFG    = {"enabled":false,"certTemplatePath":"PSLAW-Courses/live-scan/bsis_livescan_cert_template.pdf","certTemplateFilename":"bsis_livescan_cert_template.pdf","bsisORI":"","atiPrefix":"","notificationEmail":"admin@gopslaw.com","showUploadSlot":false,"pendingMessage":"Live Scan fingerprinting services are coming soon to MACCESS INC. Once active, you will be able to upload your BSIS Live Scan certificate directly here after completing fingerprinting at our facility."};
 const LETTERS   = ['A','B','C','D'];
 
-let current   = 0;
-let answers   = new Array(QUESTIONS.length).fill(null);
-let confirmed = new Array(QUESTIONS.length).fill(false);
-let studentName = '';
-let testDate    = '';
+let cur      = 0;
+let answers  = new Array(QUESTIONS.length).fill(null);
+let done     = new Array(QUESTIONS.length).fill(false);
+let stuName  = '';
+let stuEmail = '';
+let stuDate  = '';
+let lsCertDataURL = null; // stores uploaded LS cert as base64 data URL
 
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
 }
 
-function startTest() {
-  studentName = document.getElementById('studentName').value.trim();
-  testDate    = document.getElementById('testDate').value.trim();
-  if (!studentName) { alert('Please enter your full legal name before beginning.'); return; }
-  showScreen('screen-test');
+function startTest(){
+  stuName  = document.getElementById('inp-name').value.trim();
+  stuEmail = document.getElementById('inp-email').value.trim();
+  stuDate  = document.getElementById('inp-date').value.trim();
+  if(!stuName){ alert('Please enter your full legal name.'); return; }
+  if(!stuEmail || !stuEmail.includes('@')){ alert('Please enter a valid email address.'); return; }
+  showScreen('sc-test');
   renderQ();
 }
 
-function renderQ() {
-  const q   = QUESTIONS[current];
-  const pct = Math.round((current / QUESTIONS.length) * 100);
-  document.getElementById('progress-fill').style.width = pct + '%';
-  document.getElementById('progress-text').textContent = 'Question ' + (current+1) + ' of ' + QUESTIONS.length;
-  document.getElementById('btn-prev').style.display = current > 0 ? 'inline-block' : 'none';
-  const isLast = current === QUESTIONS.length - 1;
-  const btnNext = document.getElementById('btn-next');
-  btnNext.textContent = isLast ? 'Submit Assessment' : 'Next →';
+function renderQ(){
+  const q   = QUESTIONS[cur];
+  const pct = Math.round((cur/QUESTIONS.length)*100);
+  document.getElementById('prog-fill').style.width = pct+'%';
+  document.getElementById('prog-txt').textContent  = 'Question '+(cur+1)+' of '+QUESTIONS.length;
+  document.getElementById('btn-prev').style.display = cur>0 ? 'inline-block' : 'none';
+  document.getElementById('btn-next').textContent   = cur===QUESTIONS.length-1 ? 'Submit Assessment' : 'Next →';
 
-  const conf = confirmed[current];
-  const sel  = answers[current];
-
-  let optsHTML = q.options.map((opt, i) => {
-    let cls = 'opt';
-    if (conf) {
-      if (i === q.answer) cls += ' correct';
-      else if (i === sel && i !== q.answer) cls += ' wrong';
-    } else if (i === sel) cls += ' selected';
-    const onclick = conf ? '' : `onclick="selectOpt(${i})"`;
-    return `<div class="${cls}" ${onclick}>
-      <div class="opt-letter">${LETTERS[i]}</div>
-      <span>${opt}</span>
-    </div>`;
+  const conf = done[cur];
+  const sel  = answers[cur];
+  const optsHTML = q.options.map((opt,i)=>{
+    let cls='opt';
+    if(conf){ if(i===q.answer)cls+=' correct'; else if(i===sel&&i!==q.answer)cls+=' wrong'; }
+    else if(i===sel) cls+=' selected';
+    const onclick = conf ? '' : `onclick="pick(${i})"`;
+    return `<div class="${cls}" ${onclick}><div class="opt-lt">${LETTERS[i]}</div><span>${opt}</span></div>`;
   }).join('');
 
-  let feedbackHTML = '';
-  if (conf) {
-    if (sel === q.answer) {
-      feedbackHTML = `<div class="feedback correct">✓ Correct. ${q.ref}</div>`;
-    } else {
-      feedbackHTML = `<div class="feedback wrong">✗ Incorrect. The correct answer is <strong>${LETTERS[q.answer]}. ${q.options[q.answer]}</strong>. Ref: ${q.ref}</div>`;
-    }
+  let fb='';
+  if(conf){
+    if(sel===q.answer) fb=`<div class="feedback fb-ok">✓ Correct — ${q.ref}</div>`;
+    else fb=`<div class="feedback fb-no">✗ Incorrect. Correct answer: <strong>${LETTERS[q.answer]}. ${q.options[q.answer]}</strong> — ${q.ref}</div>`;
   }
 
-  document.getElementById('question-area').innerHTML = `
-    <div class="module-badge">${q.module} <span class="ref-badge">${q.ref}</span></div>
-    <div class="q-card">
-      <div class="q-number">Question ${current+1} of ${QUESTIONS.length}</div>
-      <div class="q-text">${q.q}</div>
-      <div class="options">${optsHTML}</div>
-      ${feedbackHTML}
+  document.getElementById('q-area').innerHTML=`
+    <div class="mod-badge">${q.module}<span class="ref-tag">${q.ref}</span></div>
+    <div class="qcard">
+      <div class="qnum">Question ${cur+1} of ${QUESTIONS.length}</div>
+      <div class="qtxt">${q.q}</div>
+      <div class="opts">${optsHTML}</div>
+      ${fb}
     </div>`;
 }
 
-function selectOpt(i) {
-  if (confirmed[current]) return;
-  answers[current] = i;
-  confirmed[current] = true;
+function pick(i){
+  if(done[cur]) return;
+  answers[cur]=i;
+  done[cur]=true;
   renderQ();
 }
 
-function nextQ() {
-  if (!confirmed[current]) {
-    alert('Please select an answer before continuing.');
-    return;
-  }
-  if (current < QUESTIONS.length - 1) {
-    current++;
-    renderQ();
-  } else {
-    showResults();
-  }
+function nextQ(){
+  if(!done[cur]){ alert('Please select an answer before continuing.'); return; }
+  if(cur<QUESTIONS.length-1){ cur++; renderQ(); }
+  else showResults();
 }
+function prevQ(){ if(cur>0){ cur--; renderQ(); } }
 
-function prevQ() {
-  if (current > 0) { current--; renderQ(); }
-}
-
-function showResults() {
-  showScreen('screen-results');
-
-  let correct = 0;
-  const modMap = {};
-  QUESTIONS.forEach((q, i) => {
-    if (answers[i] === q.answer) correct++;
-    if (!modMap[q.module]) modMap[q.module] = {correct:0, total:0};
-    modMap[q.module].total++;
-    if (answers[i] === q.answer) modMap[q.module].correct++;
+function showResults(){
+  showScreen('sc-results');
+  let correct=0;
+  const modMap={};
+  QUESTIONS.forEach((q,i)=>{
+    if(answers[i]===q.answer) correct++;
+    if(!modMap[q.module]) modMap[q.module]={c:0,t:0};
+    modMap[q.module].t++;
+    if(answers[i]===q.answer) modMap[q.module].c++;
   });
+  const pct  = Math.round((correct/QUESTIONS.length)*100);
+  const pass = pct>=PASSING;
 
-  const pct  = Math.round((correct / QUESTIONS.length) * 100);
-  const pass = pct >= PASSING;
+  // Score ring
+  const ring=document.getElementById('s-ring');
+  ring.className='score-ring '+(pass?'sr-pass':'sr-fail');
+  document.getElementById('s-pct').textContent=pct+'%';
+  document.getElementById('s-lbl').textContent=pass?'PASSED':'NOT PASSED';
 
-  const ring = document.getElementById('score-ring');
-  ring.className = 'score-ring ' + (pass ? 'pass' : 'fail');
-  document.getElementById('score-pct').textContent = pct + '%';
-  document.getElementById('score-label').textContent = pass ? 'PASSED' : 'NOT PASSED';
+  // Title
+  const rt=document.getElementById('r-title');
+  rt.className='res-title '+(pass?'rt-pass':'rt-fail');
+  rt.textContent=pass?'✓ Assessment Passed':'✗ Assessment Not Passed';
 
-  const title = document.getElementById('result-title');
-  title.className = 'result-title ' + (pass ? 'pass' : 'fail');
-  title.textContent = pass ? '✓ Assessment Passed' : '✗ Assessment Not Passed';
-
-  document.getElementById('result-sub').innerHTML = pass
-    ? `Congratulations, <strong>${studentName}</strong>. You answered ${correct} of ${QUESTIONS.length} questions correctly and have satisfied the BSIS course assessment requirement per BPC §7583.7. Your Certificate of Completion is ready below.`
-    : `You answered ${correct} of ${QUESTIONS.length} questions correctly. A score of 100% (${QUESTIONS.length}/${QUESTIONS.length} correct) is required per BPC §7583.7. Please review the course material and retake the full assessment.`;
+  // Sub
+  document.getElementById('r-sub').innerHTML = pass
+    ? `Congratulations, <strong>${stuName}</strong>. You answered ${correct} of ${QUESTIONS.length} questions correctly and have satisfied the BSIS assessment requirement per BPC §7583.7.`
+    : `You answered ${correct} of ${QUESTIONS.length} questions correctly (${pct}%). A score of 100% (${QUESTIONS.length}/${QUESTIONS.length} correct) is required per BPC §7583.7. Please review the course material and retake the full assessment.`;
 
   // Module breakdown
-  let bHTML = '<h3>Score by Module</h3>';
-  for (const [mod, data] of Object.entries(modMap)) {
-    const modPct = Math.round((data.correct / data.total) * 100);
-    const cls    = modPct === 100 ? 'score-pass' : 'score-fail';
-    bHTML += `<div class="breakdown-row"><span class="mod">${mod}</span><span class="score ${cls}">${data.correct}/${data.total} (${modPct}%)</span></div>`;
+  let bHTML='<h3>Score by Module</h3>';
+  for(const[mod,d] of Object.entries(modMap)){
+    const mp=Math.round((d.c/d.t)*100);
+    bHTML+=`<div class="brow"><span class="mod">${mod}</span><span class="${mp===100?'sp':'sf'}">${d.c}/${d.t} (${mp}%)</span></div>`;
   }
-  bHTML += `<div class="breakdown-row" style="margin-top:6px;font-weight:700;"><span>Overall</span><span class="${pass?'score-pass':'score-fail'}">${correct}/${QUESTIONS.length} (${pct}%)</span></div>`;
-  document.getElementById('breakdown').innerHTML = bHTML;
+  bHTML+=`<div class="brow" style="font-weight:700;margin-top:6px;"><span>Overall</span><span class="${pass?'sp':'sf'}">${correct}/${QUESTIONS.length} (${pct}%)</span></div>`;
+  document.getElementById('breakdown').innerHTML=bHTML;
 
   // Buttons
-  let btnsHTML = '';
-  if (pass) {
-    btnsHTML = `<button class="btn-cert" onclick="showCertificate()">View Certificate →</button>`;
-  }
-  btnsHTML += `<button class="btn-retake" onclick="retake()">${pass ? 'Retake Assessment' : '↺ Retake Assessment'}</button>`;
-  document.getElementById('result-btns').innerHTML = btnsHTML;
+  let btns = pass
+    ? `<button class="btn btn-gold btn-sm" onclick="showCertificate()">View Certificate →</button>`
+    : '';
+  btns += `<button class="btn btn-outline btn-sm" onclick="retake()">${pass?'Retake Assessment':'↺ Retake Assessment'}</button>`;
+  document.getElementById('r-btns').innerHTML=btns;
 
   // BSIS note
-  document.getElementById('bsis-note').innerHTML = pass
-    ? '<strong>BSIS Compliance:</strong> This Certificate of Completion satisfies the course assessment requirement under BPC §7583.7. Print and retain your certificate. Your employer (MACCESS INC.) is required to maintain your training record per Title 16 CCR §643(b).'
-    : '<strong>BSIS Requirement:</strong> 100% is the minimum passing score per BPC §7583.7. You must retake the full assessment. Answers are shown for questions you attempted. Please review all course material before retaking.';
+  document.getElementById('r-bsis').innerHTML = pass
+    ? '<strong>BSIS Compliance:</strong> This certificate satisfies the course assessment requirement under BPC §7583.7. Print and retain your certificate. Your employer (MACCESS INC.) is required to maintain your training record per Title 16 CCR §643(b).'
+    : '<strong>BSIS Requirement:</strong> 100% is the minimum passing score per BPC §7583.7. A full retake is required. Correct answers are shown for each question you answered. Please review all modules before retaking.';
+
+  // Live Scan section — always shown after pass
+  if(pass){
+    const lsEl=document.getElementById('ls-section');
+    lsEl.style.display='block';
+    document.getElementById('ls-body').textContent = LS_CFG.enabled
+      ? 'You have passed the course assessment. If you have completed BSIS Live Scan fingerprinting at a MACCESS INC. facility, you may upload your BSIS-issued Live Scan receipt or certificate below to attach it to your training record.'
+      : LS_CFG.pendingMessage;
+    document.getElementById('ls-content').innerHTML = LS_CFG.showUploadSlot
+      ? buildUploadSlot()
+      : `<div class="ls-coming">📋 <strong>Coming Soon:</strong> ${LS_CFG.pendingMessage}<br/><br/>When MACCESS INC. Live Scan services are active, you will be able to upload your BSIS receipt here and receive a combined training + fingerprint record for your guard card application.</div>`;
+  }
 }
 
-function retake() {
-  current   = 0;
-  answers   = new Array(QUESTIONS.length).fill(null);
-  confirmed = new Array(QUESTIONS.length).fill(false);
-  showScreen('screen-test');
+function buildUploadSlot(){
+  return `
+    <div class="upload-zone" id="uz" onclick="document.getElementById('lsfile').click()" ondragover="uzDrag(event,true)" ondragleave="uzDrag(event,false)" ondrop="uzDrop(event)">
+      <input type="file" id="lsfile" accept=".pdf,.jpg,.jpeg,.png" onchange="handleLSFile(this.files[0])"/>
+      <div class="upload-icon">📄</div>
+      <div class="upload-label">Upload Your BSIS Live Scan Certificate</div>
+      <div class="upload-sub">PDF, JPG, or PNG — click here or drag and drop</div>
+    </div>
+    <div class="upload-preview" id="ls-preview">
+      <strong>Uploaded:</strong> <span id="ls-fname"></span>
+      <div id="ls-thumb" style="margin-top:8px;"></div>
+    </div>
+    <div class="status-msg" id="ls-status"></div>
+    <button class="btn btn-primary" style="margin-top:14px;" onclick="submitLSRecord()">Submit Live Scan Record →</button>`;
+}
+
+function uzDrag(e,on){ e.preventDefault(); document.getElementById('uz') && document.getElementById('uz').classList[on?'add':'remove']('dragover'); }
+function uzDrop(e){ e.preventDefault(); uzDrag(e,false); if(e.dataTransfer.files[0]) handleLSFile(e.dataTransfer.files[0]); }
+
+function handleLSFile(file){
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    lsCertDataURL=ev.target.result;
+    document.getElementById('ls-fname').textContent=file.name;
+    const thumb=document.getElementById('ls-thumb');
+    if(file.type.startsWith('image/')){
+      thumb.innerHTML=`<img src="${lsCertDataURL}" style="max-height:120px;border-radius:6px;"/>`;
+    } else {
+      thumb.innerHTML=`<div style="color:var(--gray);font-size:13px;">PDF uploaded: ${file.name}</div>`;
+    }
+    document.getElementById('ls-preview').style.display='block';
+  };
+  reader.readAsDataURL(file);
+}
+
+function showStatus(msg,ok){
+  const el=document.getElementById('ls-status');
+  el.textContent=msg;
+  el.className='status-msg '+(ok?'st-ok':'st-err');
+  el.style.display='block';
+}
+
+// ── Live Scan record submission ────────────────────────────────────
+// Wire this to your email provider / backend when ready.
+// Currently logs the record to console and shows a confirmation.
+// To integrate: replace the console.log with a fetch() to your endpoint.
+function submitLSRecord(){
+  if(!lsCertDataURL){ showStatus('Please upload your BSIS Live Scan certificate first.', false); return; }
+
+  const record = {
+    studentName:  stuName,
+    studentEmail: stuEmail,
+    testDate:     stuDate,
+    course:       'Powers to Arrest — BSIS Certification Course',
+    bpcRef:       'BPC §7583.7',
+    score:        '100%',
+    ppoLicense:   '#122729',
+    lsCertFile:   lsCertDataURL,
+    submittedAt:  new Date().toISOString(),
+    bsisORI:      LS_CFG.bsisORI,
+    atiPrefix:    LS_CFG.atiPrefix,
+  };
+
+  // ── INTEGRATION POINT ───────────────────────────────────────────
+  // When your Live Scan system is active, replace this block with:
+  //
+  //   fetch('https://your-backend.com/api/livescan-record', {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify(record)
+  //   })
+  //   .then(r => r.json())
+  //   .then(d => {
+  //     if(d.success){
+  //       showStatus('✓ Live Scan record submitted. Confirmation sent to ' + stuEmail, true);
+  //       showCertificate(true); // pass true to embed LS cert in certificate
+  //     } else {
+  //       showStatus('Submission error: ' + d.message, false);
+  //     }
+  //   })
+  //   .catch(err => showStatus('Network error. Please try again.', false));
+  //
+  // ── END INTEGRATION POINT ───────────────────────────────────────
+
+  // Placeholder confirmation (remove when backend is wired):
+  console.log('Live Scan record ready for submission:', { ...record, lsCertFile:'[base64 data]' });
+  showStatus('✓ Live Scan record captured. Once the MACCESS INC. system is active, this will be automatically submitted and a confirmation sent to ' + stuEmail, true);
+  setTimeout(()=>showCertificate(true), 1800);
+}
+
+function retake(){
+  cur=0;
+  answers=new Array(QUESTIONS.length).fill(null);
+  done=new Array(QUESTIONS.length).fill(false);
+  lsCertDataURL=null;
+  showScreen('sc-test');
   renderQ();
 }
 
-function showCertificate() {
-  const today = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
-  document.getElementById('cert-content').innerHTML = `
-    <div class="cert-header">Certificate of Completion</div>
+// ── Certificate builder ───────────────────────────────────────────
+function showCertificate(withLS){
+  const d=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+  let lsBlock='';
+  if(withLS && lsCertDataURL){
+    const isImg = lsCertDataURL.startsWith('data:image');
+    lsBlock=`
+      <div class="cert-gold-bar"></div>
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--navy);margin-bottom:8px;">BSIS Live Scan Certificate — Attached</div>
+      <div class="ls-cert-embed">
+        ${isImg
+          ? `<img src="${lsCertDataURL}" alt="BSIS Live Scan Certificate" style="max-width:100%;border-radius:6px;"/>`
+          : `<div style="padding:20px;text-align:center;color:var(--gray);font-size:13px;">📄 BSIS Live Scan PDF Certificate attached to this record.<br/>Print this page to include with your BSIS guard card application.</div>`
+        }
+      </div>`;
+  } else if(LS_CFG.showUploadSlot && !lsCertDataURL){
+    lsBlock=`
+      <div class="cert-gold-bar"></div>
+      <div style="font-size:12px;color:var(--gray);padding:12px;background:var(--light);border-radius:6px;">
+        BSIS Live Scan fingerprinting: <strong>Pending</strong>. Complete Live Scan at a MACCESS INC. facility and re-open this certificate to attach your receipt.
+      </div>`;
+  }
+
+  document.getElementById('cert-area').innerHTML=`
+    <div class="cert-hdr">Certificate of Completion</div>
     <div class="cert-gold-bar"></div>
-    <div class="cert-company">MACCESS INC.</div>
+    <div class="cert-co">MACCESS INC.</div>
     <div class="cert-ppo">Private Patrol Operator &nbsp;|&nbsp; PPO License #122729 &nbsp;|&nbsp; BSIS-Authorized Training Provider</div>
-    <div class="cert-title">This certifies that</div>
-    <div class="cert-name">${studentName}</div>
-    <div class="cert-body">has successfully completed the BSIS-compliant course:</div>
+    <div class="cert-certifies">This certifies that</div>
+    <div class="cert-name">${stuName}</div>
+    <div class="cert-body">has successfully completed the BSIS-compliant training course:</div>
     <div class="cert-course">Powers to Arrest — BSIS Certification Course</div>
-    <div class="cert-score">Assessment Score: 100% &nbsp;✓&nbsp; Passing</div>
-    <div class="cert-body">This completion satisfies the 3-hour training requirement under BPC §7583.7 and the California Bureau of Security and Investigative Services (BSIS) training standards.<br/>Retain this certificate until your guard card registration expires or is canceled per Title 16 CCR §643(b).</div>
+    <div class="cert-score-badge">Assessment Score: 100% &nbsp;✓&nbsp; Passing</div>
+    <div class="cert-body">
+      This completion satisfies the 3-hour training requirement under BPC §7583.7 and the California Bureau of Security and Investigative Services (BSIS) training standards.<br/>
+      Retain this certificate until your guard card registration expires or is canceled — Title 16 CCR §643(b).
+    </div>
+    ${lsBlock}
     <div class="cert-gold-bar"></div>
     <div class="cert-sigs">
       <div class="cert-sig"><div class="line"></div><div class="slabel">Student Signature</div></div>
-      <div class="cert-sig"><div class="line"></div><div class="slabel">Date: ${today}</div></div>
-      <div class="cert-sig"><div class="line"></div><div class="slabel">Instructor Signature &nbsp;|&nbsp; MACCESS INC.</div></div>
+      <div class="cert-sig"><div class="line"></div><div class="slabel">Date: ${d}</div></div>
+      <div class="cert-sig"><div class="line"></div><div class="slabel">Instructor — MACCESS INC.</div></div>
     </div>`;
-  showScreen('screen-cert');
+
+  showScreen('sc-cert');
 }
 </script>
 </body>
