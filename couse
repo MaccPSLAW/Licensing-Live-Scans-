@@ -1,0 +1,5 @@
+# Create the folder structure
+mkdir -p PSLAW-Courses
+mkdir -p course_requests
+mkdir -p output
+mkdir -p .github/workflows
