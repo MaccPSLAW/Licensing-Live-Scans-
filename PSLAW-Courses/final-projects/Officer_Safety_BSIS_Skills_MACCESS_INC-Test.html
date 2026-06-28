@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Officer Safety — BSIS Elective Course | MACCESS INC. BSIS Assessment</title>
+<style>
+:root{--n:#1B2B5E;--g:#C9A84C;--r:#8B1A1A;--ok:#1A5C3A;--l:#F4F6FB;--gr:#4A5568;--wh:#fff;}
+*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Segoe UI',Arial,sans-serif;background:var(--l);color:#1A1A2E;}
+.hd{background:var(--n);color:#fff;padding:14px 28px;display:flex;justify-content:space-between;align-items:center;}
+.hl{font-size:20px;font-weight:700;letter-spacing:.04em;}.hm{font-size:11px;color:#CADCFC;text-align:right;line-height:1.55;}
+.gb{height:5px;background:var(--g);}
+.sc{display:none;max-width:860px;margin:0 auto;padding:26px 18px;}.sc.on{display:block;}
+.cd{background:var(--wh);border-radius:10px;border:1px solid #dde4f0;padding:30px 38px;margin-top:20px;}
+.cd h1{font-size:22px;color:var(--n);margin-bottom:6px;}.sub{color:var(--gr);font-size:13px;margin-bottom:18px;}
+.ig{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
+.ic{background:var(--l);border-radius:8px;padding:11px 14px;}.ib{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--gr);margin-bottom:2px;}.iv{font-size:17px;font-weight:700;color:var(--n);}
+.wn{background:#FFF8E1;border-radius:8px;padding:12px 15px;font-size:13px;color:#7B4F00;margin-bottom:16px;line-height:1.6;}
+.fl{display:block;font-size:12px;font-weight:600;color:var(--gr);margin:11px 0 4px;}
+input{width:100%;padding:9px 12px;border:1.5px solid #D0D8E8;border-radius:8px;font-size:14px;outline:none;}input:focus{border-color:var(--n);}
+.btn{display:block;width:100%;padding:11px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;border:none;margin-top:14px;text-align:center;}
+.bp{background:var(--n);color:#fff;}.bg{background:var(--g);color:var(--n);}.bo{background:var(--wh);color:var(--n);border:1.5px solid var(--n);}.bs{display:inline-block;width:auto;padding:9px 20px;}
+.pw{background:var(--wh);border-radius:10px;padding:12px 16px;margin-bottom:14px;border:1px solid #dde4f0;display:flex;align-items:center;gap:12px;}
+.pb{flex:1;height:8px;background:#E8EDF6;border-radius:4px;overflow:hidden;}.pf{height:100%;background:var(--n);border-radius:4px;transition:width .3s;}.pt{font-size:12px;color:var(--gr);white-space:nowrap;}
+.mb{background:var(--l);border:1px solid #D0D8E8;border-radius:6px;padding:4px 10px;font-size:10px;font-weight:600;color:var(--n);margin-bottom:8px;display:inline-block;}.rf{font-size:10px;color:var(--gr);margin-left:6px;font-style:italic;}
+.qc{background:var(--wh);border-radius:10px;border:1px solid #dde4f0;padding:22px 26px;margin-bottom:14px;}
+.qn{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g);margin-bottom:7px;}.qt{font-size:15px;font-weight:600;line-height:1.5;margin-bottom:16px;}
+.opts{display:flex;flex-direction:column;gap:8px;}
+.op{display:flex;align-items:center;gap:10px;padding:9px 13px;border:1.5px solid #D0D8E8;border-radius:8px;cursor:pointer;font-size:13px;transition:all .15s;}
+.op:hover{border-color:var(--n);background:#F0F4FB;}.op.sl{border-color:var(--n);background:#EBF0FB;}.op.ok{border-color:var(--ok)!important;background:#EAF3DE!important;color:var(--ok);}.op.no{border-color:var(--r)!important;background:#FCEBEB!important;color:var(--r);}
+.ol{width:26px;height:26px;border-radius:50%;background:var(--l);font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--n);border:1.5px solid #D0D8E8;}
+.op.sl .ol{background:var(--n);color:#fff;border-color:var(--n);}.op.ok .ol{background:var(--ok);color:#fff;border-color:var(--ok);}.op.no .ol{background:var(--r);color:#fff;border-color:var(--r);}
+.fb{margin-top:11px;padding:9px 13px;border-radius:8px;font-size:13px;line-height:1.6;}.fb-ok{background:#EAF3DE;color:var(--ok);}.fb-no{background:#FCEBEB;color:var(--r);}
+.nr{display:flex;justify-content:space-between;align-items:center;margin-top:8px;}
+.bn{padding:9px 20px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;}.bn-o{background:var(--wh);color:var(--n);border:1.5px solid var(--n);}.bn-p{background:var(--n);color:#fff;border:none;}
+.rc{background:var(--wh);border-radius:10px;border:1px solid #dde4f0;padding:34px 38px;margin-top:20px;text-align:center;}
+.sr{width:130px;height:130px;border-radius:50%;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;flex-direction:column;font-size:30px;font-weight:700;}
+.sr-ok{background:#EAF3DE;color:var(--ok);border:4px solid var(--ok);}.sr-no{background:#FCEBEB;color:var(--r);border:4px solid var(--r);}
+.sl2{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-top:2px;}
+.r2{font-size:21px;font-weight:700;margin-bottom:7px;}.rp{color:var(--ok);}.rn{color:var(--r);}
+.rs{color:var(--gr);font-size:13px;margin-bottom:20px;line-height:1.6;}
+.bd{background:var(--l);border-radius:8px;padding:15px 18px;margin-bottom:20px;text-align:left;}
+.bd h3{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--n);margin-bottom:9px;}
+.br{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #dde4f0;font-size:13px;}.br:last-child{border-bottom:none;}
+.sp{color:var(--ok);font-weight:600;}.sf{color:var(--r);font-weight:600;}
+.brow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:14px;}
+.bn2{background:#EBF0FB;border-radius:8px;padding:11px 14px;font-size:12px;color:var(--n);line-height:1.6;text-align:left;}
+/* Live Scan section */
+.lss{margin-top:24px;border:2px dashed var(--g);border-radius:10px;padding:24px 28px;background:#FFFDF5;}
+.lsh{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.lsb{background:var(--n);color:var(--g);font-size:10px;font-weight:700;padding:3px 10px;border-radius:5px;letter-spacing:.04em;}
+.lst{font-size:16px;font-weight:700;color:var(--n);}.lsc{font-size:13px;color:var(--gr);line-height:1.7;margin-bottom:14px;}
+.lspend{background:#FFF8E1;border:1px solid var(--g);border-radius:8px;padding:13px 16px;font-size:13px;color:#7B4F00;line-height:1.6;}
+/* Certificate */
+@media print{.np{display:none!important;}.sc{padding:0;max-width:100%;}}
+.cw{background:var(--wh);border:3px double var(--n);border-radius:4px;padding:40px 48px;margin:20px 0;text-align:center;position:relative;}
+.cw::before{content:'';position:absolute;inset:8px;border:1px solid var(--g);border-radius:2px;pointer-events:none;}
+.ch{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--n);margin-bottom:5px;}
+.cc{font-size:21px;font-weight:700;color:var(--n);margin-bottom:2px;}.cp{font-size:11px;color:var(--gr);margin-bottom:20px;}
+.cn{font-size:27px;font-weight:700;color:var(--n);border-bottom:2px solid var(--n);display:inline-block;min-width:260px;padding-bottom:3px;margin-bottom:14px;}
+.cb{font-size:13px;color:var(--gr);line-height:1.8;margin-bottom:4px;}.cco{font-size:15px;font-weight:700;color:var(--n);margin-bottom:11px;}
+.csb{display:inline-block;background:#EAF3DE;color:var(--ok);border-radius:6px;padding:4px 13px;font-size:12px;font-weight:600;margin-bottom:18px;}
+.cgb{height:5px;background:var(--g);border-radius:3px;margin:14px 0;}
+.css{display:flex;justify-content:space-around;margin-top:24px;gap:16px;}.csi{flex:1;text-align:center;}.csi .ln{border-top:1.5px solid var(--n);margin-bottom:4px;}.csi .sl3{font-size:11px;color:var(--gr);}
+.ft{background:var(--n);color:#CADCFC;text-align:center;padding:12px;font-size:11px;margin-top:30px;}
+</style></head><body>
+<div class="hd"><div class="hl">MACCESS INC.</div><div class="hm">PPO License #122729 | BSIS-Authorized Training Provider<br/>Secure Course Assessment Platform</div></div>
+<div class="gb"></div>
+
+<!-- COVER SCREEN -->
+<div class="sc on" id="sc-cover"><div class="cd">
+  <h1>Officer Safety — BSIS Elective Course</h1><div class="sub">Elective Skills Training (4 Hrs) | MACCESS INC.</div>
+  <div class="ig">
+    <div class="ic"><div class="ib">Questions</div><div class="iv">16</div></div>
+    <div class="ic"><div class="ib">Passing Score</div><div class="iv">100%</div></div>
+    <div class="ic"><div class="ib">Training Hours</div><div class="iv">4 Hrs</div></div>
+    <div class="ic"><div class="ib">Authority</div><div class="iv" style="font-size:12px;">BPC §7583.6(b)</div></div>
+  </div>
+  <div class="wn">&#9888; <strong>BSIS Requirement:</strong> A score of <strong>100%</strong> is required per BPC §7583.6(b). Full retake required below 100%.</div>
+  <label class="fl">Full Legal Name * (as it appears on your certificate)</label>
+  <input type="text" id="iname" placeholder="First Middle Last"/>
+  <label class="fl">Email Address *</label>
+  <input type="email" id="iemail" placeholder="your@email.com"/>
+  <label class="fl">Date</label>
+  <input type="text" id="idate" value="June 28, 2026" readonly/>
+  <button class="btn bp" onclick="start()">Begin Assessment &#8594;</button>
+</div></div>
+
+<!-- TEST SCREEN -->
+<div class="sc" id="sc-test">
+  <div class="pw"><div class="pb"><div class="pf" id="pf" style="width:0%"></div></div><div class="pt" id="pt">Q 1 of 16</div></div>
+  <div id="qa"></div>
+  <div class="nr">
+    <button class="bn bn-o" id="bprev" onclick="prev()" style="display:none">&#8592; Previous</button>
+    <button class="bn bn-p" id="bnext" onclick="nxt()">Next &#8594;</button>
+  </div>
+</div>
+
+<!-- RESULTS SCREEN -->
+<div class="sc" id="sc-res"><div class="rc">
+  <div class="sr" id="sring"><span id="spct">0%</span><span class="sl2" id="slbl">Score</span></div>
+  <div class="r2" id="rtitle"></div><div class="rs" id="rsub"></div>
+  <div class="bd" id="bdown"></div>
+  <div class="brow" id="rbtns"></div>
+  <div class="bn2" id="rbsis"></div>
+  <div class="lss" id="lss" style="display:none">
+    <div class="lsh"><div class="lsb">LIVE SCAN</div><div class="lst">BSIS Live Scan Fingerprinting — MACCESS INC.</div></div>
+    <div class="lsc" id="lsc"></div>
+    <div id="lscontent"></div>
+  </div>
+</div></div>
+
+<!-- CERTIFICATE SCREEN -->
+<div class="sc" id="sc-cert">
+  <div class="np" style="text-align:center;margin-bottom:14px;display:flex;gap:10px;justify-content:center;">
+    <button class="btn bg bs" onclick="window.print()">&#128438; Print Certificate</button>
+    <button class="btn bo bs" onclick="show('sc-res')">&#8592; Results</button>
+  </div>
+  <div class="cw" id="ca"></div>
+</div>
+
+<div class="ft">MACCESS INC. | Private Security LA Worldwide (PSLAW) | PPO License #122729 | BSIS-Authorized Training Provider</div>
+
+<script>
+const QS=JSON.parse(`[{"module":"Threat Assessment","ref":"Situational Awareness","q":"The baseline level of situational awareness that a security guard should maintain at all times while on duty is:","options":["White — relaxed and at ease, conserving energy between incidents","Yellow — relaxed alertness, aware of surroundings without fixating on a specific threat","Orange — focused attention on a specific identified potential threat","Red — prepared to immediately take action against a confirmed threat"],"answer":1},{"module":"Threat Assessment","ref":"Pre-Incident Indicators","q":"Observable behavioral pre-incident threat indicators include:","options":["Wearing clothing that is appropriate for the weather and the location","Entering through the main public entrance without stopping","Photographing the building's security cameras and documenting guard patrol patterns","Proceeding directly to a destination without any apparent hesitation or delay"],"answer":2},{"module":"Threat Assessment","ref":"BSIS Training Manual","q":"When a guard identifies a credible potential threat at their post, the first priority is:","options":["Independently confront the identified threat to resolve it before it escalates","Notify dispatch or their supervisor and request backup before engaging","Document the observation in the shift log and continue patrol without intervening","Wait for the threat to escalate to a confirmed incident before reporting"],"answer":1},{"module":"Threat Assessment","ref":"BSIS Training Manual","q":"The most important initial indicator to observe when approaching an unknown subject is:","options":["The subject's facial expression and apparent emotional state","The subject's hands — hands are the primary source of potential threats","The subject's clothing style and apparent socioeconomic status","The subject's race and gender — the statistically highest risk factors"],"answer":1},{"module":"Safe Subject Contact","ref":"BSIS Training Manual","q":"The recommended distance a guard should maintain from an unknown subject during an initial contact is:","options":["1 to 2 feet — close enough to maintain full physical control if needed","6 to 10 feet — a reactionary gap that provides time to respond to a threat","15 or more feet — maximum distance to minimize all physical risk","At the guard's discretion — distance should be adjusted based on intuition"],"answer":1},{"module":"Safe Subject Contact","ref":"BSIS Training Manual","q":"When approaching a potentially hostile subject, a guard should position themselves:","options":["Directly in front of the subject — a commanding frontal stance establishes authority","Directly behind the subject — reduces the subject's ability to see the guard's approach","At a 45-degree angle to the subject — reduces target profile and improves reactionary options","Beside the subject with a hand placed on their shoulder to establish physical control"],"answer":2},{"module":"Safe Subject Contact","ref":"BSIS Training Manual","q":"A guard should NEVER approach a potentially threatening subject without first:","options":["Completing a full written incident report documenting the basis for the contact","Obtaining explicit written authorization from the property owner or client","Ensuring they have a means of communication, a clear exit, and backup available or requested","Reviewing the subject's prior incident history with the property management team"],"answer":2},{"module":"Cover & Concealment","ref":"BSIS Training Manual","q":"The critical distinction between cover and concealment is that:","options":["Cover hides you from view but does not stop projectiles; concealment provides ballistic protection","Concealment hides you from view but does not stop projectiles; cover provides a barrier that can stop projectiles","Cover and concealment are functionally identical — both provide equivalent protection","Cover applies only to firearms threats; concealment is effective against all other types of threats"],"answer":1},{"module":"Blood Borne Pathogens","ref":"OSHA 29 CFR 1910.1030","q":"Under OSHA blood borne pathogen standards, a security guard must assume that:","options":["Only visibly blood-stained materials pose a transmission risk","All blood and body fluids from any person may be infectious — standard precautions apply universally","Gloves are only required when direct contact with blood is highly likely","HIV is the only blood borne pathogen of practical concern in a security context"],"answer":1},{"module":"Blood Borne Pathogens","ref":"OSHA 29 CFR 1910.1030","q":"The minimum personal protective equipment (PPE) a guard must use before any contact with blood or body fluids is:","options":["A full-face shield and protective gown","Disposable gloves","Safety glasses only","No PPE is required unless the blood is confirmed to be from an infected person"],"answer":1},{"module":"Blood Borne Pathogens","ref":"OSHA | Cal/OSHA","q":"If a guard is exposed to blood or body fluids during an incident, they should immediately:","options":["Complete the incident report and mention the exposure as a footnote","Wait until the end of shift to report the exposure to their supervisor","Wash the affected area thoroughly with soap and water, notify their supervisor, and seek prompt medical evaluation","Disinfect the area with hand sanitizer and continue their shift without interruption"],"answer":2},{"module":"Environmental Hazards","ref":"Cal/OSHA","q":"A guard detects a strong odor of natural gas at their post. The correct immediate action is:","options":["Locate the source of the leak and attempt to seal it to prevent further dispersal","Use the radio to report the odor while simultaneously investigating the source","Evacuate the area immediately without using any electrical switches or radio — then call 911 from a safe distance","Document the observation in the shift log and notify the property manager at the next available opportunity"],"answer":2},{"module":"Safety Awareness","ref":"BSIS Training Manual","q":"Before beginning any shift, a security guard should:","options":["Arrive at the post and begin patrol immediately to maximize coverage time","Complete a pre-shift check of all assigned equipment and confirm radio communication functionality","Wait for the outgoing guard to complete a comprehensive verbal and written shift briefing","Review only the written post orders — verbal briefings from outgoing guards are not required"],"answer":1},{"module":"Safety Awareness","ref":"BSIS Training Manual","q":"The tactical practice of never allowing two guards in the same patrol area to position themselves in a straight line is called:","options":["Situational mirroring","Tactical distancing","Tactical L positioning — reduces the risk of both guards being affected by a single threat","Zone suppression protocol"],"answer":2},{"module":"Review","ref":"BPC §7583.6 | Officer Safety","q":"A guard observing a person engaging in pre-incident surveillance behavior — photographing access points and watching patrol patterns — should:","options":["Confront the person immediately to deter the behavior before it progresses","Document the specific behaviors observed and contact their supervisor to determine the appropriate response","Ignore the behavior unless the person commits an overt act that constitutes a crime","Wait for confirmation of criminal intent before documenting or reporting the observation"],"answer":1},{"module":"Review","ref":"PPO License | BPC §7583.6","q":"MACCESS INC.'s California Private Patrol Operator license number — required to appear on all BSIS Certificates of Completion — is:","options":["#112233","#100001","#133445","#122729"],"answer":3}]`);
+const PASS=100;
+const LS=JSON.parse(`{"enabled":false,"certTemplatePath":"PSLAW-Courses/live-scan/bsis_livescan_cert_template.pdf","certTemplateFilename":"bsis_livescan_cert_template.pdf","bsisORI":"","atiPrefix":"","notificationEmail":"admin@gopslaw.com","showUploadSlot":false,"pendingMessage":"Live Scan fingerprinting services are coming soon to MACCESS INC. Once active, you will be able to upload your BSIS Live Scan certificate directly here after completing fingerprinting at our facility."}`);
+const LT=['A','B','C','D'];
+let cur=0,ans=new Array(QS.length).fill(null),dn=new Array(QS.length).fill(false),nm='',em='';
+function show(id){document.querySelectorAll('.sc').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');window.scrollTo(0,0);}
+function start(){nm=document.getElementById('iname').value.trim();em=document.getElementById('iemail').value.trim();if(!nm){alert('Please enter your full legal name.');return;}if(!em||!em.includes('@')){alert('Please enter a valid email.');return;}show('sc-test');renderQ();}
+function renderQ(){const q=QS[cur];document.getElementById('pf').style.width=Math.round((cur/QS.length)*100)+'%';document.getElementById('pt').textContent='Question '+(cur+1)+' of '+QS.length;document.getElementById('bprev').style.display=cur>0?'inline-block':'none';document.getElementById('bnext').textContent=cur===QS.length-1?'Submit Assessment':'Next →';const c=dn[cur],s=ans[cur];const oh=q.options.map((o,i)=>{let cl='op';if(c){if(i===q.answer)cl+=' ok';else if(i===s&&i!==q.answer)cl+=' no';}else if(i===s)cl+=' sl';const oc=c?'':('onclick="pick('+i+')"');return '<div class="'+cl+'" '+oc+'><div class="ol">'+LT[i]+'</div><span>'+o+'</span></div>';}).join('');let fb='';if(c){if(s===q.answer)fb='<div class="fb fb-ok">✓ Correct — '+q.ref+'</div>';else fb='<div class="fb fb-no">✗ Incorrect. Correct: <strong>'+LT[q.answer]+'. '+q.options[q.answer]+'</strong> — '+q.ref+'</div>';}document.getElementById('qa').innerHTML='<div class="mb">'+q.module+'<span class="rf">'+q.ref+'</span></div><div class="qc"><div class="qn">Question '+(cur+1)+' of '+QS.length+'</div><div class="qt">'+q.q+'</div><div class="opts">'+oh+'</div>'+fb+'</div>';}
+function pick(i){if(dn[cur])return;ans[cur]=i;dn[cur]=true;renderQ();}
+function nxt(){if(!dn[cur]){alert('Please select an answer.');return;}if(cur<QS.length-1){cur++;renderQ();}else showRes();}
+function prev(){if(cur>0){cur--;renderQ();}}
+function showRes(){show('sc-res');let co=0;const mm={};QS.forEach((q,i)=>{if(ans[i]===q.answer)co++;if(!mm[q.module])mm[q.module]={c:0,t:0};mm[q.module].t++;if(ans[i]===q.answer)mm[q.module].c++;});const pct=Math.round((co/QS.length)*100),pass=pct>=PASS;const ring=document.getElementById('sring');ring.className='sr '+(pass?'sr-ok':'sr-no');document.getElementById('spct').textContent=pct+'%';document.getElementById('slbl').textContent=pass?'PASSED':'NOT PASSED';const rt=document.getElementById('rtitle');rt.className='r2 '+(pass?'rp':'rn');rt.textContent=pass?'✓ Assessment Passed':'✗ Assessment Not Passed';document.getElementById('rsub').innerHTML=pass?'Congratulations, <strong>'+nm+'</strong>. You answered '+co+' of '+QS.length+' correctly and satisfied the BSIS requirement per BPC §7583.6(b).':'You answered '+co+' of '+QS.length+' ('+pct+'%). A score of 100% is required per BPC §7583.6(b). Review all modules and retake the full assessment.';let bh='<h3>Score by Module</h3>';for(const[m,d] of Object.entries(mm)){const mp=Math.round((d.c/d.t)*100);bh+='<div class="br"><span style="color:var(--gr)">'+m+'</span><span class="'+(mp===100?'sp':'sf')+'">'+d.c+'/'+d.t+' ('+mp+'%)</span></div>';}bh+='<div class="br" style="font-weight:700"><span>Overall</span><span class="'+(pass?'sp':'sf')+'">'+co+'/'+QS.length+' ('+pct+'%)</span></div>';document.getElementById('bdown').innerHTML=bh;let btns=pass?'<button class="btn bg bs" onclick="showCert()">View Certificate →</button>':'';btns+='<button class="btn bo bs" onclick="retake()">'+(pass?'Retake':'&#8635; Retake Assessment')+'</button>';document.getElementById('rbtns').innerHTML=btns;document.getElementById('rbsis').innerHTML=pass?'<strong>BSIS Compliance:</strong> This certificate satisfies the 4-hour training requirement under BPC §7583.6(b). Print and retain. MACCESS INC. maintains your record per Title 16 CCR §643(b).':'<strong>BSIS Requirement:</strong> 100% is the minimum per BPC §7583.6(b). Full retake required. Review all modules before retaking.';if(pass){document.getElementById('lss').style.display='block';document.getElementById('lsc').textContent=LS.enabled?'You have passed. If you have completed BSIS Live Scan fingerprinting at a MACCESS INC. facility, you may upload your receipt below.':LS.pendingMessage;document.getElementById('lscontent').innerHTML=LS.showUploadSlot?'<p style="color:#1A5C3A;font-size:13px;font-weight:600;">Upload slot active — contact system administrator to configure.</p>':'<div class="lspend">📋 <strong>Coming Soon:</strong> '+LS.pendingMessage+'</div>';}}
+function retake(){cur=0;ans=new Array(QS.length).fill(null);dn=new Array(QS.length).fill(false);show('sc-test');renderQ();}
+function showCert(){const d=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});document.getElementById('ca').innerHTML='<div class="ch">Certificate of Completion</div><div class="cgb"></div><div class="cc">MACCESS INC.</div><div class="cp">Private Patrol Operator | PPO License #122729 | BSIS-Authorized Training Provider</div><div class="cb">This certifies that</div><div class="cn">'+nm+'</div><div class="cb">has successfully completed the BSIS-compliant training course:</div><div class="cco">Officer Safety — BSIS Elective Course</div><div class="csb">Score: 100% ✓ Passing</div><div class="cb">This completion satisfies the 4-hour training requirement under BPC §7583.6(b) and California BSIS training standards.<br/>Retain until guard card expires or is canceled — Title 16 CCR §643(b).</div><div class="cgb"></div><div class="css"><div class="csi"><div class="ln"></div><div class="sl3">Student Signature</div></div><div class="csi"><div class="ln"></div><div class="sl3">Date: '+d+'</div></div><div class="csi"><div class="ln"></div><div class="sl3">Instructor — MACCESS INC.</div></div></div>';show('sc-cert');}
+</script></body></html>
