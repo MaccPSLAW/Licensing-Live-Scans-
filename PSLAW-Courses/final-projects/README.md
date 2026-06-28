@@ -26,8 +26,8 @@ The README updates itself automatically every time a new module is built and pus
 |----------|:----------------:|:-----:|
 | PRE-REGISTRATION TRAINING | 2 | 8 hrs |
 | MANDATORY SKILLS TRAINING | 4 | 16 hrs |
-| ELECTIVE SKILLS TRAINING | 3 | 12 hrs |
-| **TOTAL** | **9 modules** | **36 hrs** |
+| ELECTIVE SKILLS TRAINING | 4 | 16 hrs |
+| **TOTAL** | **10 modules** | **40 hrs** |
 
 ---
 
@@ -357,6 +357,41 @@ The README updates itself automatically every time a new module is built and pus
 |------|:---:|
 | `Officer_Safety_BSIS_Skills_MACCESS_INC-AnswerKey.pptx` | ✅ |
 | `Officer_Safety_BSIS_Skills_MACCESS_INC-AnswerKey.pdf` | ✅ |
+
+> Internal instructor use only. Quick-reference answer grid, full Q&A, scoring guide. Do not distribute to students.
+
+---
+
+### Module 10 — Workplace Violence
+
+| | |
+|---|---|
+| **Status** | ✅ Complete |
+| **Hours** | 4 |
+| **Authority** | `BPC §7583.6(b)` |
+| **Note** | Covers warning signs, anger management, diversity, personal security, and reporting. |
+
+#### 10a — Course Module
+
+| File | |
+|------|:---:|
+| `Workplace_Violence_BSIS_Skills_MACCESS_INC.pptx` | ✅ |
+| `Workplace_Violence_BSIS_Skills_MACCESS_INC.pdf` | ✅ |
+
+#### 10b — Assessment
+
+| File | |
+|------|:---:|
+| `Workplace_Violence_BSIS_Skills_MACCESS_INC-Test.html` | ✅ |
+
+> Interactive browser assessment — one question at a time, instant feedback with legal citation, live score by module, 100% to pass, printable Certificate of Completion, BSIS Live Scan stub.
+
+#### 10c — Answer Key *(Instructor Copy — Confidential)*
+
+| File | |
+|------|:---:|
+| `Workplace_Violence_BSIS_Skills_MACCESS_INC-AnswerKey.pptx` | ✅ |
+| `Workplace_Violence_BSIS_Skills_MACCESS_INC-AnswerKey.pdf` | ✅ |
 
 > Internal instructor use only. Quick-reference answer grid, full Q&A, scoring guide. Do not distribute to students.
 
