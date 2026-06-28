@@ -2,400 +2,422 @@
 /**
  * MACCESS INC. — PSLAW Course Suite README Auto-Updater
  * ======================================================
- * Scans PSLAW-Courses/final-projects/ on GitHub, detects all modules,
- * and regenerates the README with the 1a / 1b / 1c structure.
+ * Fully automatic. No registry. No manual steps.
  *
- * Usage:
+ * Called automatically at the end of every module build script.
+ * Can also be run standalone at any time.
+ *
+ * HOW IT WORKS:
+ *   1. Scans PSLAW-Courses/final-projects/ live from GitHub
+ *   2. Groups files into modules by detecting base filename patterns
+ *   3. Derives label, category, hours, authority from a built-in
+ *      knowledge map — unknown modules still work, using the filename
+ *   4. Assigns module numbers automatically by BSIS ordering rules
+ *   5. Regenerates full README with 1a / 1b / 1c structure
+ *   6. Pushes README.md back to repo
+ *   7. Syncs self to PSLAW-Courses/scripts/update_readme.js
+ *
+ * USAGE — Standalone:
  *   GITHUB_TOKEN=your_token node update_readme.js
  *
- * Run this every time a new module is added to final-projects/.
- * The script is self-healing: it reads live repo state every time —
- * no manual edits needed.
- *
- * Module naming convention (used to detect and sort modules):
- *   [Base].pptx            → 1a  Course Module (PowerPoint)
- *   [Base]-Test.html       → 1b  Assessment (Interactive HTML)
- *   [Base]-AnswerKey.pptx  → 1c  Answer Key (PowerPoint)
- *   [Base].pdf             → companion PDF for course
- *   [Base]-AnswerKey.pdf   → companion PDF for answer key
+ * USAGE — From build scripts (auto-called after every push):
+ *   const { autoUpdateReadme } = require("./update_readme");
+ *   await autoUpdateReadme(TOKEN, REPO);
  */
 
 const https = require("https");
 
-// ── Config ────────────────────────────────────────────────────────────────────
-const TOKEN = process.env.GITHUB_TOKEN;
-const REPO  = "MaccPSLAW/Licensing-Live-Scans-";
-const PATH  = "PSLAW-Courses/final-projects";
+const REPO = "MaccPSLAW/Licensing-Live-Scans-";
+const DIR  = "PSLAW-Courses/final-projects";
 
-if (!TOKEN) {
-  console.error("Error: GITHUB_TOKEN environment variable is not set.");
-  process.exit(1);
-}
+// ─────────────────────────────────────────────────────────────────────────────
+// KNOWLEDGE MAP
+// Supplies human-readable metadata for known modules.
+// The updater works for ANY module not listed here — it just auto-infers
+// the label from the filename. Only add entries here to supply richer
+// metadata (hours, authority, notes). Never needs to be edited to add a
+// new module — that happens automatically.
+// ─────────────────────────────────────────────────────────────────────────────
+const KNOWLEDGE = {
+  // Pre-registration
+  "Powers_to_Arrest_BSIS_Certification_MACCESS_INC": {
+    label:"Powers to Arrest", hours:"3", authority:"BPC §7583.7", category:"preregistration",
+    notes:"First half of the 8-hour pre-registration requirement. Pairs with Module 02.",
+  },
+  "Appropriate_Use_of_Force_BSIS_Certification_MACCESS_INC": {
+    label:"Appropriate Use of Force", hours:"5", authority:"BPC §7583.7", category:"preregistration",
+    notes:"Second half of the 8-hour pre-registration requirement. Sections 2, 5, 6, and 9 require in-person delivery per BPC §7583.7.",
+  },
+  // Mandatory skills
+  "Public_Relations_Community_BSIS_Skills_MACCESS_INC": {
+    label:"Public Relations & Community", hours:"4", authority:"BPC §7583.6(b)", category:"mandatory",
+    notes:"Complete within 30 days of guard card issuance (first two mandatory courses).",
+  },
+  "Observation_Documentation_BSIS_Skills_MACCESS_INC": {
+    label:"Observation & Documentation", hours:"4", authority:"BPC §7583.6(b)", category:"mandatory",
+    notes:"Complete within 30 days of guard card issuance (first two mandatory courses).",
+  },
+  "Communication_Significance_BSIS_Skills_MACCESS_INC": {
+    label:"Communication & Its Significance", hours:"4", authority:"BPC §7583.6(b)", category:"mandatory",
+    notes:"Complete within 6 months of guard card issuance.",
+  },
+  "Liability_Legal_Aspects_BSIS_Skills_MACCESS_INC": {
+    label:"Liability & Legal Aspects", hours:"4", authority:"BPC §7583.6(b)", category:"mandatory",
+    notes:"Complete within 6 months of guard card issuance.",
+  },
+  // Elective skills
+  "Officer_Safety_BSIS_Skills_MACCESS_INC": {
+    label:"Officer Safety", hours:"4", authority:"BPC §7583.6(b)", category:"elective",
+    notes:"Covers threat assessment (Cooper Color Code), subject contact, blood-borne pathogens (OSHA 29 CFR 1910.1030), and environmental hazards.",
+  },
+  "Handling_Difficult_People_BSIS_Skills_MACCESS_INC": {
+    label:"Handling Difficult People", hours:"4", authority:"BPC §7583.6(b)", category:"elective",
+    notes:"Covers communication strategies, conflict management, negotiation, and verbal diffusion.",
+  },
+  "Baton_Certification_BSIS_MACCESS_INC": {
+    label:"Baton Certification", hours:"4", authority:"BPC §§7583.33 | 7585.9 | 7585.13", category:"elective",
+    notes:"4-hr elective deliverable by PPO. Full 8-hr baton PERMIT course and permit issuance requires BSIS-certified Baton Training Facility (TFB) and certified instructor.",
+  },
+  "Workplace_Violence_BSIS_Skills_MACCESS_INC": {
+    label:"Workplace Violence", hours:"4", authority:"BPC §7583.6(b)", category:"elective",
+    notes:"Covers warning signs, anger management, diversity, personal security, and reporting.",
+  },
+  "Preserving_the_Incident_Scene_BSIS_Skills_MACCESS_INC": {
+    label:"Preserving the Incident Scene", hours:"4", authority:"BPC §7583.6(b)", category:"elective",
+    notes:"Identifying evidence, care and handling, securing the area, legal issues with evidence tampering, witness/participant identification.",
+  },
+  "Arrests_Search_Seizure_BSIS_Skills_MACCESS_INC": {
+    label:"Arrests, Search & Seizure", hours:"4", authority:"BPC §7583.6(b)", category:"elective",
+    notes:"Advanced arrest topics. PC §§836 and 837, US Constitutional amendments, loss prevention, merchant law, use of force.",
+  },
+  "Crowd_Control_BSIS_Skills_MACCESS_INC": {
+    label:"Crowd Control", hours:"4", authority:"BPC §7583.6(b)", category:"elective",
+    notes:"Covers boisterous celebrations, handling disputes, civil disobedience, and labor disputes.",
+  },
+  "Trespass_BSIS_Skills_MACCESS_INC": {
+    label:"Trespass", hours:"4", authority:"BPC §7583.6(b)", category:"elective",
+    notes:"Open land, private property, private buildings, public property, and places of public accommodation.",
+  },
+  "First_Aid_CPR_BSIS_Skills_MACCESS_INC": {
+    label:"First Aid / CPR", hours:"4", authority:"BPC §7583.6(b)", category:"elective",
+    notes:"American Red Cross or American Heart Association courses. Includes AED training.",
+  },
+  "Access_Control_BSIS_Skills_MACCESS_INC": {
+    label:"Access Control", hours:"2", authority:"BPC §7583.6(b)", category:"elective",
+    notes:"Identification procedures, electronic/CCTV use, and non-electronic procedures.",
+  },
+  "Post_Orders_Assignments_BSIS_Skills_MACCESS_INC": {
+    label:"Post Orders & Assignments", hours:"4", authority:"BPC §7583.6(b)", category:"elective",
+    notes:"Site-specific training, equipment, emergency response, liability implications, and lost/found articles.",
+  },
+  "Employer_Policies_Orientation_BSIS_Skills_MACCESS_INC": {
+    label:"Employer Policies & Orientation", hours:"4", authority:"BPC §7583.6(b)", category:"elective",
+  },
+  "Evacuation_Procedures_BSIS_Skills_MACCESS_INC": {
+    label:"Evacuation Procedures", hours:"2", authority:"BPC §7583.6(b)", category:"elective",
+    notes:"Emergency procedures for life/safety/natural acts, evacuation routes, power outage, and points of contact.",
+  },
+  "Fire_Safety_BSIS_Skills_MACCESS_INC": {
+    label:"Fire Safety", hours:"4", authority:"BPC §7583.6(b)", category:"elective",
+  },
+  "Chemical_Agents_BSIS_Skills_MACCESS_INC": {
+    label:"Chemical Agents", hours:"4", authority:"BPC §7583.6(b)", category:"elective",
+    notes:"Tear gas, pepper spray, airborne and waterborne chemical agents. Must be taught at BSIS-licensed facility per BPC §7583.36.",
+  },
+  "Supervision_BSIS_Skills_MACCESS_INC": {
+    label:"Supervision", hours:"4", authority:"BPC §7583.6(b)", category:"elective",
+    notes:"Supervisor roles, responsibilities, and legal liability.",
+  },
+  "Courtroom_Demeanor_BSIS_Skills_MACCESS_INC": {
+    label:"Courtroom Demeanor", hours:"4", authority:"BPC §7583.6(b)", category:"elective",
+  },
+  "Driver_Safety_BSIS_Skills_MACCESS_INC": {
+    label:"Driver Safety", hours:"4", authority:"BPC §7583.6(b)", category:"elective",
+    notes:"Cars, bicycles, and golf carts.",
+  },
+  "Radio_Procedures_BSIS_Skills_MACCESS_INC": {
+    label:"Radio Procedures", hours:"2", authority:"BPC §7583.6(b)", category:"elective",
+  },
+  "Parking_Traffic_Control_BSIS_Skills_MACCESS_INC": {
+    label:"Parking & Traffic Control", hours:"2", authority:"BPC §7583.6(b)", category:"elective",
+  },
+  "Laws_Codes_Regulations_BSIS_Skills_MACCESS_INC": {
+    label:"Laws, Codes, Regulations & Ordinances", hours:"2", authority:"BPC §7583.6(b)", category:"elective",
+    notes:"Specific to post assignment.",
+  },
+  "WMD_Terrorism_Awareness_BSIS_Skills_MACCESS_INC": {
+    label:"WMD & Terrorism Awareness", hours:"4", authority:"BPC §7583.6(b)", category:"elective",
+    notes:"Role of security officer, nature of terrorism, weapons of mass destruction, coordinating/sharing critical information.",
+  },
+  "Introduction_Executive_Protection_BSIS_MACCESS_INC": {
+    label:"Introduction to Executive Protection", hours:"4", authority:"BPC §7583.6(b)", category:"elective",
+  },
+  "School_Security_Guard_Training_BSIS_MACCESS_INC": {
+    label:"School Security Guard Training", hours:"8", authority:"BPC §7583.45 | Ed. Code §38001.5", category:"elective",
+    notes:"Required for guards in K-12 or community college districts.",
+  },
+  "Annual_Firearms_Requalification_BSIS_MACCESS_INC": {
+    label:"Annual Firearms Requalification", hours:"4", authority:"BPC §7583.28", category:"elective",
+    notes:"Required annually for armed guards holding a BSIS Firearms Permit.",
+  },
+  "Stun_Gun_Air_Taser_BSIS_Skills_MACCESS_INC": {
+    label:"Course in the Use of a Stun Gun or Air Taser", hours:"4", authority:"BPC §7583.6(b)", category:"elective",
+  },
+  // Overview
+  "BSIS_Security_Guard_Licensing_Training_2026": {
+    label:"BSIS Security Guard Licensing — Complete Training Overview 2026",
+    hours:"—", authority:"BPC §7583.6 | §7583.7", category:"overview",
+    notes:"Reference deck only. No test or answer key.",
+  },
+};
 
-// ── Module registry ───────────────────────────────────────────────────────────
-// Maps base filename → display metadata.
-// When a new module is built and pushed to final-projects/, add one entry here.
-// The script will auto-detect the files; this registry supplies the human label,
-// module number, category, hours, and legal authority.
-//
-// FORMAT:
-//   key:      exact base filename (no extension, no suffix like -Test or -AnswerKey)
-//   num:      module number (controls sort order and section headings)
-//   label:    full human-readable course title
-//   hours:    credit hours as string
-//   authority: BSIS statutory reference
-//   category: one of "preregistration" | "mandatory" | "elective" | "overview"
-//   notes:    optional compliance or delivery note shown in the README
-const MODULE_REGISTRY = [
-  // ── OVERVIEW ─────────────────────────────────────────────────────────────
-  {
-    key:       "BSIS_Security_Guard_Licensing_Training_2026",
-    num:       0,
-    label:     "BSIS Security Guard Licensing — Complete Training Overview 2026",
-    hours:     "—",
-    authority: "BPC §7583.6 | §7583.7",
-    category:  "overview",
-    notes:     "Reference deck. Not a sellable standalone module — does not include a test or answer key.",
+const CAT_ORDER = ["preregistration","mandatory","elective","overview"];
+const CAT_DISPLAY = {
+  preregistration:{
+    heading:"## PRE-REGISTRATION TRAINING",
+    rule:"> Required before guard card application. Must be completed within 6 months of application by a single BSIS-approved provider per **SB 652 (eff. Jan 1, 2026)**. Exam: 100% passing score required per BPC §7583.7.",
   },
-  // ── PRE-REGISTRATION (required before guard card application) ─────────────
-  {
-    key:       "Powers_to_Arrest_BSIS_Certification_MACCESS_INC",
-    num:       1,
-    label:     "Powers to Arrest",
-    hours:     "3",
-    authority: "BPC §7583.7",
-    category:  "preregistration",
-    notes:     "First half of the 8-hour pre-registration requirement. Pairs with Appropriate Use of Force (Module 2).",
+  mandatory:{
+    heading:"## MANDATORY SKILLS TRAINING",
+    rule:"> **BPC §7583.6(b):** All 4 mandatory courses required within 6 months of registration. First 2 must be completed within 30 days.",
   },
-  {
-    key:       "Appropriate_Use_of_Force_BSIS_Certification_MACCESS_INC",
-    num:       2,
-    label:     "Appropriate Use of Force",
-    hours:     "5",
-    authority: "BPC §7583.7",
-    category:  "preregistration",
-    notes:     "Second half of the 8-hour pre-registration requirement. Sections 2, 5, 6, and 9 require in-person delivery per BPC §7583.7.",
+  elective:{
+    heading:"## ELECTIVE SKILLS TRAINING",
+    rule:"> Count toward the 32-hour total skills requirement (BPC §7583.6(b)).",
   },
-  // ── MANDATORY SKILLS (all 4 required within 6 months; first 2 within 30 days) ──
-  {
-    key:       "Public_Relations_Community_BSIS_Skills_MACCESS_INC",
-    num:       3,
-    label:     "Public Relations & Community",
-    hours:     "4",
-    authority: "BPC §7583.6(b)",
-    category:  "mandatory",
-    notes:     "Complete within 30 days of guard card issuance (one of the first two mandatory courses).",
+  overview:{
+    heading:"## OVERVIEW & REFERENCE",
+    rule:"> Reference materials — no assessment or answer key.",
   },
-  {
-    key:       "Observation_Documentation_BSIS_Skills_MACCESS_INC",
-    num:       4,
-    label:     "Observation & Documentation",
-    hours:     "4",
-    authority: "BPC §7583.6(b)",
-    category:  "mandatory",
-    notes:     "Complete within 30 days of guard card issuance (one of the first two mandatory courses).",
-  },
-  {
-    key:       "Communication_Significance_BSIS_Skills_MACCESS_INC",
-    num:       5,
-    label:     "Communication & Its Significance",
-    hours:     "4",
-    authority: "BPC §7583.6(b)",
-    category:  "mandatory",
-    notes:     "Complete within 6 months of guard card issuance.",
-  },
-  {
-    key:       "Liability_Legal_Aspects_BSIS_Skills_MACCESS_INC",
-    num:       6,
-    label:     "Liability & Legal Aspects",
-    hours:     "4",
-    authority: "BPC §7583.6(b)",
-    category:  "mandatory",
-    notes:     "Complete within 6 months of guard card issuance.",
-  },
-  // ── ELECTIVE SKILLS (count toward the 32-hour skills total) ──────────────
-  {
-    key:       "Officer_Safety_BSIS_Skills_MACCESS_INC",
-    num:       7,
-    label:     "Officer Safety",
-    hours:     "4",
-    authority: "BPC §7583.6(b)",
-    category:  "elective",
-    notes:     "Covers threat assessment, subject contact, blood-borne pathogens (OSHA 29 CFR 1910.1030), and environmental hazards.",
-  },
-  {
-    key:       "Handling_Difficult_People_BSIS_Skills_MACCESS_INC",
-    num:       8,
-    label:     "Handling Difficult People",
-    hours:     "4",
-    authority: "BPC §7583.6(b)",
-    category:  "elective",
-    notes:     "Covers communication strategies, conflict management, negotiation, and verbal diffusion.",
-  },
-  {
-    key:       "Baton_Certification_BSIS_MACCESS_INC",
-    num:       9,
-    label:     "Baton Certification",
-    hours:     "4",
-    authority: "BPC §§7583.33 | 7585.9 | 7585.13",
-    category:  "elective",
-    notes:     "4-hr elective classroom module deliverable by PPO. Full 8-hr baton PERMIT course and permit issuance requires a BSIS-certified Baton Training Facility (TFB license) and certified instructor. Exam: 24 official BSIS questions + vital areas identification.",
-  },
-  // ── ADD NEW MODULES BELOW THIS LINE ──────────────────────────────────────
-  // Copy any entry above as a template. The script picks up the rest automatically.
-  // Example:
-  // {
-  //   key:       "Workplace_Violence_BSIS_Skills_MACCESS_INC",
-  //   num:       10,
-  //   label:     "Workplace Violence",
-  //   hours:     "4",
-  //   authority: "BPC §7583.6(b)",
-  //   category:  "elective",
-  //   notes:     "Covers warning signs, anger management, diversity, personal security, and reporting.",
-  // },
+};
+
+// BSIS canonical sort order within pre-registration and mandatory categories
+const CANONICAL = [
+  "Powers_to_Arrest_BSIS_Certification_MACCESS_INC",
+  "Appropriate_Use_of_Force_BSIS_Certification_MACCESS_INC",
+  "Public_Relations_Community_BSIS_Skills_MACCESS_INC",
+  "Observation_Documentation_BSIS_Skills_MACCESS_INC",
+  "Communication_Significance_BSIS_Skills_MACCESS_INC",
+  "Liability_Legal_Aspects_BSIS_Skills_MACCESS_INC",
 ];
 
-// ── GitHub helpers ────────────────────────────────────────────────────────────
-function ghRequest(method, path, body) {
+// ─────────────────────────────────────────────────────────────────────────────
+// GITHUB HELPERS
+// ─────────────────────────────────────────────────────────────────────────────
+function ghReq(method, path, body, token) {
   return new Promise((resolve, reject) => {
     const payload = body ? JSON.stringify(body) : null;
-    const options = {
-      hostname: "api.github.com",
-      path: `/repos/${REPO}/contents/${encodeURIComponent(path)}`,
+    const opts = {
+      hostname:"api.github.com",
+      path:`/repos/${REPO}/contents/${encodeURIComponent(path)}`,
       method,
-      headers: {
-        Authorization: `token ${TOKEN}`,
-        "User-Agent":  "MACCESS-README-Updater",
-        Accept:        "application/vnd.github.v3+json",
-        ...(payload ? { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(payload) } : {}),
+      headers:{
+        Authorization:`token ${token}`,
+        "User-Agent":"MACCESS-README-Updater",
+        Accept:"application/vnd.github.v3+json",
+        ...(payload?{"Content-Type":"application/json","Content-Length":Buffer.byteLength(payload)}:{}),
       },
     };
-    const req = https.request(options, (res) => {
-      let data = "";
-      res.on("data", (chunk) => (data += chunk));
-      res.on("end", () => {
-        try { resolve({ status: res.statusCode, body: JSON.parse(data) }); }
-        catch { resolve({ status: res.statusCode, body: data }); }
-      });
+    const req = https.request(opts, (res) => {
+      let d=""; res.on("data",(c)=>(d+=c));
+      res.on("end",()=>{try{resolve({status:res.statusCode,body:JSON.parse(d)});}catch{resolve({status:res.statusCode,body:d});}});
     });
-    req.on("error", reject);
-    if (payload) req.write(payload);
+    req.on("error",reject);
+    if(payload)req.write(payload);
     req.end();
   });
 }
+async function listFolder(p,t){const r=await ghReq("GET",p,null,t);if(r.status!==200||!Array.isArray(r.body))throw new Error(`Cannot list ${p}: HTTP ${r.status}`);return r.body;}
+async function getSHA(p,t){const r=await ghReq("GET",p,null,t);return r.status===200&&r.body.sha?r.body.sha:null;}
+async function putFile(p,content,msg,sha,t){const b={message:msg,content:Buffer.from(content,"utf-8").toString("base64"),branch:"main",...(sha?{sha}:{})};const r=await ghReq("PUT",p,b,t);if(r.status!==200&&r.status!==201)throw new Error(`Cannot push ${p}: HTTP ${r.status}`);return r.body;}
 
-async function listFolder(folderPath) {
-  const res = await ghRequest("GET", folderPath);
-  if (res.status !== 200 || !Array.isArray(res.body)) {
-    throw new Error(`Failed to list ${folderPath}: HTTP ${res.status}`);
+// ─────────────────────────────────────────────────────────────────────────────
+// FILE → MODULE GROUPING
+// Strips known suffixes to find base names, groups all files sharing a base.
+// ─────────────────────────────────────────────────────────────────────────────
+function groupFiles(fileNames) {
+  const SUFFIXES=["-AnswerKey.pptx","-AnswerKey.pdf","-Test.html","-Test.pptx","-Test.pdf",".pptx",".pdf",".html"];
+  const mods={};
+  for(const fname of fileNames){
+    if(fname==="README.md")continue;
+    let base=fname;
+    for(const s of SUFFIXES){if(fname.endsWith(s)){base=fname.slice(0,-s.length);break;}}
+    if(!mods[base])mods[base]={base,files:new Set()};
+    mods[base].files.add(fname);
   }
-  return res.body;
+  return Object.values(mods);
 }
 
-async function getFileSHA(filePath) {
-  const res = await ghRequest("GET", filePath);
-  if (res.status === 200 && res.body.sha) return res.body.sha;
-  return null;
-}
+// ─────────────────────────────────────────────────────────────────────────────
+// MODULE ENRICHMENT
+// Merges file presence with KNOWLEDGE map. Auto-infers everything for unlisted.
+// ─────────────────────────────────────────────────────────────────────────────
+function enrich(mod) {
+  const {base,files}=mod;
+  const k=KNOWLEDGE[base]||{};
 
-async function putFile(filePath, content, message, sha) {
-  const body = {
-    message,
-    content: Buffer.from(content, "utf-8").toString("base64"),
-    branch:  "main",
-    ...(sha ? { sha } : {}),
+  // Infer label from filename when not in KNOWLEDGE
+  const inferred=base
+    .replace(/_BSIS_(Certification|Skills)_MACCESS_INC$/i,"")
+    .replace(/_BSIS_MACCESS_INC$/i,"")
+    .replace(/_MACCESS_INC$/i,"")
+    .replace(/_/g," ").trim();
+
+  const label    = k.label    || inferred;
+  const hours    = k.hours    || "4";
+  const authority= k.authority|| "BPC §7583.6(b)";
+  const notes    = k.notes    || null;
+
+  // Auto-detect category from filename when not in KNOWLEDGE
+  let category = k.category;
+  if(!category){
+    const u=base.toUpperCase();
+    if(u.includes("POWERS_TO_ARREST")||u.includes("APPROPRIATE_USE_OF_FORCE")) category="preregistration";
+    else if(u.includes("2026")||u.includes("OVERVIEW")||u.includes("LICENSING_TRAINING")) category="overview";
+    else if(u.includes("PUBLIC_RELATIONS")||u.includes("OBSERVATION_DOCUMENTATION")||u.includes("COMMUNICATION_SIGNIFICANCE")||u.includes("LIABILITY_LEGAL")) category="mandatory";
+    else category="elective";
+  }
+
+  // File presence
+  const has=(s)=>files.has(`${base}${s}`);
+  const parts={
+    course_pptx: has(".pptx"),
+    course_pdf:  has(".pdf"),
+    test_html:   has("-Test.html"),
+    ak_pptx:     has("-AnswerKey.pptx"),
+    ak_pdf:      has("-AnswerKey.pdf"),
   };
-  const res = await ghRequest("PUT", filePath, body);
-  if (res.status !== 200 && res.status !== 201) {
-    throw new Error(`Failed to push ${filePath}: HTTP ${res.status} — ${JSON.stringify(res.body)}`);
-  }
-  return res.body;
+  const complete=category==="overview"
+    ?parts.course_pptx&&parts.course_pdf
+    :parts.course_pptx&&parts.course_pdf&&parts.test_html&&parts.ak_pptx&&parts.ak_pdf;
+
+  return {base,label,hours,authority,category,notes,parts,complete};
 }
 
-// ── File detection logic ──────────────────────────────────────────────────────
-// Given the list of filenames in the repo, determine which parts each module has.
-function detectModuleParts(registry, repoFiles) {
-  const fileSet = new Set(repoFiles);
-
-  return registry.map((mod) => {
-    const base = mod.key;
-    const parts = {
-      course_pptx:  fileSet.has(`${base}.pptx`),
-      course_pdf:   fileSet.has(`${base}.pdf`),
-      test_html:    fileSet.has(`${base}-Test.html`),
-      ak_pptx:      fileSet.has(`${base}-AnswerKey.pptx`),
-      ak_pdf:       fileSet.has(`${base}-AnswerKey.pdf`),
-    };
-    const complete =
-      mod.category === "overview"
-        ? parts.course_pptx && parts.course_pdf
-        : parts.course_pptx && parts.course_pdf &&
-          parts.test_html   && parts.ak_pptx    && parts.ak_pdf;
-    return { ...mod, parts, complete };
+// ─────────────────────────────────────────────────────────────────────────────
+// MODULE NUMBERING
+// Assigns numbers by category priority then BSIS canonical order within category.
+// Stable as long as filenames don't change.
+// ─────────────────────────────────────────────────────────────────────────────
+function assignNumbers(modules) {
+  const sorted=[...modules].sort((a,b)=>{
+    const ao=CAT_ORDER.indexOf(a.category), bo=CAT_ORDER.indexOf(b.category);
+    if(ao!==bo)return ao-bo;
+    const ai=CANONICAL.indexOf(a.base), bi=CANONICAL.indexOf(b.base);
+    if(ai!==-1&&bi!==-1)return ai-bi;
+    if(ai!==-1)return -1;
+    if(bi!==-1)return 1;
+    return a.label.localeCompare(b.label);
   });
+  let n=1;
+  return sorted.map(m=>m.category==="overview"?{...m,num:0}:{...m,num:n++});
 }
 
-// ── Unregistered file detector ─────────────────────────────────────────────────
-// Any .pptx or .html file in the repo that is NOT covered by the registry is flagged.
-function findUnregisteredFiles(registry, repoFiles) {
-  const knownBases = new Set(registry.map((m) => m.key));
-  const unregistered = [];
-  for (const fname of repoFiles) {
-    if (fname === "README.md") continue;
-    // Strip known suffixes to get the base
-    const base = fname
-      .replace(/-AnswerKey\.(pptx|pdf)$/, "")
-      .replace(/-Test\.(html|pptx|pdf)$/, "")
-      .replace(/\.(pptx|pdf|html)$/, "");
-    if (!knownBases.has(base)) {
-      unregistered.push(fname);
-    }
-  }
-  return [...new Set(unregistered)];
-}
-
-// ── Training hours summary ─────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// README BUILDER
+// ─────────────────────────────────────────────────────────────────────────────
 function buildHoursSummary(modules) {
-  const cats = {
-    preregistration: { label: "Pre-Registration (PTA + AUF)", mods: [], hrs: 0 },
-    mandatory:       { label: "Mandatory Skills",              mods: [], hrs: 0 },
-    elective:        { label: "Elective Skills",               mods: [], hrs: 0 },
-    overview:        { label: "Overview / Reference",          mods: [], hrs: 0 },
-  };
-  for (const mod of modules) {
-    if (!mod.complete) continue;
-    const h = parseFloat(mod.hours);
-    cats[mod.category].mods.push(mod);
-    if (!isNaN(h)) cats[mod.category].hrs += h;
+  const cats={};
+  for(const c of CAT_ORDER)cats[c]={mods:[],hrs:0};
+  for(const m of modules){
+    if(!m.complete||m.category==="overview")continue;
+    const h=parseFloat(m.hours);
+    cats[m.category].mods.push(m);
+    if(!isNaN(h))cats[m.category].hrs+=h;
   }
-  const rows = Object.values(cats)
-    .filter((c) => c.mods.length > 0)
-    .map((c) => `| ${c.label} | ${c.mods.length} | ${c.hrs > 0 ? c.hrs + " hrs" : "—"} |`)
-    .join("\n");
-  const total = Object.values(cats).reduce((a, c) => a + c.hrs, 0);
-  return rows + `\n| **Total Hours Covered** | **${modules.filter(m=>m.complete && m.category!=="overview").length}** | **${total} hrs** |`;
+  const rows=CAT_ORDER.filter(c=>c!=="overview"&&cats[c].mods.length>0).map(c=>{
+    const lbl=CAT_DISPLAY[c].heading.replace("## ","");
+    return `| ${lbl} | ${cats[c].mods.length} | ${cats[c].hrs} hrs |`;
+  });
+  const totalHrs=Object.values(cats).reduce((a,c)=>a+c.hrs,0);
+  const totalMods=modules.filter(m=>m.complete&&m.category!=="overview").length;
+  rows.push(`| **TOTAL** | **${totalMods} modules** | **${totalHrs} hrs** |`);
+  return rows.join("\n");
 }
 
-// ── README generator ───────────────────────────────────────────────────────────
-function buildReadme(modules, unregistered) {
-  const today  = new Date().toISOString().slice(0, 10);
-  const catOrder = ["preregistration", "mandatory", "elective", "overview"];
+function buildReadme(modules) {
+  const today=new Date().toISOString().slice(0,10);
+  const byCat={};
+  for(const c of CAT_ORDER)byCat[c]=[];
+  for(const m of modules)byCat[m.category].push(m);
 
-  const catHeaders = {
-    preregistration: "## PRE-REGISTRATION TRAINING\n> Required before guard card application. Must be completed within 6 months of application date by a single BSIS-approved provider per SB 652 (eff. Jan 1, 2026). Exam: 100% passing score required.",
-    mandatory:       "## MANDATORY SKILLS TRAINING\n> BPC §7583.6(b): All 4 mandatory courses required within 6 months of registration. First 2 must be completed within 30 days.",
-    elective:        "## ELECTIVE SKILLS TRAINING\n> Count toward the 32-hour total skills requirement (BPC §7583.6(b)). Guards may choose from any approved elective topics.",
-    overview:        "## OVERVIEW & REFERENCE",
-  };
+  let body="";
+  for(const cat of CAT_ORDER){
+    const mods=byCat[cat];
+    if(mods.length===0)continue;
+    const {heading,rule}=CAT_DISPLAY[cat];
+    body+=`\n${heading}\n\n${rule}\n\n`;
 
-  let sections = "";
-  for (const cat of catOrder) {
-    const catMods = modules
-      .filter((m) => m.category === cat)
-      .sort((a, b) => a.num - b.num);
-    if (catMods.length === 0) continue;
+    for(const mod of mods){
+      const pad=mod.num===0?"00":String(mod.num).padStart(2,"0");
+      const status=mod.complete?"✅ Complete":"⚠️ Incomplete";
+      body+=`---\n\n`;
+      body+=`### Module ${pad} — ${mod.label}\n\n`;
+      body+=`| | |\n|---|---|\n`;
+      body+=`| **Status** | ${status} |\n`;
+      body+=`| **Hours** | ${mod.hours} |\n`;
+      body+=`| **Authority** | \`${mod.authority}\` |\n`;
+      if(mod.notes)body+=`| **Note** | ${mod.notes} |\n`;
+      body+=`\n`;
 
-    sections += `\n${catHeaders[cat]}\n\n`;
-
-    for (const mod of catMods) {
-      const num   = mod.num === 0 ? "—" : String(mod.num);
-      const numPad = mod.num === 0 ? "—" : mod.num.toString().padStart(2, "0");
-      const status = mod.complete ? "✅ Complete" : "⚠️ Incomplete";
-
-      sections += `---\n\n`;
-      sections += `### Module ${numPad} — ${mod.label}\n\n`;
-      sections += `| Field | Value |\n`;
-      sections += `|-------|-------|\n`;
-      sections += `| **Status** | ${status} |\n`;
-      sections += `| **Training Hours** | ${mod.hours} |\n`;
-      sections += `| **Authority** | \`${mod.authority}\` |\n`;
-      sections += `| **Category** | ${cat.charAt(0).toUpperCase() + cat.slice(1)} |\n`;
-      if (mod.notes) sections += `| **Note** | ${mod.notes} |\n`;
-      sections += `\n`;
-
-      if (mod.category === "overview") {
-        // Overview: no 1a/1b/1c structure — just the two files
-        sections += `| File | Description | Available |\n`;
-        sections += `|------|-------------|:---------:|\n`;
-        sections += `| \`${mod.key}.pptx\` | Reference Deck (PowerPoint) | ${mod.parts.course_pptx ? "✅" : "❌"} |\n`;
-        sections += `| \`${mod.key}.pdf\`  | Reference Deck (PDF)        | ${mod.parts.course_pdf  ? "✅" : "❌"} |\n`;
-        sections += `\n`;
+      if(cat==="overview"){
+        body+=`| File | |\n|------|:---:|\n`;
+        body+=`| \`${mod.base}.pptx\` — Reference Deck (PowerPoint) | ${mod.parts.course_pptx?"✅":"❌"} |\n`;
+        body+=`| \`${mod.base}.pdf\` — Reference Deck (PDF) | ${mod.parts.course_pdf?"✅":"❌"} |\n\n`;
       } else {
-        // Standard: 1a / 1b / 1c
-        sections += `#### ${numPad}a — Course Module (PowerPoint + PDF)\n\n`;
-        sections += `| File | Available |\n`;
-        sections += `|------|-----------|\n`;
-        sections += `| \`${mod.key}.pptx\` | ${mod.parts.course_pptx ? "✅" : "❌"} |\n`;
-        sections += `| \`${mod.key}.pdf\`  | ${mod.parts.course_pdf  ? "✅" : "❌"} |\n`;
-        sections += `\n`;
-
-        sections += `#### ${numPad}b — Assessment / Test (Interactive HTML)\n\n`;
-        sections += `| File | Available |\n`;
-        sections += `|------|-----------|\n`;
-        sections += `| \`${mod.key}-Test.html\` | ${mod.parts.test_html ? "✅" : "❌"} |\n`;
-        sections += `\n`;
-        sections += `> Online assessment — one question at a time, instant feedback with legal citation, live score tracking by module, 100% required to pass, print-ready Certificate of Completion on pass, BSIS Live Scan stub included.\n\n`;
-
-        sections += `#### ${numPad}c — Answer Key (Instructor Copy — Confidential)\n\n`;
-        sections += `| File | Available |\n`;
-        sections += `|------|-----------|\n`;
-        sections += `| \`${mod.key}-AnswerKey.pptx\` | ${mod.parts.ak_pptx ? "✅" : "❌"} |\n`;
-        sections += `| \`${mod.key}-AnswerKey.pdf\`  | ${mod.parts.ak_pdf  ? "✅" : "❌"} |\n`;
-        sections += `\n`;
-        sections += `> Internal use only. Includes quick-reference answer grid, full Q&A with correct answers highlighted, and scoring/compliance guide. Do not distribute to students.\n\n`;
+        // 1a
+        body+=`#### ${pad}a — Course Module\n\n`;
+        body+=`| File | |\n|------|:---:|\n`;
+        body+=`| \`${mod.base}.pptx\` | ${mod.parts.course_pptx?"✅":"❌"} |\n`;
+        body+=`| \`${mod.base}.pdf\` | ${mod.parts.course_pdf?"✅":"❌"} |\n\n`;
+        // 1b
+        body+=`#### ${pad}b — Assessment\n\n`;
+        body+=`| File | |\n|------|:---:|\n`;
+        body+=`| \`${mod.base}-Test.html\` | ${mod.parts.test_html?"✅":"❌"} |\n\n`;
+        body+=`> Interactive browser assessment — one question at a time, instant feedback with legal citation, live score by module, 100% to pass, printable Certificate of Completion, BSIS Live Scan stub.\n\n`;
+        // 1c
+        body+=`#### ${pad}c — Answer Key *(Instructor Copy — Confidential)*\n\n`;
+        body+=`| File | |\n|------|:---:|\n`;
+        body+=`| \`${mod.base}-AnswerKey.pptx\` | ${mod.parts.ak_pptx?"✅":"❌"} |\n`;
+        body+=`| \`${mod.base}-AnswerKey.pdf\` | ${mod.parts.ak_pdf?"✅":"❌"} |\n\n`;
+        body+=`> Internal instructor use only. Quick-reference answer grid, full Q&A, scoring guide. Do not distribute to students.\n\n`;
       }
     }
-  }
-
-  // Unregistered files section
-  let unregSection = "";
-  if (unregistered.length > 0) {
-    unregSection = `\n---\n\n## ⚠️ UNREGISTERED FILES\nThe following files are in final-projects/ but are not in the module registry in \`update_readme.js\`. Add them to MODULE_REGISTRY to include them in the README.\n\n`;
-    for (const f of unregistered) {
-      unregSection += `- \`${f}\`\n`;
-    }
-    unregSection += `\n`;
   }
 
   return `# PSLAW-Courses / final-projects
 ## MACCESS INC. — BSIS Security Guard Licensing Course Suite
 
-**PPO License:** \`#122729\` | **Provider:** Private Security LA Worldwide (PSLAW)
+**PPO License:** \`#122729\` &nbsp;|&nbsp; **Provider:** Private Security LA Worldwide (PSLAW)
 **Authority:** BPC §7583.6 | §7583.7 | §7585.9 | Title 16 CCR §643(b)
-**Source of truth:** [bsis.ca.gov/industries/g_train.shtml](https://www.bsis.ca.gov/industries/g_train.shtml)
-**Last updated:** ${today} (auto-generated by \`PSLAW-Courses/scripts/update_readme.js\`)
+**Source:** [bsis.ca.gov/industries/g_train.shtml](https://www.bsis.ca.gov/industries/g_train.shtml)
+**Last updated:** ${today} *(auto-generated — do not edit manually)*
 
 ---
 
-## HOW THIS FOLDER IS ORGANIZED
+## MODULE STRUCTURE — Every Completed Module
 
-Every completed module follows the **1a / 1b / 1c** structure:
+| Sub-file | Contents |
+|----------|----------|
+| **[Module]a** | \`[Base].pptx\` + \`[Base].pdf\` — Branded course PowerPoint and PDF |
+| **[Module]b** | \`[Base]-Test.html\` — Interactive browser assessment |
+| **[Module]c** | \`[Base]-AnswerKey.pptx\` + \`[Base]-AnswerKey.pdf\` — Instructor answer key (confidential) |
 
-| Sub-file | Description |
-|----------|-------------|
-| **[Module]a** — \`[Base].pptx\` + \`[Base].pdf\` | Branded course PowerPoint and PDF |
-| **[Module]b** — \`[Base]-Test.html\` | Interactive browser-based assessment |
-| **[Module]c** — \`[Base]-AnswerKey.pptx\` + \`[Base]-AnswerKey.pdf\` | Instructor answer key (confidential) |
-
-To add a new module: push all five files to this folder, then run:
-\`\`\`bash
-GITHUB_TOKEN=your_token node PSLAW-Courses/scripts/update_readme.js
-\`\`\`
+The README updates itself automatically every time a new module is built and pushed. No manual steps required.
 
 ---
 
 ## TRAINING HOURS SUMMARY
 
 | Category | Modules Complete | Hours |
-|----------|:----------------:|-------|
+|----------|:----------------:|:-----:|
 ${buildHoursSummary(modules)}
 
-> **Remaining to reach 40-hour BSIS requirement:** guards must complete additional electives to reach 32 total skills hours. The 8-hour PTA/AUF pre-registration counts separately.
-
 ---
-${sections}${unregSection}---
+${body}
+---
 
-## CERTIFICATE COMPLIANCE (Title 16 CCR §643(b))
+## CERTIFICATE COMPLIANCE — Title 16 CCR §643(b)
 
 Every MACCESS INC. Certificate of Completion must include:
 
@@ -412,17 +434,9 @@ Every MACCESS INC. Certificate of Completion must include:
 
 ## LIVE SCAN INTEGRATION
 
-Live Scan fingerprinting stub is embedded in all \`-Test.html\` files.
-Activation when BSIS equipment and DOJ ORI are received:
+All \`-Test.html\` files include a Live Scan stub — inactive until DOJ equipment and ORI arrive.
 
-1. Drop BSIS cert template → \`PSLAW-Courses/live-scan/bsis_livescan_cert_template.pdf\`
-2. Edit \`PSLAW-Courses/scripts/build_interactive_test_v2.js\` → update \`LIVE_SCAN_CONFIG\`:
-   - \`enabled: true\`
-   - \`bsisORI: "CA________"\` (your DOJ-issued ORI)
-   - \`atiPrefix: "ATG-____"\` (your ATI prefix)
-   - \`showUploadSlot: true\`
-3. Rebuild the relevant module's HTML test and push
-4. See \`PSLAW-Courses/live-scan/README.md\` for full checklist
+**Activation:** \`PSLAW-Courses/live-scan/README.md\`
 
 ---
 
@@ -430,95 +444,66 @@ Activation when BSIS equipment and DOJ ORI are received:
 `;
 }
 
-// ── Main ───────────────────────────────────────────────────────────────────────
-async function main() {
-  console.log("\nMACCESS INC. — README Auto-Updater");
-  console.log("Repo:", REPO);
-  console.log("Path:", PATH);
-  console.log("─".repeat(50));
+// ─────────────────────────────────────────────────────────────────────────────
+// MAIN EXPORT — called from build scripts automatically after every push
+// ─────────────────────────────────────────────────────────────────────────────
+async function autoUpdateReadme(token) {
+  console.log("\n  📋 Auto-updating README...");
+  const items    = await listFolder(DIR, token);
+  const raw      = groupFiles(items.map(f=>f.name));
+  const enriched = raw.map(enrich);
+  const modules  = assignNumbers(enriched);
 
-  // 1. Fetch current file list from repo
-  console.log("\n1. Scanning final-projects/...");
-  const repoItems = await listFolder(PATH);
-  const repoFiles = repoItems.map((f) => f.name);
-  console.log(`   Found ${repoFiles.length} files`);
+  const complete   = modules.filter(m=>m.complete);
+  const incomplete = modules.filter(m=>!m.complete);
+  console.log(`     Detected ${modules.length} modules (${complete.length} complete${incomplete.length?", "+incomplete.length+" incomplete":""})`);
 
-  // 2. Detect which modules are present and which parts each has
-  console.log("\n2. Matching files to module registry...");
-  const modules = detectModuleParts(MODULE_REGISTRY, repoFiles);
-  const complete = modules.filter((m) => m.complete);
-  const incomplete = modules.filter((m) => !m.complete);
-
-  console.log(`   ✅ Complete modules: ${complete.length}`);
-  complete.forEach((m) =>
-    console.log(`      • Module ${String(m.num).padStart(2,"0")} — ${m.label}`)
-  );
-
-  if (incomplete.length > 0) {
-    console.log(`   ⚠️  Incomplete modules: ${incomplete.length}`);
-    incomplete.forEach((m) => {
-      const missing = [];
-      if (!m.parts.course_pptx) missing.push("course.pptx");
-      if (!m.parts.course_pdf)  missing.push("course.pdf");
-      if (m.category !== "overview") {
-        if (!m.parts.test_html) missing.push("Test.html");
-        if (!m.parts.ak_pptx)  missing.push("AnswerKey.pptx");
-        if (!m.parts.ak_pdf)   missing.push("AnswerKey.pdf");
+  if(incomplete.length>0){
+    incomplete.forEach(m=>{
+      const miss=[];
+      if(!m.parts.course_pptx)miss.push("pptx");
+      if(!m.parts.course_pdf) miss.push("pdf");
+      if(m.category!=="overview"){
+        if(!m.parts.test_html)miss.push("Test.html");
+        if(!m.parts.ak_pptx) miss.push("AnswerKey.pptx");
+        if(!m.parts.ak_pdf)  miss.push("AnswerKey.pdf");
       }
-      console.log(`      • ${m.label}: missing [${missing.join(", ")}]`);
+      console.log(`     ⚠️  Incomplete: ${m.label} — missing [${miss.join(", ")}]`);
     });
   }
 
-  // 3. Flag any unregistered files
-  const unregistered = findUnregisteredFiles(MODULE_REGISTRY, repoFiles);
-  if (unregistered.length > 0) {
-    console.log(`\n   ⚠️  Unregistered files (not in MODULE_REGISTRY):`);
-    unregistered.forEach((f) => console.log(`      - ${f}`));
-  }
-
-  // 4. Build README content
-  console.log("\n3. Generating README...");
-  const readmeContent = buildReadme(modules, unregistered);
-  console.log(`   Generated ${readmeContent.length.toLocaleString()} characters`);
-
-  // 5. Get current SHA (needed to update existing file)
-  console.log("\n4. Fetching current README SHA...");
-  const sha = await getFileSHA(`${PATH}/README.md`);
-  console.log(`   SHA: ${sha || "(new file)"}`);
-
-  // 6. Push updated README
-  console.log("\n5. Pushing README.md to GitHub...");
+  const readme   = buildReadme(modules);
+  const rmSHA    = await getSHA(`${DIR}/README.md`, token);
   await putFile(
-    `${PATH}/README.md`,
-    readmeContent,
+    `${DIR}/README.md`, readme,
     `docs: auto-update README — ${complete.filter(m=>m.category!=="overview").length} modules, ${new Date().toISOString().slice(0,10)}`,
-    sha
+    rmSHA, token
   );
-  console.log("   ✅ README.md updated successfully");
+  console.log(`     ✅ README.md updated — ${modules.filter(m=>m.category!=="overview").length} modules indexed`);
 
-  // 7. Also push updated script to repo so it lives alongside the courses
-  console.log("\n6. Pushing update_readme.js to scripts/...");
-  const fs   = require("fs");
-  const self = fs.readFileSync(__filename, "utf-8");
-  const scriptSHA = await getFileSHA("PSLAW-Courses/scripts/update_readme.js");
-  await putFile(
-    "PSLAW-Courses/scripts/update_readme.js",
-    self,
-    `chore: update README auto-updater script`,
-    scriptSHA
-  );
-  console.log("   ✅ update_readme.js pushed to PSLAW-Courses/scripts/");
+  // Self-sync script to repo
+  const fs      = require("fs");
+  const self    = fs.readFileSync(__filename,"utf-8");
+  const scriptSHA = await getSHA("PSLAW-Courses/scripts/update_readme.js", token);
+  await putFile("PSLAW-Courses/scripts/update_readme.js", self, "chore: sync README updater script", scriptSHA, token);
+  console.log("     ✅ update_readme.js synced to repo");
 
-  console.log("\n" + "─".repeat(50));
-  console.log("Done. README reflects current repo state.");
-  console.log("\nTo add a new module:");
-  console.log("  1. Push [Base].pptx, [Base].pdf, [Base]-Test.html,");
-  console.log("     [Base]-AnswerKey.pptx, [Base]-AnswerKey.pdf to final-projects/");
-  console.log("  2. Add one entry to MODULE_REGISTRY in update_readme.js");
-  console.log("  3. Run: GITHUB_TOKEN=your_token node update_readme.js\n");
+  return modules;
 }
 
-main().catch((err) => {
-  console.error("\nFATAL:", err.message || err);
-  process.exit(1);
-});
+// ─────────────────────────────────────────────────────────────────────────────
+// STANDALONE MODE
+// ─────────────────────────────────────────────────────────────────────────────
+if(require.main===module){
+  const token=process.env.GITHUB_TOKEN;
+  if(!token){console.error("Error: GITHUB_TOKEN not set.");process.exit(1);}
+  console.log(`\nMACCESS INC. — README Auto-Updater | Repo: ${REPO}`);
+  autoUpdateReadme(token)
+    .then(mods=>{
+      const done=mods.filter(m=>m.complete&&m.category!=="overview").length;
+      console.log(`\nDone. ${done} modules fully indexed.\n`);
+    })
+    .catch(err=>{console.error("\nFATAL:",err.message||err);process.exit(1);});
+}
+
+module.exports={autoUpdateReadme};
