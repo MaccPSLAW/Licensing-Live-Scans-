@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Baton Certification Assessment | MACCESS INC.</title>
+<style>
+:root{--n:#1B2B5E;--g:#C9A84C;--r:#8B1A1A;--ok:#1A5C3A;--l:#F4F6FB;--gr:#4A5568;--am:#7B4500;}
+*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Segoe UI',Arial,sans-serif;background:var(--l);color:#1A1A2E;}
+.hd{background:var(--n);color:#fff;padding:14px 28px;display:flex;justify-content:space-between;align-items:center;}
+.hl{font-size:20px;font-weight:700;}.hm{font-size:11px;color:#CADCFC;text-align:right;line-height:1.55;}
+.gb{height:5px;background:var(--g);}
+.sc{display:none;max-width:860px;margin:0 auto;padding:26px 18px;}.sc.on{display:block;}
+.cd{background:#fff;border-radius:10px;border:1px solid #dde4f0;padding:30px 38px;margin-top:20px;}
+.cd h1{font-size:22px;color:var(--n);margin-bottom:6px;}.sub{color:var(--gr);font-size:13px;margin-bottom:18px;}
+.ig{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:18px;}
+.ic{background:var(--l);border-radius:8px;padding:11px 14px;}.ib{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--gr);margin-bottom:2px;}.iv{font-size:16px;font-weight:700;color:var(--n);}
+.wn{background:#FFF8E1;border-radius:8px;padding:12px 15px;font-size:13px;color:#7B4F00;margin-bottom:14px;line-height:1.65;}
+.wn2{background:#FFECEC;border-radius:8px;padding:12px 15px;font-size:13px;color:var(--r);margin-bottom:14px;line-height:1.65;}
+.fl{display:block;font-size:12px;font-weight:600;color:var(--gr);margin:11px 0 4px;}
+input[type=text],input[type=email]{width:100%;padding:9px 12px;border:1.5px solid #D0D8E8;border-radius:8px;font-size:14px;outline:none;transition:border .2s;}input:focus{border-color:var(--n);}
+.btn{display:block;width:100%;padding:11px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;border:none;margin-top:14px;text-align:center;}
+.bp{background:var(--n);color:#fff;}.bg{background:var(--g);color:var(--n);}.bo{background:#fff;color:var(--n);border:1.5px solid var(--n);}.bs{display:inline-block;width:auto;padding:9px 20px;}
+.pw{background:#fff;border-radius:10px;padding:12px 16px;margin-bottom:14px;border:1px solid #dde4f0;display:flex;align-items:center;gap:12px;}
+.pb{flex:1;height:8px;background:#E8EDF6;border-radius:4px;overflow:hidden;}.pf{height:100%;background:var(--n);border-radius:4px;transition:width .3s;}.pt{font-size:12px;color:var(--gr);white-space:nowrap;}
+.mb{background:var(--l);border:1px solid #D0D8E8;border-radius:6px;padding:4px 10px;font-size:10px;font-weight:600;color:var(--n);margin-bottom:8px;display:inline-block;}.rf{font-size:10px;color:var(--gr);margin-left:6px;font-style:italic;}
+.qc{background:#fff;border-radius:10px;border:1px solid #dde4f0;padding:22px 26px;margin-bottom:14px;}
+.qn{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g);margin-bottom:7px;}.qt{font-size:15px;font-weight:600;line-height:1.5;margin-bottom:16px;}
+.opts{display:flex;flex-direction:column;gap:8px;}
+.op{display:flex;align-items:center;gap:10px;padding:9px 13px;border:1.5px solid #D0D8E8;border-radius:8px;cursor:pointer;font-size:13px;transition:all .15s;}
+.op:hover{border-color:var(--n);background:#F0F4FB;}.op.sl{border-color:var(--n);background:#EBF0FB;}.op.ok{border-color:var(--ok)!important;background:#EAF3DE!important;color:var(--ok);}.op.no{border-color:var(--r)!important;background:#FCEBEB!important;color:var(--r);}
+.ol{width:26px;height:26px;border-radius:50%;background:var(--l);font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--n);border:1.5px solid #D0D8E8;}
+.op.sl .ol{background:var(--n);color:#fff;border-color:var(--n);}.op.ok .ol{background:var(--ok);color:#fff;border-color:var(--ok);}.op.no .ol{background:var(--r);color:#fff;border-color:var(--r);}
+.fb{margin-top:11px;padding:9px 13px;border-radius:8px;font-size:13px;line-height:1.6;}.fb-ok{background:#EAF3DE;color:var(--ok);}.fb-no{background:#FCEBEB;color:var(--r);}
+.nr{display:flex;justify-content:space-between;align-items:center;margin-top:8px;}
+.bn{padding:9px 20px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;}.bn-o{background:#fff;color:var(--n);border:1.5px solid var(--n);}.bn-p{background:var(--n);color:#fff;border:none;}
+/* Vital areas section */
+.va-section{background:#fff;border-radius:10px;border:2px solid var(--r);padding:24px 28px;margin-top:20px;}
+.va-title{font-size:17px;font-weight:700;color:var(--r);margin-bottom:6px;}
+.va-sub{font-size:13px;color:var(--gr);margin-bottom:18px;line-height:1.6;}
+.va-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.va-item{display:flex;flex-direction:column;gap:4px;}
+.va-label{font-size:11px;font-weight:700;color:var(--n);text-transform:uppercase;letter-spacing:.06em;}
+.va-input{padding:8px 11px;border:1.5px solid #D0D8E8;border-radius:7px;font-size:13px;outline:none;}
+.va-input:focus{border-color:var(--r);}
+.va-input.va-ok{border-color:var(--ok);background:#EAF3DE;}
+.va-input.va-no{border-color:var(--r);background:#FCEBEB;}
+/* Results */
+.rc{background:#fff;border-radius:10px;border:1px solid #dde4f0;padding:34px 38px;margin-top:20px;text-align:center;}
+.sr{width:130px;height:130px;border-radius:50%;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;flex-direction:column;font-size:28px;font-weight:700;}
+.sr-ok{background:#EAF3DE;color:var(--ok);border:4px solid var(--ok);}.sr-no{background:#FCEBEB;color:var(--r);border:4px solid var(--r);}
+.sl2{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-top:2px;}
+.r2{font-size:21px;font-weight:700;margin-bottom:7px;}.rp{color:var(--ok);}.rn{color:var(--r);}
+.rs{color:var(--gr);font-size:13px;margin-bottom:20px;line-height:1.6;}
+.score-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;text-align:left;}
+.sc2{background:var(--l);border-radius:8px;padding:14px 16px;}.sc2 .sl3{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gr);margin-bottom:4px;}.sc2 .sv{font-size:22px;font-weight:700;}
+.sv-ok{color:var(--ok);}.sv-no{color:var(--r);}
+.bd{background:var(--l);border-radius:8px;padding:15px 18px;margin-bottom:20px;text-align:left;}
+.bd h3{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--n);margin-bottom:9px;}
+.br{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #dde4f0;font-size:13px;}.br:last-child{border-bottom:none;}
+.sp{color:var(--ok);font-weight:600;}.sf{color:var(--r);font-weight:600;}
+.brow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:14px;}
+.bn2{background:#EBF0FB;border-radius:8px;padding:11px 14px;font-size:12px;color:var(--n);line-height:1.6;text-align:left;}
+@media print{.np{display:none!important;}.sc{padding:0;max-width:100%;}}
+.cw{background:#fff;border:3px double var(--n);border-radius:4px;padding:40px 48px;margin:20px 0;text-align:center;position:relative;}.cw::before{content:'';position:absolute;inset:8px;border:1px solid var(--g);border-radius:2px;pointer-events:none;}
+.ch{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--n);margin-bottom:5px;}
+.cc{font-size:21px;font-weight:700;color:var(--n);margin-bottom:2px;}.cp{font-size:11px;color:var(--gr);margin-bottom:20px;}
+.cn{font-size:27px;font-weight:700;color:var(--n);border-bottom:2px solid var(--n);display:inline-block;min-width:260px;padding-bottom:3px;margin-bottom:14px;}
+.cb{font-size:13px;color:var(--gr);line-height:1.8;margin-bottom:4px;}.cco{font-size:15px;font-weight:700;color:var(--n);margin-bottom:11px;}
+.csb{display:inline-block;background:#EAF3DE;color:var(--ok);border-radius:6px;padding:4px 13px;font-size:12px;font-weight:600;margin-bottom:12px;}
+.cno{display:block;background:#FFF8E1;color:var(--am);border-radius:6px;padding:6px 13px;font-size:11px;margin-bottom:18px;line-height:1.5;}
+.cgb{height:5px;background:var(--g);border-radius:3px;margin:14px 0;}
+.css{display:flex;justify-content:space-around;margin-top:24px;gap:16px;}.csi{flex:1;text-align:center;}.csi .ln{border-top:1.5px solid var(--n);margin-bottom:4px;}.csi .sl3{font-size:11px;color:var(--gr);}
+.ft{background:var(--n);color:#CADCFC;text-align:center;padding:12px;font-size:11px;margin-top:30px;}
+</style></head><body>
+<div class="hd"><div class="hl">MACCESS INC.</div><div class="hm">PPO License #122729 | BSIS Baton Certification<br/>Secure Written Assessment</div></div>
+<div class="gb"></div>
+
+<!-- COVER -->
+<div class="sc on" id="sc-cover"><div class="cd">
+  <h1>Baton Certification — BSIS Written Examination</h1>
+  <div class="sub">BSIS Certified Baton Training | MACCESS INC. | BPC §§7583.33 | 7585.9</div>
+  <div class="ig">
+    <div class="ic"><div class="ib">Questions</div><div class="iv">33</div></div>
+    <div class="ic"><div class="ib">Pass (Written)</div><div class="iv">20 / 24</div></div>
+    <div class="ic"><div class="ib">Authority</div><div class="iv" style="font-size:11px;">BPC §7585.13</div></div>
+  </div>
+  <div class="wn">&#9888; <strong>BSIS Passing Standard:</strong> You must score <strong>at least 20 out of the 24 official exam questions</strong> AND correctly identify all <strong>7 vital areas</strong> of the body. Both conditions must be met. This assessment includes all 24 official BSIS questions plus supplemental curriculum questions.</div>
+  <div class="wn2">&#128274; <strong>Compliance Notice:</strong> The full 8-hour Baton Permit course and issuance of a BSIS Baton Permit requires a BSIS-certified Baton Training Facility (TFB license) and BSIS-certified Baton Instructor. MACCESS INC. must obtain TFB certification before issuing baton permits.</div>
+  <label class="fl">Full Legal Name * (as it appears on your guard registration)</label>
+  <input type="text" id="iname" placeholder="First Middle Last"/>
+  <label class="fl">Guard Registration Number *</label>
+  <input type="text" id="ireg" placeholder="CA-XXXXXXXX"/>
+  <label class="fl">Email Address *</label>
+  <input type="email" id="iemail" placeholder="your@email.com"/>
+  <label class="fl">Date</label>
+  <input type="text" id="idate" value="June 28, 2026" readonly/>
+  <button class="btn bp" onclick="start()">Begin Written Examination &#8594;</button>
+</div></div>
+
+<!-- TEST -->
+<div class="sc" id="sc-test">
+  <div class="pw"><div class="pb"><div class="pf" id="pf" style="width:0%"></div></div><div class="pt" id="pt">Q 1 of 33</div></div>
+  <div id="qa"></div>
+  <div class="nr">
+    <button class="bn bn-o" id="bprev" onclick="prev()" style="display:none">&#8592; Previous</button>
+    <button class="bn bn-p" id="bnext" onclick="nxt()">Next &#8594;</button>
+  </div>
+</div>
+
+<!-- VITAL AREAS SECTION -->
+<div class="sc" id="sc-vital">
+  <div class="va-section">
+    <div class="va-title">&#9888; Vital Areas Identification — Required for Passing</div>
+    <div class="va-sub">Per BSIS Baton Training Manual, you must correctly identify all <strong>7 vital areas</strong> of the body that must be avoided when using a baton (unless facing imminent death or serious bodily injury). Enter the full name of each vital area in the boxes below. Partial credit is not awarded — all 7 must be correctly identified.</div>
+    <div class="va-grid" id="va-grid"></div>
+    <button class="btn bp" onclick="submitVital()" style="margin-top:18px">Submit Vital Areas &#8594;</button>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div class="sc" id="sc-res"><div class="rc">
+  <div class="sr" id="sring"><span id="spct"></span><span class="sl2" id="slbl">Score</span></div>
+  <div class="r2" id="rtitle"></div><div class="rs" id="rsub"></div>
+  <div class="score-grid" id="sgrid"></div>
+  <div class="bd" id="bdown"></div>
+  <div class="brow" id="rbtns"></div>
+  <div class="bn2" id="rbsis"></div>
+</div></div>
+
+<!-- CERTIFICATE -->
+<div class="sc" id="sc-cert">
+  <div class="np" style="text-align:center;margin-bottom:14px;display:flex;gap:10px;justify-content:center;">
+    <button class="btn bg bs" onclick="window.print()">&#128438; Print Certificate</button>
+    <button class="btn bo bs" onclick="show('sc-res')">&#8592; Results</button>
+  </div>
+  <div class="cw" id="ca"></div>
+</div>
+
+<div class="ft">MACCESS INC. | Private Security LA Worldwide (PSLAW) | PPO License #122729 | BSIS Baton Certification | BPC §§7583.33 | 7585.9</div>
+
+<script>
+const QS=JSON.parse(`[{"module":"Legal Responsibility","ref":"BPC §7583.33 | PC §22001","q":"If you use your baton, you should remember that you might be required to justify your actions in:","options":["Criminal court only","Civil court only","To your employer only","All of the above — criminal court, civil court, and to your employer"],"answer":3},{"module":"Vital Areas","ref":"BSIS Baton Manual Ch. 5","q":"A baton strike to the head, throat, or spine:","options":["Is usually fatal","Could be fatal","Always causes paralysis","Is always fatal"],"answer":1},{"module":"Permit Requirements","ref":"BPC §7583.33 | PC §22001","q":"A guard who carries a baton without a baton permit may be:","options":["Fined \$100 by the Bureau for the first offense","Fined \$200 by the Bureau for the second and all future offenses","Charged with a criminal violation of Penal Code §22001 (formerly §12020(a)), which is a felony","All of the above"],"answer":3},{"module":"Continuing Education","ref":"BSIS Baton Policy","q":"The Bureau encourages continuous baton training so that you may carry the baton with confidence to effectively and legally defend yourself.","options":["True","False"],"answer":0},{"module":"Use of Force — Target Areas","ref":"BSIS Baton Manual Ch. 5","q":"During a non-life-threatening situation, the baton should not be used to strike above the:","options":["Waist","Shoulders","Groin","Knees"],"answer":1},{"module":"PPO Liability","ref":"BPC §7585.19","q":"If a private patrol operator allows you to carry a baton before you complete baton training and receive a baton permit, the company may be fined by the Bureau in the amount of:","options":["\$100","\$300","\$2,500","Nothing — the PPO's license is automatically revoked"],"answer":2},{"module":"De-escalation","ref":"BSIS Baton Manual Ch. 2","q":"When you are first confronted with a situation that could escalate, you should first consider:","options":["Arresting the suspect without getting hurt","Looking for a telephone to call for help","Remaining calm and attempting to control the situation by talking to the person","Finding a witness"],"answer":2},{"module":"Tactical Response","ref":"BSIS Baton Manual Ch. 2","q":"A man somewhat smaller than you is having an argument with your client and it looks like the situation is escalating. You should first:","options":["Tell the man he has 10 seconds to leave","Make your presence known and be prepared to act defensively","Call the police and tell them you have a suspect under surveillance","Draw your baton out of the ring and tap it in the palm of your hand"],"answer":1},{"module":"Use of Force Decision","ref":"BSIS Baton Manual Ch. 2","q":"Which factor would you NOT consider when deciding whether to use your baton?","options":["Size of the subject","Whether the subject may be under the influence of drugs","Whether you will have to make a report","Whether the subject is armed"],"answer":2},{"module":"Off-Duty Carry","ref":"BPC §7583.33","q":"When you are not on duty, you may wear your baton as long as you have your baton permit in your possession.","options":["True","False"],"answer":1},{"module":"Permit Types","ref":"BPC §7583.33","q":"You may carry a baton on duty as long as you have a firearms permit in your possession.","options":["True","False"],"answer":1},{"module":"Legal Definitions","ref":"PC §242","q":"Battery is any willful and unlawful use of force or violence upon another person.","options":["True","False"],"answer":0},{"module":"Baton Purpose","ref":"BSIS Baton Manual Preface","q":"The baton is an offensive weapon.","options":["True","False"],"answer":1},{"module":"Vital Areas","ref":"BSIS Baton Manual Ch. 5","q":"The head, spine, and kidneys are vital areas to be avoided when using a baton, unless there is a deadly attack on you or another person.","options":["True","False"],"answer":0},{"module":"Registration Requirement","ref":"BPC §7583.33 | BPC §7585.14","q":"You may carry a baton on duty without a security guard registration in your possession.","options":["True","False"],"answer":1},{"module":"Justification for Force","ref":"BSIS Baton Manual Ch. 2","q":"You are escorting an unruly rock concert patron to the exit. He screams and insults you, using profanity. You would be justified in jabbing him with your baton.","options":["True","False"],"answer":1},{"module":"Use of Force — Proportionality","ref":"BPC §7583.7 | Objectively Reasonable Standard","q":"You should meet physical force with only that amount of force reasonable to defend yourself and control the situation.","options":["True","False"],"answer":0},{"module":"Suspension Procedures","ref":"BPC §7583.15","q":"If you use too much force with your baton and the Director of the Department of Consumer Affairs determines that you are a hazard to public safety, your permit may be suspended and your employer will be notified of the suspension.","options":["True","False"],"answer":0},{"module":"Legal Definitions","ref":"Tort Law | Civil Liability","q":"Criminal liability means you have to pay damages after being sued.","options":["True","False"],"answer":1},{"module":"Employer Reporting","ref":"BPC §7583.2","q":"If you are arrested after using your baton in a physical altercation, your employer must report the incident to the Bureau within seven days.","options":["True","False"],"answer":0},{"module":"In-House Guard Requirements","ref":"BPC §7585.14","q":"In-house or proprietary guards are required to have both a guard card and baton permit if they carry a baton on duty.","options":["True","False"],"answer":0},{"module":"Deadly Force Limits","ref":"BSIS Baton Manual Ch. 2 | PC §22001","q":"If someone trespasses onto property that you are protecting, you would be justified in using deadly force.","options":["True","False"],"answer":1},{"module":"Training Practices","ref":"BSIS Baton Manual Ch. 5","q":"Practicing baton techniques in front of a mirror is a good idea.","options":["True","False"],"answer":0},{"module":"Baton Carry Side","ref":"BSIS Baton Manual Ch. 5","q":"A baton may be carried on your weak or your strong side.","options":["True","False"],"answer":0},{"module":"Permit Validity","ref":"BSIS Baton Fact Sheet 2024","q":"How long is a BSIS Baton Permit valid before renewal is required?","options":["1 year","2 years — permit now expires and requires renewal","Baton permits do not expire","5 years"],"answer":1},{"module":"Permit Issuance","ref":"BPC §7585.14","q":"A BSIS Baton Permit may be issued by:","options":["Any BSIS-licensed Private Patrol Operator","The BSIS Bureau directly to the guard via mail","A BSIS-certified Baton Training Facility with a certified instructor on site","Any BSIS-approved security guard instructor"],"answer":2},{"module":"Roster Requirements","ref":"BPC §7585.14(c)","q":"After completing a baton training class, a baton training facility must submit a roster of students to BSIS within:","options":["24 hours","3 working days","5 working days","30 days"],"answer":2},{"module":"Exam Requirements","ref":"BSIS Baton Manual Admin. Procedures","q":"To pass the BSIS baton written examination, a student must:","options":["Score 100% on all 24 questions","Score at least 20 out of 24 AND correctly identify all vital areas of the body","Score at least 20 out of 24 — vital areas are optional","Score at least 18 out of 24"],"answer":1},{"module":"Training Facility","ref":"BPC §7585.3 | BPC §7585.11","q":"To legally teach and certify the full BSIS baton permit course, a business entity must hold:","options":["Only a standard PPO license","A BSIS Baton Training Facility (TFB) certificate and employ a certified baton instructor","Any BSIS security training approval","A firearms training facility certificate (TFF) which includes baton authorization"],"answer":1},{"module":"Force Justification","ref":"BSIS Baton Manual Ch. 2","q":"Baton use is justified against a subject who is:","options":["Verbally abusive but not physically threatening","Passively refusing to leave private property","Actively physically aggressive and posing an imminent threat of serious bodily injury","Trespassing and refusing to answer questions"],"answer":2},{"module":"Vital Areas","ref":"BSIS Baton Manual Ch. 5","q":"Strikes to vital areas of the body may ONLY be justified when:","options":["The subject is larger than the guard","The guard is in any physical confrontation","The subject is actively resisting arrest","The guard or another person faces imminent death or serious bodily injury"],"answer":3},{"module":"Record Retention","ref":"BPC §7585.15","q":"Under BPC §7585.15, baton training answer sheets must be retained by the training facility for at least:","options":["6 months","1 year","2 years","5 years"],"answer":2},{"module":"MACCESS INC. PPO","ref":"PPO License #122729","q":"MACCESS INC.'s California Private Patrol Operator license number, which must appear on all BSIS Certificates of Completion, is:","options":["#112233","#100001","#133445","#122729"],"answer":3}]`);
+const VA_CORRECT=JSON.parse(`["Head (temple, skull, jaw)","Throat / Neck (carotid, trachea)","Spine (cervical, thoracic, lumbar)","Kidneys (posterior lower back)","Groin","Sternum / Solar Plexus","Knees (joint area)"]`);
+const LT=['A','B','C','D'];
+// First 24 questions are the official BSIS exam; rest are supplemental
+const OFFICIAL_COUNT=24;
+const PASS_RAW=20; // must get 20 out of first 24
+
+let cur=0,ans=new Array(QS.length).fill(null),dn=new Array(QS.length).fill(false);
+let nm='',reg='',em='',dt='';
+let vaAnswers=new Array(VA_CORRECT.length).fill('');
+let vaChecked=false;
+
+function show(id){document.querySelectorAll('.sc').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');window.scrollTo(0,0);}
+
+function start(){
+  nm=document.getElementById('iname').value.trim();
+  reg=document.getElementById('ireg').value.trim();
+  em=document.getElementById('iemail').value.trim();
+  dt=document.getElementById('idate').value;
+  if(!nm){alert('Please enter your full legal name.');return;}
+  if(!reg){alert('Please enter your guard registration number.');return;}
+  if(!em||!em.includes('@')){alert('Please enter a valid email address.');return;}
+  show('sc-test');renderQ();
+}
+
+function renderQ(){
+  const q=QS[cur];
+  document.getElementById('pf').style.width=Math.round((cur/QS.length)*100)+'%';
+  document.getElementById('pt').textContent='Question '+(cur+1)+' of '+QS.length+(cur<OFFICIAL_COUNT?' (Official BSIS Exam)':' (Supplemental)');
+  document.getElementById('bprev').style.display=cur>0?'inline-block':'none';
+  document.getElementById('bnext').textContent=cur===QS.length-1?'Proceed to Vital Areas &#8594;':'Next &#8594;';
+  const c=dn[cur],s=ans[cur];
+  const isYN=q.options.length===2;
+  const oh=q.options.map((o,i)=>{
+    let cl='op';
+    if(c){if(i===q.answer)cl+=' ok';else if(i===s&&i!==q.answer)cl+=' no';}
+    else if(i===s)cl+=' sl';
+    const oc=c?'':('onclick="pick('+i+')"');
+    const lbl=isYN?(i===0?'T':'F'):LT[i];
+    return '<div class="'+cl+'" '+oc+'><div class="ol">'+lbl+'</div><span>'+o+'</span></div>';
+  }).join('');
+  let fb='';
+  if(c){
+    const lbl=isYN?(q.answer===0?'True':'False'):LT[q.answer];
+    if(s===q.answer)fb='<div class="fb fb-ok">&#10003; Correct — '+q.ref+'</div>';
+    else fb='<div class="fb fb-no">&#10007; Incorrect. Correct answer: <strong>'+lbl+'. '+q.options[q.answer]+'</strong> — '+q.ref+'</div>';
+  }
+  document.getElementById('qa').innerHTML='<div class="mb">'+q.module+'<span class="rf">'+q.ref+'</span></div>'+(cur<OFFICIAL_COUNT?'<div class="mb" style="background:#FFF3CD;color:#7B4F00;border-color:#F9C757">Official BSIS Exam Q'+(cur+1)+'/24</div>':'')+'<div class="qc"><div class="qn">Question '+(cur+1)+' of '+QS.length+'</div><div class="qt">'+q.q+'</div><div class="opts">'+oh+'</div>'+fb+'</div>';
+}
+
+function pick(i){if(dn[cur])return;ans[cur]=i;dn[cur]=true;renderQ();}
+function nxt(){if(!dn[cur]){alert('Please select an answer.');return;}if(cur<QS.length-1){cur++;renderQ();}else showVital();}
+function prev(){if(cur>0){cur--;renderQ();}}
+
+function showVital(){
+  show('sc-vital');
+  const grid=document.getElementById('va-grid');
+  grid.innerHTML=VA_CORRECT.map((_,i)=>`
+    <div class="va-item">
+      <div class="va-label">Area ${String.fromCharCode(65+i)}</div>
+      <input class="va-input" id="va${i}" type="text" placeholder="Name this vital area..." oninput="vaAnswers[${i}]=this.value.trim()"/>
+    </div>
+  `).join('');
+}
+
+function submitVital(){
+  vaChecked=true;
+  let correct=0;
+  VA_CORRECT.forEach((va,i)=>{
+    const inp=document.getElementById('va'+i);
+    const entered=(inp.value||'').trim().toLowerCase();
+    const expected=va.toLowerCase();
+    // Accept if the answer contains the key anatomical word
+    const keyWords=expected.split(/[s/,()]+/).filter(w=>w.length>3);
+    const matched=keyWords.some(kw=>entered.includes(kw));
+    if(matched){correct++;inp.classList.add('va-ok');}
+    else inp.classList.add('va-no');
+    vaAnswers[i]=inp.value.trim();
+  });
+  setTimeout(()=>showResults(correct),600);
+}
+
+function showResults(vaCorrect){
+  show('sc-res');
+  // Score official 24 questions
+  let officialCorrect=0,suppCorrect=0;
+  const mm={};
+  QS.forEach((q,i)=>{
+    const hit=ans[i]===q.answer;
+    if(i<OFFICIAL_COUNT&&hit)officialCorrect++;
+    if(i>=OFFICIAL_COUNT&&hit)suppCorrect++;
+    if(!mm[q.module])mm[q.module]={c:0,t:0,official:i<OFFICIAL_COUNT};
+    mm[q.module].t++;
+    if(hit)mm[q.module].c++;
+  });
+  const vaAllCorrect=vaCorrect===VA_CORRECT.length;
+  const officialPass=officialCorrect>=PASS_RAW;
+  const overallPass=officialPass&&vaAllCorrect;
+  const pct=Math.round((officialCorrect/OFFICIAL_COUNT)*100);
+
+  const ring=document.getElementById('sring');
+  ring.className='sr '+(overallPass?'sr-ok':'sr-no');
+  document.getElementById('spct').textContent=officialCorrect+'/'+OFFICIAL_COUNT;
+  document.getElementById('slbl').textContent=overallPass?'PASSED':'NOT PASSED';
+
+  const rt=document.getElementById('rtitle');
+  rt.className='r2 '+(overallPass?'rp':'rn');
+  rt.textContent=overallPass?'✓ Examination Passed':'✗ Examination Not Passed';
+
+  document.getElementById('rsub').innerHTML=overallPass
+    ?'Congratulations, <strong>'+nm+'</strong>. You scored <strong>'+officialCorrect+'/'+OFFICIAL_COUNT+'</strong> on the written exam and correctly identified <strong>'+vaCorrect+'/'+VA_CORRECT.length+'</strong> vital areas, satisfying BSIS requirements per BPC §7585.13.'
+    :'Written score: <strong>'+officialCorrect+'/'+OFFICIAL_COUNT+'</strong> ('+pct+'%) | Vital areas: <strong>'+vaCorrect+'/'+VA_CORRECT.length+'</strong>. BSIS requires a minimum of <strong>20/24</strong> on the written exam AND all 7 vital areas correctly identified. A retake is required for any failed component.';
+
+  // Score grid
+  document.getElementById('sgrid').innerHTML=`
+    <div class="sc2"><div class="sl3">Written (Official 24 Q)</div><div class="sv ${officialPass?'sv-ok':'sv-no'}">${officialCorrect}/24</div><div style="font-size:11px;color:var(--gr);margin-top:3px;">${officialPass?'✓ Pass (need ≥20)':'✗ Fail (need ≥20)'}</div></div>
+    <div class="sc2"><div class="sl3">Vital Areas (7 Required)</div><div class="sv ${vaAllCorrect?'sv-ok':'sv-no'}">${vaCorrect}/7</div><div style="font-size:11px;color:var(--gr);margin-top:3px;">${vaAllCorrect?'✓ All identified':'✗ Must identify all 7'}</div></div>
+  `;
+
+  // Module breakdown
+  let bh='<h3>Score by Module (Written)</h3>';
+  for(const[m,d] of Object.entries(mm)){
+    const mp=Math.round((d.c/d.t)*100);
+    bh+='<div class="br"><span style="color:var(--gr)">'+m+(d.official?' <span style=\'font-size:10px;color:#7B4F00;\'>[Official]</span>':'')+' </span><span class="'+(d.c===d.t?'sp':'sf')+'">'+d.c+'/'+d.t+' ('+mp+'%)</span></div>';
+  }
+  document.getElementById('bdown').innerHTML=bh;
+
+  let btns=overallPass?'<button class="btn bg bs" onclick="showCert()">View Certificate →</button>':'';
+  btns+='<button class="btn bo bs" onclick="retake()">'+(overallPass?'Retake':'&#8635; Retake Examination')+'</button>';
+  document.getElementById('rbtns').innerHTML=btns;
+
+  document.getElementById('rbsis').innerHTML=overallPass
+    ?'<strong>BSIS Compliance:</strong> This assessment record satisfies the written examination requirement per BPC §7585.13. The instructor must attest under penalty of perjury that you completed the classroom portion and correctly named all vital areas. Retain your Certificate of Completion per Title 16 CCR §643(b). Note: BSIS Baton Permit issuance requires a BSIS-certified TFB facility and instructor.'
+    :'<strong>BSIS Requirement:</strong> Both passing the written (20+/24) AND identifying all 7 vital areas are required. Review the failed components before retesting. Vital areas: Head, Throat/Neck, Spine, Kidneys, Groin, Sternum/Solar Plexus, Knees.';
+}
+
+function retake(){
+  cur=0;ans=new Array(QS.length).fill(null);dn=new Array(QS.length).fill(false);
+  vaAnswers=new Array(VA_CORRECT.length).fill('');vaChecked=false;
+  show('sc-test');renderQ();
+}
+
+function showCert(){
+  const d=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('ca').innerHTML=`
+    <div class="ch">Certificate of Completion</div>
+    <div class="cgb"></div>
+    <div class="cc">MACCESS INC.</div>
+    <div class="cp">Private Patrol Operator | PPO License #122729 | BSIS Baton Certification Program</div>
+    <div class="cb">This certifies that</div>
+    <div class="cn">${nm}</div>
+    <div class="cb">Guard Registration No: ${reg} &nbsp;|&nbsp; Date: ${d}</div>
+    <div class="cb" style="margin-bottom:10px;">has successfully completed the written assessment for:</div>
+    <div class="cco">Baton Certification — BSIS Training Course</div>
+    <div class="csb">Written Score: &#10003; Passing &nbsp;|&nbsp; Vital Areas: &#10003; All Identified</div>
+    <div class="cno">&#9888; Compliance Note: Issuance of a BSIS Baton Permit requires completion of the full 8-hour course at a BSIS-certified Baton Training Facility (TFB) by a certified Baton Instructor. This certificate documents completion of the MACCESS INC. 4-hour elective classroom module only. Contact your supervisor regarding enrollment in a BSIS-certified TFB for permit issuance.</div>
+    <div class="cb">This completion satisfies the BSIS elective course requirement (BPC §7583.6(b)) and the written examination component of BPC §7585.13. Retain this certificate per Title 16 CCR §643(b).</div>
+    <div class="cgb"></div>
+    <div class="css">
+      <div class="csi"><div class="ln"></div><div class="sl3">Student Signature</div></div>
+      <div class="csi"><div class="ln"></div><div class="sl3">Instructor Signature</div></div>
+      <div class="csi"><div class="ln"></div><div class="sl3">Date: ${d}</div></div>
+    </div>
+  `;
+  show('sc-cert');
+}
+</script></body></html>
