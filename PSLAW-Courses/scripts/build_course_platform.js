@@ -867,6 +867,148 @@ const CATALOG = {
   },
 
 
+  Officer_Safety_BSIS_Skills_MACCESS_INC: {
+    title:"Officer Safety", subtitle:"BSIS Elective Skills Course — 4 Credit Hours",
+    price:"39", hours:"4", bpcRef:"BPC §7583.6(b)", authority:"BPC §7583.6(b) | OSHA 29 CFR 1910.1030 | Cal/OSHA",
+    category:"Elective", badge:"BSIS APPROVED",
+    outcomes:["Apply the Cooper Color Code situational awareness system on post","Approach unknown subjects safely with correct distance and positioning","Distinguish cover from concealment and use each appropriately","Follow blood-borne pathogen precautions under OSHA 29 CFR 1910.1030","Identify environmental and hazardous material hazards and respond correctly","Recognize pre-incident threat indicators before an event occurs"],
+    modules:[
+      { num:1, title:"Threat Assessment & Safe Subject Contact", duration:"35 min", icon:"👁️",
+        slides:[
+          { heading:"Situational Awareness — Cooper Color Code", subheading:"BSIS Syllabus §4.1 | Threat Assessment",
+            content:[
+              { type:"typecards", items:[
+                { label:"WHITE — Unaware", text:"Relaxed, unprepared, oblivious to surroundings. NEVER appropriate on duty.", color:"#A0AEC0" },
+                { label:"YELLOW — Relaxed Alert", text:"Baseline for all on-duty guards. Aware of surroundings without fixating on any specific threat. Safe default.", color:"#1A5C3A" },
+                { label:"ORANGE — Focused Alert", text:"A specific person or situation has been identified as a potential threat. Watch and assess — prepare to act.", color:"#7B4500" },
+                { label:"RED — Ready to Act", text:"Threat confirmed. Response initiated. Act decisively with your training.", color:"#8B1A1A" },
+              ]},
+              { type:"bullets", items:["Pre-incident threat indicators: photographing security cameras, testing locked doors, loitering without purpose, vehicles circling property","Most important initial observation: a subject's HANDS — hands are where threats originate","Trust your trained instincts — document and report before a threat materializes","Contact your supervisor or 911 based on threat level — do not underreact or over-commit"] },
+            ]},
+          { heading:"Safe Subject Contact — Approach & Positioning", subheading:"BSIS Syllabus §4.2 | Subject Contact Procedures",
+            content:[
+              { type:"bullets", items:["Maintain reactionary gap: 6-10 feet from unknown or agitated subjects","Approach at 45-degree angle — reduces your target profile and improves reactionary options","Announce yourself clearly: 'MACCESS INC. Security — may I speak with you?'","Never approach a potentially hostile subject without a means of communication and a clear exit","Tactical L positioning: two guards should never align in a straight line — reduces dual exposure to a single threat","COVER stops projectiles (car engine block, concrete wall). CONCEALMENT hides you from view but does NOT stop projectiles.","Re-holster / stand down only after the threat has fully resolved — keep eyes on subject"] },
+            ]},
+        ],
+        quiz:[
+          { q:"The baseline level of situational awareness a guard should maintain at all times on duty is:", options:["White — relaxed and at ease","Yellow — relaxed alertness, aware of surroundings without fixating on a specific threat","Orange — focused attention on a specific identified threat","Red — prepared to immediately take action"], answer:1 },
+          { q:"The critical distinction between cover and concealment is that:", options:["Cover hides you from view but does not stop projectiles; concealment provides ballistic protection","Concealment hides you from view but does not stop projectiles; cover provides a barrier that can stop projectiles","Cover and concealment are functionally identical","Cover applies only to firearms threats; concealment is effective against all other threats"], answer:1 },
+        ],
+      },
+      { num:2, title:"Blood-Borne Pathogens & Environmental Hazards", duration:"25 min", icon:"🧤",
+        slides:[
+          { heading:"Blood-Borne Pathogens — OSHA 29 CFR 1910.1030", subheading:"BSIS Syllabus §4.4 | BBP Precautions | MACCESS INC. Policy",
+            content:[
+              { type:"alert", text:"OSHA 29 CFR 1910.1030: Assume ALL blood and body fluids from any person may be infectious — HIV, Hepatitis B, Hepatitis C, and others. Standard precautions apply universally." },
+              { type:"bullets", items:["Minimum PPE before any contact with blood or body fluids: disposable gloves — always","Do not touch eyes, nose, or mouth until hands are washed with soap and water","If exposed: wash area immediately with soap and water, notify supervisor, seek prompt medical evaluation","MACCESS INC. is required to provide BBP training and PPE at no cost to guards","Avoid touching any blood-stained materials without gloves — even dried blood can be infectious","Document all BBP exposure incidents immediately — OSHA recordkeeping required"] },
+            ]},
+          { heading:"Environmental & Hazardous Materials Hazards", subheading:"BSIS Syllabus §4.5 | Cal/OSHA | OSHA",
+            content:[
+              { type:"stagelist", items:[
+                { num:"1", label:"GAS ODOR", text:"Do NOT use radio or any electrical switches — evacuate immediately and call 911 from a safe distance", color:"#8B1A1A" },
+                { num:"2", label:"CHEMICAL SPILL", text:"Do not enter without proper PPE and training — isolate the area, call 911 HazMat", color:"#7B4500" },
+                { num:"3", label:"SUSPICIOUS SUBSTANCE", text:"Do not touch — isolate the area, keep others away, call 911 immediately", color:"#1B2B5E" },
+                { num:"4", label:"POWER OUTAGE", text:"Know manual backup procedures for every system at your post before your first shift", color:"#005C5C" },
+              ]},
+              { type:"rule", text:"Know the location of every Safety Data Sheet (SDS/MSDS) for chemicals at your post. Cal/OSHA requires guards to report workplace hazards they observe." },
+            ]},
+        ],
+        quiz:[
+          { q:"Under OSHA blood-borne pathogen standards, a guard must assume that:", options:["Only visibly blood-stained materials pose a transmission risk","All blood and body fluids from any person may be infectious — standard precautions apply universally","Gloves are only required when direct contact with blood is likely","HIV is the only blood-borne pathogen of practical concern in security work"], answer:1 },
+          { q:"A guard detects a strong odor of natural gas at their post. The correct immediate action is:", options:["Locate the source and attempt to seal it","Use the radio to report the odor while investigating","Evacuate immediately without using any electrical switches or radio — call 911 from a safe distance","Document in the shift log and notify the property manager at the next opportunity"], answer:2 },
+        ],
+      },
+    ],
+    exam:[
+      { module:"Threat Assessment", ref:"Situational Awareness | Cooper Color Code", q:"The baseline situational awareness level for all on-duty guards is:", options:["White — relaxed and unaware","Yellow — relaxed alertness with environmental awareness","Orange — focused on a specific potential threat","Red — prepared to immediately take action"], answer:1 },
+      { module:"Threat Assessment", ref:"Pre-Incident Indicators", q:"Observable pre-incident threat indicators include:", options:["Wearing weather-appropriate clothing","Entering through the main public entrance without stopping","Photographing security cameras and documenting guard patrol patterns","Proceeding directly to a destination without hesitation"], answer:2 },
+      { module:"Subject Contact", ref:"BSIS Training Manual", q:"The recommended distance a guard should maintain from an unknown subject during initial contact is:", options:["1-2 feet — close enough to maintain physical control","6-10 feet — a reactionary gap that provides time to respond","15 or more feet — maximum distance to minimize risk","At the guard's discretion based on intuition"], answer:1 },
+      { module:"Subject Contact", ref:"BSIS Training Manual", q:"The critical distinction between cover and concealment is:", options:["Cover hides you from view; concealment stops projectiles","Concealment hides you from view but does not stop projectiles; cover can stop projectiles","Cover and concealment are functionally identical","Cover applies only to firearms threats"], answer:1 },
+      { module:"Subject Contact", ref:"BSIS Training Manual", q:"The most important initial indicator to observe when approaching an unknown subject is:", options:["The subject's facial expression and emotional state","The subject's hands — hands are the primary source of potential threats","The subject's clothing style and appearance","The subject's race and gender"], answer:1 },
+      { module:"Blood-Borne Pathogens", ref:"OSHA 29 CFR 1910.1030", q:"Under OSHA blood-borne pathogen standards, a guard must assume:", options:["Only visibly blood-stained materials pose a transmission risk","All blood and body fluids from any person may be infectious","Gloves are only required when contact with blood is likely","HIV is the only BBP of concern in security work"], answer:1 },
+      { module:"Blood-Borne Pathogens", ref:"OSHA 29 CFR 1910.1030", q:"The minimum PPE a guard must use before any contact with blood or body fluids is:", options:["A full-face shield and protective gown","Disposable gloves","Safety glasses only","No PPE required unless blood is confirmed infectious"], answer:1 },
+      { module:"Blood-Borne Pathogens", ref:"OSHA | Cal/OSHA", q:"If a guard is exposed to blood during an incident, they should immediately:", options:["Complete the incident report and note the exposure as a footnote","Wait until end of shift to report to their supervisor","Wash the affected area thoroughly with soap and water, notify supervisor, and seek prompt medical evaluation","Disinfect with hand sanitizer and continue the shift"], answer:2 },
+      { module:"Environmental Hazards", ref:"Cal/OSHA", q:"A guard detects a strong odor of natural gas at their post. The correct immediate action is:", options:["Locate the source and attempt to seal it","Use the radio to report while investigating","Evacuate immediately without using any electrical switches or radio — call 911 from a safe distance","Document in the shift log and notify the property manager at the next opportunity"], answer:2 },
+      { module:"Safety Awareness", ref:"BSIS Training Manual", q:"Before beginning any shift, a security guard should:", options:["Arrive at the post and begin patrol immediately","Complete a pre-shift check of all assigned equipment and confirm radio communication functionality","Wait for the outgoing guard to complete a full briefing","Review only the written post orders — verbal briefings are not required"], answer:1 },
+      { module:"Review", ref:"BPC §7583.6(b) | PPO", q:"MACCESS INC.'s California Private Patrol Operator license number is:", options:["#112233","#100001","#133445","#122729"], answer:3 },
+    ],
+  },
+
+  Handling_Difficult_People_BSIS_Skills_MACCESS_INC: {
+    title:"Handling Difficult People", subtitle:"BSIS Elective Skills Course — 4 Credit Hours",
+    price:"39", hours:"4", bpcRef:"BPC §7583.6(b)", authority:"BPC §7583.6(b) | Title 16 CCR §643(b)",
+    category:"Elective", badge:"BSIS APPROVED",
+    outcomes:["Apply communication strategies that defuse hostile interactions before escalation","Navigate all five stages of conflict escalation with targeted interventions","Negotiate peacefully without making unauthorized concessions","Use verbal diffusion techniques modeled by field-tested security professionals","Value cultural diversity as a de-escalation asset","Document all difficult person contacts for legal protection"],
+    modules:[
+      { num:1, title:"Communication Strategies & Conflict Management", duration:"30 min", icon:"🗣️",
+        slides:[
+          { heading:"Communication Strategies with Difficult Individuals", subheading:"BSIS Syllabus §10.1 | De-escalation Through Communication",
+            content:[
+              { type:"bullets", items:[
+                "Separate the person from the problem — address the behavior, not their character or identity",
+                "Lead with empathy: 'I understand this is frustrating' — disarms defensiveness before issuing directives",
+                "Use 'I' statements: 'I need you to lower your voice' vs. 'You are being disruptive' — reduces adversarial framing",
+                "Let difficult people vent briefly — interrupting increases hostility; a short controlled vent reduces it",
+                "Paraphrase what you heard: 'What I hear you saying is...' — confirms understanding and reduces misunderstanding",
+                "Watch for underlying needs: anger often masks fear, humiliation, or helplessness — address the need, not the behavior",
+                "Never argue about who is 'right' — focus on the next step forward, not the grievance",
+              ]},
+            ]},
+          { heading:"Stages of Conflict Escalation", subheading:"BSIS Syllabus §10.2 | Intervene Early",
+            content:[
+              { type:"stagelist", items:[
+                { num:"1", label:"POTENTIAL", text:"Tension exists but conflict has not erupted. BEST time to intervene — easiest resolution available.", color:"#1A5C3A" },
+                { num:"2", label:"PERCEIVED", text:"Parties believe conflict exists. Clarify misunderstandings before emotions rise.", color:"#1B4A8A" },
+                { num:"3", label:"FELT", text:"Emotional — hostility rising. Active listening and empathy required. De-escalation must be active.", color:"#7B4500" },
+                { num:"4", label:"MANIFEST", text:"Open conflict. Requires structured intervention. Consider requesting backup.", color:"#8B1A1A" },
+                { num:"5", label:"AFTERMATH", text:"Conflict subsided. Document, follow up through proper channels, debrief.", color:"#005C5C" },
+              ]},
+              { type:"rule", text:"Every minute you intervene earlier in the escalation cycle reduces the need for force by an order of magnitude. Intervene at Potential or Perceived every time." },
+            ]},
+        ],
+        quiz:[
+          { q:"The earliest and most effective stage to intervene in a conflict escalation cycle is:", options:["Manifest — when open conflict has erupted","Felt — when emotions have heightened","Perceived — when parties believe conflict exists","Potential — when tension is present but conflict has not yet developed"], answer:3 },
+          { q:"Which communication approach leads with empathy before issuing directives?", options:["'Stop that behavior immediately or there will be consequences.'","'I understand this is frustrating. Here is what I can do to help resolve this.'","'You always cause problems at this location.'","'I am not going to discuss this further until you calm down.'"], answer:1 },
+        ],
+      },
+      { num:2, title:"Diversity, Negotiation & Verbal Diffusion", duration:"30 min", icon:"🤝",
+        slides:[
+          { heading:"Valuing Diversity & Negotiating Peaceful Outcomes", subheading:"BSIS Syllabus §10.4 & 10.5 | FEHA",
+            content:[
+              { type:"twocol",
+                left:{ heading:"Valuing Diversity in Conflict", items:["Cultural norms: some cultures express disagreement loudly — loudness alone is not a threat indicator","Language barriers: slow down, simplify, seek interpreter or translation tool — never assume non-cooperation","Age: older persons may respond differently to authority — adjust tone accordingly","Disability: behavioral differences may not indicate hostility — assess context before responding","Apply identical standards to every person regardless of background — FEHA requires this"] },
+                right:{ heading:"Basic Negotiation", items:["Find common ground: 'We both want this to be resolved calmly' — reframes from adversarial to collaborative","Offer choices: 'You can wait calmly, or I will need to ask you to leave' — giving choices reduces resistance","Know your limits: you cannot negotiate away post orders or the law","When negotiation fails: escalate to supervisor — never make unauthorized concessions","Follow through: empty threats permanently destroy your credibility with future difficult encounters"] }
+              },
+            ]},
+          { heading:"Verbal Diffusion Techniques", subheading:"BSIS Syllabus §10.6 | When Talking Fails",
+            content:[
+              { type:"bullets", items:["Lower your own voice when they raise theirs — people unconsciously mirror the tone of those they speak with","Name the emotion: 'It sounds like you are really frustrated right now' — demonstrates the person is being heard","Redirect: 'Let's focus on how we can fix this' — moves from the past grievance to the future solution","Strategic agreement: agree on minor points to reduce overall tension before addressing the main issue","Create distance: if verbal diffusion is not working, step back, change location, reduce environmental stimuli","Request backup: do not handle escalating situations alone — call for support before force becomes necessary","Document: record all verbal diffusion attempts in the incident report — protects you legally if force is later needed"] },
+              { type:"callout", label:"When Verbal Diffusion Has Failed", text:"Recognize the point of no return. Disengage without capitulating: 'I am going to give you a moment to think about this.' Create distance. Request backup. Establish a perimeter. Do not continue verbal engagement that is escalating the situation." },
+            ]},
+        ],
+        quiz:[
+          { q:"When a guard deliberately lowers their own voice in response to an agitated person speaking loudly, the intended effect is:", options:["To signal to the person that the guard is also becoming agitated","To demonstrate professional control to bystanders","To model calm behavior — people often unconsciously mirror the tone and volume of those they speak with","To reduce the chance of a third party overhearing the exchange"], answer:2 },
+          { q:"A guard is negotiating with a difficult person who demands an exception to a clearly stated post rule. The guard's response should be:", options:["Grant the exception to restore peace","Make the exception if the person seems reasonable","Explain that the post rule cannot be negotiated — and offer to escalate to a supervisor who may be able to assist","Threaten consequences and repeat the rule until the person complies"], answer:2 },
+        ],
+      },
+    ],
+    exam:[
+      { module:"Communication", ref:"BSIS Syllabus §10.1", q:"The most effective opening strategy when approaching a difficult or uncooperative person is to:", options:["Immediately establish authority by stating consequences of continued non-compliance","Lead with empathy — acknowledge the situation before giving directives","State the policy violation clearly and firmly","Step back and allow the person to resolve their own situation independently"], answer:1 },
+      { module:"Communication", ref:"BSIS Syllabus §10.1", q:"Using 'I' statements in a difficult interaction is preferable because:", options:["'I' statements are more legally defensible","'I' statements express personal responsibility without creating an adversarial framing","'I' statements are always more authoritative","'I' statements are required by BSIS protocol"], answer:1 },
+      { module:"Communication", ref:"BSIS Syllabus §10.1", q:"Allowing a difficult person to vent briefly before responding is effective because:", options:["It is passive disengagement to reduce tension","A short controlled vent reduces hostility — interrupting increases it","It is a BSIS-mandated conflict resolution protocol","It lets the guard formulate their response without interruption"], answer:1 },
+      { module:"Conflict Management", ref:"BSIS Syllabus §10.2", q:"The earliest and most effective stage to intervene in the escalation cycle is:", options:["Manifest — when open conflict has erupted","Felt — when emotions have heightened","Perceived — when parties believe conflict exists","Potential — when tension is present but conflict has not yet developed"], answer:3 },
+      { module:"Conflict Management", ref:"BSIS Syllabus §10.2", q:"Following through on stated consequences is critical because:", options:["It satisfies BSIS documentation requirements","Empty threats permanently destroy the guard's credibility and make future escalations more likely","It creates a legal record that fair warning was given before taking action","Following through is not always necessary — situational judgment allows flexibility"], answer:1 },
+      { module:"Conflict Management", ref:"BSIS Syllabus §10.2", q:"Which statement best reflects effective constructive speaking during a conflict interaction?", options:["'You always cause problems at this location — this is not the first time.'","'If you do not stop right now I will be forced to take immediate action against you.'","'I understand this is frustrating. Here is what I can do to help resolve this.'","'I am not going to discuss this until you calm yourself down completely.'"], answer:2 },
+      { module:"Diversity", ref:"BSIS Syllabus §10.4 | FEHA", q:"A guard observes a person expressing disagreement loudly in what appears to be a cultural norm from their background. The guard should:", options:["Treat the loud speech as an immediate threat indicator","Recognize that loudness alone may not indicate hostility or danger — observe for actual threatening behaviors","Apply the same threat response as for any other loud confrontation","Contact law enforcement immediately"], answer:1 },
+      { module:"Diversity", ref:"BSIS Syllabus §10.4 | FEHA", q:"When a language barrier creates difficulty during a conflict interaction, the recommended approach is:", options:["Speak more loudly and repeat commands with greater firmness","Immediately call law enforcement — language barriers make security contact unsafe","Slow down, use simpler language, and seek an interpreter or translation tool","Assume non-cooperation and document as a refusal to comply"], answer:2 },
+      { module:"Negotiation", ref:"BSIS Syllabus §10.5", q:"A guard finds common ground with a difficult person — 'We both want this to be resolved calmly.' This technique is called:", options:["Collaborative framing — reorienting from adversarial to cooperative","Tactical deception — legally questionable","Operational capitulation — surrendering ground for compliance","Position bargaining — exchanging concessions"], answer:0 },
+      { module:"Negotiation", ref:"BSIS Syllabus §10.5", q:"A guard is negotiating with a difficult person who demands an exception to a post rule. The guard should:", options:["Grant the exception to restore peace","Make the exception if the person seems reasonable and compliant","Explain the rule cannot be negotiated — offer to escalate to a supervisor who may be able to assist","Threaten consequences and repeat the rule until the person complies"], answer:2 },
+      { module:"Verbal Diffusion", ref:"BSIS Syllabus §10.6", q:"When a guard deliberately lowers their own voice in response to an agitated person, the intended effect is:", options:["To signal the guard is also becoming agitated","To demonstrate professional control to bystanders","To model calm behavior — people often unconsciously mirror the tone and volume of those they speak with","To reduce the chance of a third party overhearing"], answer:2 },
+      { module:"Review", ref:"BPC §7583.6(b) | PPO", q:"MACCESS INC.'s California Private Patrol Operator license number is:", options:["#112233","#100001","#133445","#122729"], answer:3 },
+    ],
+  },
+
+
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════
