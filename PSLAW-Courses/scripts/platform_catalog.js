@@ -60,7 +60,8 @@ const CATALOG = {
                 "No retaliation against employees who report threats or contact law enforcement",
               ]},
               { type:"callout", label:"Penalties", text:"Up to $25,000 for serious violations. Up to $158,727 for willful violations. Cal/OSHA enforces." },
-            ],
+            
+              { type:"example", text:"Real World: In August 2024, a Cal/OSHA inspector audits a mid-size manufacturing firm in Vernon. The employer has no written Workplace Violence Prevention Plan. Cal/OSHA issues a serious citation with a $14,500 fine and requires a corrective action plan. As a MACCESS INC. security guard at this facility, your incident reports are a key data source for the employer's Violent Incident Log — a SB 553 requirement. If you fail to report a threatening incident and the employer's log is incomplete during an audit, both the employer and MACCESS INC. face exposure." },],
           quiz:[
             {q:"California SB 553 (Labor Code \u00a76401.9) became effective on:",options:["January 1, 2024", "July 1, 2024", "January 1, 2025", "July 1, 2025"],answer:1,ref:"CA Labor Code \u00a76401.9 | SB 553"},
             {q:"Type 2 workplace violence is violence directed at employees by:",options:["Current or former coworkers", "Clients, patients, customers, or students", "Domestic partners entering the workplace", "Strangers with no legitimate relationship to the workplace"],answer:1,ref:"CA Labor Code \u00a76401.9 | Cal/OSHA"},
@@ -231,7 +232,8 @@ const CATALOG = {
                 "Every employee has the right to report workplace violence — ensure language access",
               ]},
               { type:"rule", text:"FEHA Violation: Applying different scrutiny to employees or clients based on race or national origin creates civil liability for MACCESS INC. and the guard personally." },
-            ],
+            
+              { type:"example", text:"Real World: A guard at a Beverly Hills shopping center notices two men sitting in the food court — one white, one Black. The white man has been sitting for 45 minutes; the guard approaches only the Black man and asks for a receipt to prove he made a purchase. This is textbook disparate enforcement based on race. It violates PC §13519.4, creates FEHA liability for MACCESS INC., and the guard is personally exposed to civil suit. The correct standard: if the same behavior (long sitting, no visible purchase) triggers a contact, apply it to both individuals identically." },],
           quiz:[
             {q:"A guard observes two employees having a heated argument. One employee's culture expresses disagreement loudly as a cultural norm. The guard should:",options:["Intervene immediately — loud voices always indicate danger", "Observe for actual threatening behaviors rather than assuming danger based on volume alone", "Contact law enforcement immediately", "Separate the employees preemptively"],answer:1,ref:"BSIS Syllabus \u00a711.3 | FEHA"},
             {q:"An employee with limited English attempts to report a threatening incident. The guard should:",options:["Direct the employee to return when an English speaker is available", "Document 'language barrier' and continue patrol", "Use a translation app, seek a bilingual colleague, or use visual aids — every employee has the right to report", "Accept only written reports from non-English speakers"],answer:2,ref:"BSIS Syllabus \u00a711.3 | CA Labor Code \u00a76401.9"},
@@ -391,7 +393,8 @@ const CATALOG = {
                 { num:"3", label:"PC §837(3) — Reasonable Cause (Felony)", text:"Reasonable cause to believe the person committed a felony that actually occurred in fact. Highest liability risk.", color:"#8B1A1A" },
               ]},
               { type:"rule", text:"Misdemeanor arrests REQUIRE personal observation (§837(1)). You cannot arrest for a misdemeanor you did not personally witness — even on a report from management." },
-            ],
+            
+              { type:"example", text:"Real World: A guard at a Westwood retail store watches on live CCTV as a man conceals a $200 jacket under his clothing, then walks past all points of sale without paying. The guard has personally observed the theft in real time — this satisfies PC §837(1). The guard can make a lawful citizen's arrest. If instead a co-worker called on the radio saying 'I think someone just stole something,' that report alone does not satisfy §837(1) because the guard did not personally witness it." },],
           quiz:[
             {q:"PC \u00a7837(1) allows a citizen's arrest when a public offense is:",options:["Reported by a witness", "Suspected based on prior history", "Committed or attempted in the guard's direct personal presence", "Captured on CCTV footage"],answer:2,ref:"PC \u00a7837(1)"},
             {q:"A guard can NEVER make a citizen's arrest for a misdemeanor if:",options:["The offense occurred on private property", "The person is not a repeat offender", "The guard did not personally witness the offense", "The offense occurred after business hours"],answer:2,ref:"PC \u00a7837 | Misdemeanors"},
@@ -425,7 +428,8 @@ const CATALOG = {
                 { label:"Administrative", text:"BSIS guard card suspension or revocation under BPC §480. Civil penalties and fines.", color:"#1B2B5E" },
                 { label:"PPO Liability", text:"MACCESS INC. may be vicariously liable for your wrongful acts under respondeat superior doctrine.", color:"#005C5C" },
               ]},
-            ],
+            
+              { type:"example", text:"Real World: A guard at a downtown LA hotel detains a guest who refuses to leave the pool area and says 'I'm basically a cop — you have to do what I say.' This statement violates PC §538d. Separately, the guard holds the guest in a back office for 90 minutes without calling LAPD because the manager is unreachable. The 90-minute delay without police notification likely constitutes unlawful detention under PC §847 — the guard must deliver the subject 'without unnecessary delay,' which courts have interpreted as minutes, not hours." },],
           quiz:[
             {q:"All three types of liability \u2014 criminal, civil, and administrative \u2014 can arise:",options:["Only from the most serious incidents involving death or injury", "From a single incident simultaneously", "From separate incidents only — they cannot all apply at once", "Only from incidents reported to BSIS within 24 hours"],answer:1,ref:"PC \u00a7\u00a7236,242 | BPC \u00a7480 | Tort Law"},
             {q:"BSIS administrative liability under BPC \u00a7480 can result in:",options:["Criminal prosecution only", "Only a written warning for first offenses", "Suspension or revocation of the guard card", "A civil judgment for damages"],answer:2,ref:"BPC \u00a7480"},
@@ -523,7 +527,8 @@ const CATALOG = {
                 { num:"5", label:"Lethal Force — Last Resort", text:"Only when facing imminent death or serious bodily injury", color:"#8B1A1A" },
               ]},
               { type:"rule", text:"Force must be stepped DOWN immediately as the threat level decreases. Using force after submission is excessive — and criminal." },
-            ],
+            
+              { type:"example", text:"Real World: A guard at a Culver City warehouse encounters a man who is verbally aggressive and refuses to leave. The man is unarmed, smaller than the guard, and standing 10 feet away. The guard uses a baton strike to the leg. A court would likely find this excessive — the threat level (verbal aggression, no weapon, distance, size differential) did not justify baton-level force. The objectively reasonable response was continued verbal commands, maintained distance, and calling police. The guard and MACCESS INC. are both exposed to civil liability." },],
           quiz:[
             {q:"In the force continuum, which response should always be attempted first?",options:["Physical restraint", "Verbal commands and de-escalation", "Drawing any authorized weapon", "Calling police before any action"],answer:1,ref:"Use of Force Continuum"},
             {q:"Using force after a subject has submitted and the threat has ended is:",options:["Acceptable to ensure full compliance", "Required for documentation purposes", "Excessive force — and potentially criminal", "At the guard's discretion"],answer:2,ref:"BPC \u00a77583.7 | Proportionality"},
@@ -554,7 +559,8 @@ const CATALOG = {
                 left:{ heading:"Force IS Justified", items:["Active physical aggression toward you or another person","Imminent threat of serious bodily injury — objectively reasonable belief","Subject is armed and threatening imminent attack","Threat level exceeds what verbal and soft control can address"] },
                 right:{ heading:"Force Is NOT Justified", items:["Passive resistance alone — refusal to move","Verbal abuse or profanity — words alone","Property protection alone — baton cannot be used solely for property","After the threat has ended and subject is controlled","Punishment or intimidation after control is established"] }
               },
-            ],
+            
+              { type:"example", text:"Real World: A guard at a South LA apartment complex encounters a tenant in a mental health crisis who is pacing the lobby holding a chair and yelling incoherently. Instead of moving in close to physically control the situation, the guard does the following: steps back 20 feet (distance), keeps a concrete column between them (cover), speaks calmly and slowly using simple language, and calls 911 to request a mental health crisis unit. The situation de-escalates without physical contact in 12 minutes when the crisis unit arrives. This is the textbook application of time, distance, cover, and de-escalation." },],
           quiz:[
             {q:"A guard uses a pain compliance hold on a cooperative subject who declined to show ID. This is:",options:["Lawful — compliance with ID checks can be enforced", "Potentially excessive — the situation did not justify that level of force", "Lawful if the client contract permits it", "Required protocol per BSIS"],answer:1,ref:"BPC \u00a77583.7(b)(2) | Proportionality"},
             {q:"Baton force against a subject who is passively sitting and refusing to move is:",options:["Justified — passive resistance is still resistance", "Potentially justified if directed by management", "Not justified — baton-level force requires active aggression", "At the guard's discretion"],answer:2,ref:"BPC \u00a77583.7 | Force Continuum"},
@@ -709,7 +715,8 @@ const CATALOG = {
           { heading:"What to Include — Required Report Elements", subheading:"BSIS Standards | Legal Documentation",
             content:[
               { type:"bullets", items:["Date, time, and exact location (address, floor, area)","Description of events in chronological order","Parties involved: sex, race, approximate age, height, weight, hair, clothing, distinctive marks","Witnesses: names and contact information if available","Actions taken by the guard: verbal commands, physical actions, calls made, persons notified","Evidence observed or secured — describe, do not move unless for safety","Outcome: subject detained, released, turned over to police, medical response","Your name, guard card number, and MACCESS INC. PPO #122729 on every report"] },
-            ],
+            
+              { type:"example", text:"Real World: A guard writes in an incident report: 'The suspect looked like a drug addict and I could tell he was lying.' This report will likely be inadmissible, creates liability, and violates BSIS documentation standards. The correct version: 'At 2:14 PM I observed a male subject, approximately 30 years old, 5'10'', wearing a grey hoodie, pacing in front of the east entrance for 22 minutes. His speech was rapid and he made repeated requests for money from entering customers. I approached and asked him to leave. He refused twice, then complied on the third request and departed southbound on Vermont Ave at 2:36 PM.' Document only observed facts." },],
           quiz:[
             {q:"A guard discovers a factual error in a submitted report. They should:",options:["Destroy it and write a new one", "Draw a single line through the error, write the correction, initial and date — never erase", "Leave it in place — already submitted", "Ask a colleague to correct it"],answer:1,ref:"BSIS Training Standards"},
             {q:"Security incident reports must be written in:",options:["First person — 'I observed...', 'I heard...'", "Third person to appear objective", "Passive voice to avoid blame", "Abbreviated shorthand for efficiency"],answer:0,ref:"BSIS Training Standards"},
@@ -803,7 +810,8 @@ const CATALOG = {
                 left:{ heading:"Medical Personnel (EMS)", items:["Call 911 immediately for any medical emergency — no delay","Clear path to the patient — move bystanders back","Brief EMS on scene: what you observed, time of onset, any known conditions","Limit patient information to only what responders need — confidentiality","If patient is also a detainee: notify police before EMS departs"] },
                 right:{ heading:"City & Government Agencies", items:["Code enforcement: allow entry, notify property manager immediately, document visit","Fire department: execute evacuation plan, meet at command post","Utilities emergency (gas, water, power): call emergency line + 911, evacuate if directed","All government agency visits must be logged in your shift report","Media: no comments — refer all media inquiries to MACCESS INC. management"] }
               },
-            ],
+            
+              { type:"example", text:"Real World: A guard at a 15-story office tower in downtown LA calls 911 and says 'There's a fight at my building.' The dispatcher has no address, no floor, no description of parties, and cannot immediately dispatch. Critical time is lost. The correct call: 'This is Marcus Johnson, security officer at 400 South Hope Street, Los Angeles — 15th floor, south conference room. I have two individuals in a physical altercation. One subject may be injured. I need police and possibly EMS. My callback is 213-555-0191. I will stay on the line.' Location first, always." },],
           quiz:[
             {q:"When paramedics arrive at a scene, a security guard's role is to:",options:["Continue providing first aid alongside paramedics", "Clear the area, brief paramedics on the situation, and stand by for instructions", "Take over crowd control only — do not speak to medical personnel", "Document the paramedics' clinical actions in full detail"],answer:1,ref:"BSIS Training Manual"},
             {q:"A guard discovers a strong odor of natural gas. The correct immediate action is:",options:["Locate and attempt to seal the leak", "Use the radio to report while investigating", "Evacuate immediately without using any electrical switches or radio — call 911 from a safe distance", "Document in the shift log and notify the property manager"],answer:2,ref:"Cal/OSHA | BSIS Training Manual"},
@@ -871,7 +879,8 @@ const CATALOG = {
           { heading:"Key BSIS Statutes — What You Must Know", subheading:"BPC §7583 et seq. | Title 16 CCR | SB 652",
             content:[
               { type:"bullets", items:["BPC §7583.6: Training requirements — 8 hrs PTA/AUF pre-registration; 32 hrs skills within 6 months; 8 hrs annual CE","BPC §7583.7: PTA and AUF — 100% exam score required. Single provider per SB 652 (eff. Jan 1, 2026)","BPC §7583.9: Criminal history background check — DOJ + FBI via Live Scan required for all applicants","BPC §7583.20: Guard card renewal — must renew within 60 days of expiration or registration is canceled ($44 fee)","BPC §480: Grounds for denial/revocation — certain criminal convictions disqualify applicants","Title 16 CCR §643(b): Certificate requirements — provider name, BSIS license number, course name, dates, hours, serial number"] },
-            ],
+            
+              { type:"example", text:"Real World: A MACCESS INC. guard is assigned to a corporate campus in El Segundo on day 3 of employment. The guard has not yet completed PTA/AUF training. During the shift, the guard makes a citizen's arrest that goes wrong and the subject is injured. Because MACCESS INC. deployed a guard who lacked required BSIS training, MACCESS INC. faces: (1) a BSIS investigation and potential PPO license action under BPC §7583.6, (2) negligent training civil liability in the personal injury lawsuit, and (3) potential criminal referral if the unlawful arrest constitutes false imprisonment. Always verify training completion before any deployment." },],
           quiz:[
             {q:"Under SB 652 (eff. Jan 1, 2026), the 8-hour PTA/AUF training must be completed by:",options:["Any two BSIS-approved providers", "The applicant's employer only", "A single BSIS-approved course provider", "An online provider plus a separate in-person facility"],answer:2,ref:"BPC \u00a77583.7 | SB 652"},
             {q:"A guard card may be renewed with a delinquency fee within how many days of expiration?",options:["30 days", "60 days", "90 days", "120 days"],answer:1,ref:"BPC \u00a77583.20"},
@@ -921,7 +930,8 @@ const CATALOG = {
               { type:"alert", text:"PC §22001: Carrying a baton without a BSIS Baton Permit is a FELONY. BPC §7583.33 requires every guard who carries a baton on duty to hold BOTH a valid guard card AND a valid BSIS Baton Permit." },
               { type:"bullets", items:["Baton permit expires every 2 years — renewal requires an 8-hour refresher course","Off-duty: you may NOT carry a baton — the permit is for on-duty carry only","A firearms permit does NOT authorize baton carry — separate permit required","Baton permits are issued ONLY by BSIS-certified Baton Training Facilities (TFB license)","PPO that allows a guard to carry without a permit may be fined by BSIS","MACCESS INC. must verify each guard's permit before any baton-authorized assignment"] },
               { type:"rule", text:"The baton is a DEFENSIVE tool — to protect yourself and others. Using it offensively as a weapon or for intimidation is a crime." },
-            ],
+            
+              { type:"example", text:"Real World: A MACCESS INC. guard is assigned to a Koreatown nightclub post with a baton ring on their belt but no BSIS Baton Permit. During a physical altercation, the guard draws and uses the baton, injuring a patron. Law enforcement arrives and discovers the guard lacks a permit. The guard is arrested under PC §22001 (felony). MACCESS INC. receives a BSIS Notice of Action for deploying a guard without a required permit. The injured patron files a civil lawsuit against both the guard and MACCESS INC. Three separate legal actions from one missing permit." },],
           quiz:[
             {q:"A guard who carries a baton without a BSIS Baton Permit may be charged with:",options:["A misdemeanor and $100 fine", "A felony violation of PC §22001", "Only a BSIS administrative penalty", "Nothing — the guard card is sufficient"],answer:1,ref:"PC \u00a722001 | BPC \u00a77583.33"},
             {q:"A baton permit expires every:",options:["1 year", "2 years — renewal requires an 8-hour refresher", "3 years", "5 years"],answer:1,ref:"BSIS Baton Fact Sheet 2024"},
@@ -1005,7 +1015,8 @@ const CATALOG = {
                 { label:"RED — Ready to Act", text:"Threat confirmed. Response initiated. Act decisively with your training.", color:"#8B1A1A" },
               ]},
               { type:"bullets", items:["Pre-incident threat indicators: photographing security cameras, testing locked doors, loitering without purpose, vehicles circling property","Most important initial observation: a subject's HANDS — hands are where threats originate","Trust your trained instincts — document and report before a threat materializes","Contact your supervisor or 911 based on threat level — do not underreact or over-commit"] },
-            ],
+            
+              { type:"example", text:"Real World: A guard at a warehouse in Compton notices the same grey sedan circle the property three times in 20 minutes. On the third pass, the driver slows near the gate and a passenger takes a photo of the camera placement with a cell phone. This is a pre-incident surveillance indicator. The guard logs the vehicle description, license plate, time, and direction of travel, notifies the supervisor immediately, and increases patrol frequency near the gate. Forty-eight hours later, LAPD contacts the site — the same vehicle was used in a warehouse burglary nearby. The guard's documentation becomes part of the police investigation." },],
           quiz:[
             {q:"The baseline situational awareness level for all on-duty guards is:",options:["White — relaxed and unaware", "Yellow — relaxed alertness with environmental awareness", "Orange — focused on a specific potential threat", "Red — prepared to immediately take action"],answer:1,ref:"Cooper Color Code | BSIS Training Manual"},
             {q:"The most important initial observation when approaching an unknown subject is:",options:["The subject's facial expression", "The subject's hands — the primary source of potential threats", "The subject's clothing and apparent socioeconomic status", "The subject's race and gender"],answer:1,ref:"BSIS Training Manual"},
@@ -1102,7 +1113,8 @@ const CATALOG = {
                 { num:"5", label:"AFTERMATH", text:"Conflict subsided. Document, follow up through proper channels, debrief.", color:"#005C5C" },
               ]},
               { type:"rule", text:"Every minute you intervene earlier in the escalation cycle reduces the need for force by an order of magnitude. Intervene at Potential or Perceived every time." },
-            ],
+            
+              { type:"example", text:"Real World: A guard at a West Hollywood medical office encounters a patient in the waiting room who is yelling that he has been waiting two hours and 'This is ridiculous.' A standard response — 'Sir, lower your voice or I will ask you to leave' — escalates the situation. An empathy-first response: 'I can see you've been waiting a long time and that's genuinely frustrating. Let me see if I can find out the status of your appointment for you.' The patient's tone changes immediately. The guard has addressed the underlying need (acknowledgment + information), not just the surface behavior. De-escalation takes 90 seconds instead of requiring a police call." },],
           quiz:[
             {q:"The earliest and most effective stage to intervene in the escalation cycle is:",options:["Manifest — when open conflict has erupted", "Felt — when emotions have heightened", "Perceived — when parties believe conflict exists", "Potential — when tension is present but conflict has not yet developed"],answer:3,ref:"BSIS Syllabus \u00a710.2"},
             {q:"Following through on stated consequences is critical because:",options:["It satisfies BSIS documentation requirements", "Empty threats permanently destroy the guard's credibility and make future escalations more likely", "It creates a legal record that fair warning was given", "Following through is not always necessary — situational judgment allows flexibility"],answer:1,ref:"BSIS Syllabus \u00a710.2"},
