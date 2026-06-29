@@ -1,5 +1,5 @@
 /**
- * MACCESS INC. / PSLAW — Course Platform Builder
+ * MACCESS INC. — Course Platform Builder
  * Generates a complete purchasable, sequential course delivery page per module.
  *
  * Each HTML file includes:
@@ -1924,7 +1924,7 @@ function startCourse(){
 
 function saveProfile(){
   try{
-    var key='pslaw_students_v1';
+    var key='maccess_students_v1';
     var records=JSON.parse(localStorage.getItem(key)||'[]');
     var rec=records.find(function(r){return r.email.toLowerCase()===sEmail.toLowerCase();});
     if(!rec){ rec={id:Date.now().toString(),name:sName,email:sEmail,phone:sPhone,guardCard:sGC,createdAt:new Date().toISOString(),certificates:[],status:'progress',attempts:0}; records.unshift(rec); }
@@ -1935,7 +1935,7 @@ function saveProfile(){
 
 function saveCompletion(courseName,score){
   try{
-    var key='pslaw_students_v1';
+    var key='maccess_students_v1';
     var records=JSON.parse(localStorage.getItem(key)||'[]');
     var rec=records.find(function(r){return r.email.toLowerCase()===sEmail.toLowerCase();});
     if(!rec){ rec={id:Date.now().toString(),name:sName,email:sEmail,phone:sPhone,guardCard:sGC,createdAt:new Date().toISOString(),certificates:[],status:'pass',attempts:examTries}; records.unshift(rec); }
@@ -1944,7 +1944,7 @@ function saveCompletion(courseName,score){
     rec.certificates=rec.certificates||[];
     rec.certificates.push({course:courseName,date:d,score:score,issuedAt:new Date().toISOString()});
     localStorage.setItem(key,JSON.stringify(records));
-    try{ window.parent.postMessage({type:'PSLAW_COMPLETION',name:sName,email:sEmail,course:courseName,score:score,date:d},'*'); }catch(e){}
+    try{ window.parent.postMessage({type:'MACCESS_COMPLETION',name:sName,email:sEmail,course:courseName,score:score,date:d},'*'); }catch(e){}
   }catch(e){}
 }
 
@@ -2583,7 +2583,7 @@ function buildStorePage() {
   return `<!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>PSLAW Academy — BSIS Security Guard Training | MACCESS INC.</title>
+<title>MACCESS INC. — BSIS Security Guard Training</title>
 <style>
 :root{--n:#1B2B5E;--g:#C9A84C;--r:#8B1A1A;--ok:#1A5C3A;--l:#F4F6FB;--gr:#4A5568;--wh:#fff;}
 *{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Segoe UI',Arial,sans-serif;background:var(--l);color:#1A1A2E;}
@@ -2670,7 +2670,7 @@ function buildStorePage() {
 <body>
 
 <header class="hdr">
-  <div class="logo">PSLAW Academy</div>
+  <div class="logo">MACCESS INC.</div>
   <div style="display:flex;align-items:center;gap:24px;">
     <div class="hdr-meta">PPO License #122729 | BSIS-Authorized<br/>Private Security LA Worldwide</div>
     <nav><a href="admin-dashboard.html">Student Portal</a></nav>
@@ -2706,7 +2706,7 @@ function buildStorePage() {
 <!-- Hero -->
 <section class="hero">
   <div class="hero-badge">BSIS-Authorized Training Provider</div>
-  <h1 class="hero-title">PSLAW Academy</h1>
+  <h1 class="hero-title">MACCESS INC.</h1>
   <p class="hero-sub">MACCESS INC. | PPO #122729 — Complete BSIS security guard licensing training. Start your guard card today.</p>
   <div class="hero-chips">
     <div class="chip">✓ BSIS-Compliant Certificates</div>
@@ -2868,7 +2868,7 @@ function buildAdminDashboard() {
   return `<!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>PSLAW Admin — Student Records & Certificates | MACCESS INC.</title>
+<title>MACCESS INC. — Student Records & Certificates</title>
 <style>
 :root{--n:#1B2B5E;--g:#C9A84C;--r:#8B1A1A;--ok:#1A5C3A;--l:#F4F6FB;--gr:#4A5568;--wh:#fff;}
 *{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Segoe UI',Arial,sans-serif;background:var(--l);color:#1A1A2E;}
@@ -2940,7 +2940,7 @@ function buildAdminDashboard() {
 </head>
 <body>
 <header class="hdr">
-  <div class="logo">PSLAW Admin — Student Records</div>
+  <div class="logo">MACCESS INC. — Student Records</div>
   <div style="color:#CADCFC;font-size:12px;">MACCESS INC. | PPO #122729 | Confidential</div>
 </header>
 <div class="gold-bar"></div>
@@ -3036,7 +3036,7 @@ function buildAdminDashboard() {
 
 <script>
 // ── Storage key ───────────────────────────────────────────────
-const STORAGE_KEY = 'pslaw_students_v1';
+const STORAGE_KEY = 'maccess_students_v1';
 let currentFilter = 'all';
 
 // ── Load / save ───────────────────────────────────────────────
@@ -3157,7 +3157,7 @@ function viewStudent(idx){
 
   document.getElementById('modal-content').innerHTML = \`
     <h2 class="modal-title">\${r.name}</h2>
-    <div class="modal-sub">Student Profile — MACCESS INC. / PSLAW</div>
+    <div class="modal-sub">Student Profile — MACCESS INC.</div>
     <div class="profile-grid">
       <div class="profile-field"><div class="pf-label">Email</div><div class="pf-value">\${r.email}</div></div>
       <div class="profile-field"><div class="pf-label">Phone</div><div class="pf-value">\${r.phone||'—'}</div></div>
@@ -3256,7 +3256,7 @@ function exportCSV(){
   const blob = new Blob([csv],{type:'text/csv'});
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a');
-  a.href=url; a.download='PSLAW_Students_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.href=url; a.download='MACCESS_Students_'+new Date().toISOString().slice(0,10)+'.csv';
   a.click(); URL.revokeObjectURL(url);
 }
 
@@ -3265,7 +3265,7 @@ function exportCSV(){
 // the course page posts a message with their record.
 // This listener captures it and saves to the admin dashboard.
 window.addEventListener('message', function(e){
-  if(e.data && e.data.type === 'PSLAW_COMPLETION'){
+  if(e.data && e.data.type === 'MACCESS_COMPLETION'){
     const records = loadRecords();
     const { name, email, course, score, date } = e.data;
     // Check for existing student record
