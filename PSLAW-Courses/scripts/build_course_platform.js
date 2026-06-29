@@ -360,7 +360,7 @@ const CATALOG = {
   // ═══════════════════════════════════════════════════════════════════
   Powers_to_Arrest_BSIS_Certification_MACCESS_INC: {
     title:"Powers to Arrest", subtitle:"BSIS Pre-Registration Course — 3 Credit Hours",
-    price:"39", hours:"3", bpcRef:"BPC §7583.7", authority:"BPC §7583.7 | PC §837 | SB 652",
+    price:"69", hours:"3", bpcRef:"BPC §7583.7", authority:"BPC §7583.7 | PC §837 | SB 652",
     category:"Pre-Registration", badge:"BSIS REQUIRED",
     outcomes:[
       "Understand the three conditions for a lawful citizen's arrest under PC §837",
@@ -494,7 +494,7 @@ const CATALOG = {
   // ═══════════════════════════════════════════════════════════════════
   Appropriate_Use_of_Force_BSIS_Certification_MACCESS_INC: {
     title:"Appropriate Use of Force", subtitle:"BSIS Pre-Registration Course — 5 Credit Hours",
-    price:"49", hours:"5", bpcRef:"BPC §7583.7", authority:"BPC §7583.7 | DCA AUF Manual July 2023",
+    price:"79", hours:"5", bpcRef:"BPC §7583.7", authority:"BPC §7583.7 | DCA AUF Manual July 2023",
     category:"Pre-Registration", badge:"BSIS REQUIRED",
     outcomes:[
       "Apply the objectively reasonable force standard in real-time situations",
@@ -919,7 +919,7 @@ const CATALOG = {
 
   Baton_Certification_BSIS_MACCESS_INC: {
     title:"Baton Certification", subtitle:"BSIS Elective Skills Course — 4 Credit Hours",
-    price:"59", hours:"4", bpcRef:"BPC §§7583.33 | 7585.9 | 7585.13", authority:"BPC §§7583.33 | 7585.9 | PC §22001",
+    price:"110", hours:"4", bpcRef:"BPC §§7583.33 | 7585.9 | 7585.13", authority:"BPC §§7583.33 | 7585.9 | PC §22001",
     category:"Elective", badge:"BSIS APPROVED",
     outcomes:["Understand all legal requirements for baton carry under BPC §7583.33 and PC §22001","Identify all four authorized baton types for California security guards","Name all seven vital areas that must be avoided — exam requirement","Understand criminal, civil, and employer liability for baton use","Apply the force continuum correctly with baton-level force","Comply with BSIS reporting requirements for every baton deployment"],
     modules:[
@@ -2267,36 +2267,43 @@ function showCert(){
 // Smart-grouped pricing packages matching BSIS licensing requirements
 // ═══════════════════════════════════════════════════════════════════════════════
 const BUNDLES = {
-  guard_card_8hr: {
-    id:       "guard_card_8hr",
-    name:     "Guard Card Pre-Registration Package",
-    subtitle: "Everything required before submitting your BSIS guard card application",
-    price:    "79",
-    badge:    "BEST VALUE",
+
+  // ── CORE LICENSING PACKAGES ───────────────────────────────────────────────
+
+  preregistration_8hr: {
+    id:       "preregistration_8hr",
+    name:     "Powers to Arrest & Use of Force",
+    subtitle: "Complete 8-hour BSIS pre-registration — both courses, one provider, one price",
+    price:    "130",
+    badge:    "REQUIRED FIRST",
     color:    "#1B2B5E",
     hours:    "8",
-    description: "Completes the full 8-hour pre-registration requirement (SB 652, eff. Jan 1 2026). Must be completed with a single provider. Includes Powers to Arrest (3 hrs) + Appropriate Use of Force (5 hrs).",
+    type:     "package",
+    description: "Satisfies the full 8-hour pre-registration requirement under BPC §7583.7 and SB 652 (eff. Jan 1 2026). Must be completed with a single provider before your guard card application. Powers to Arrest (3 hrs) + Appropriate Use of Force (5 hrs) — both BSIS 100% pass required.",
     includes: [
-      "Powers to Arrest — 3 Hours",
-      "Appropriate Use of Force — 5 Hours",
-      "Both BSIS 100% exams included",
-      "Certificates of Completion for both modules",
-      "Counts as your single-provider pre-registration",
+      "Powers to Arrest — 3 Credit Hours (BPC §7583.7)",
+      "Appropriate Use of Force — 5 Credit Hours (BPC §7583.7)",
+      "Both BSIS written exams — 100% pass required",
+      "Two Certificates of Completion",
+      "Satisfies single-provider requirement per SB 652",
+      "Instant access — complete at your own pace",
     ],
     keys: [
       "Powers_to_Arrest_BSIS_Certification_MACCESS_INC",
       "Appropriate_Use_of_Force_BSIS_Certification_MACCESS_INC",
     ],
   },
+
   skills_32hr: {
     id:       "skills_32hr",
     name:     "32-Hour Skills Training Package",
-    subtitle: "All 4 mandatory + 2 elective skills courses — complete your full skills requirement",
+    subtitle: "All 4 mandatory + 2 elective skills courses in one package",
     price:    "199",
     badge:    "COMPLETE PACKAGE",
     color:    "#1A5C3A",
     hours:    "24",
-    description: "Covers all 4 BSIS mandatory skills courses (required within 6 months of registration) plus 2 high-value electives. 24 of your 32 required skills hours in one package.",
+    type:     "package",
+    description: "All 4 BSIS mandatory skills courses (required within 6 months of registration) plus 2 high-value electives. Covers 24 of your 32 required skills hours.",
     includes: [
       "Public Relations & Community — 4 hrs (mandatory, within 30 days)",
       "Observation & Documentation — 4 hrs (mandatory, within 30 days)",
@@ -2304,7 +2311,7 @@ const BUNDLES = {
       "Liability & Legal Aspects — 4 hrs (mandatory, within 6 months)",
       "Officer Safety — 4 hrs (elective)",
       "Handling Difficult People — 4 hrs (elective)",
-      "All 6 BSIS exams + Certificates of Completion",
+      "6 BSIS exams + 6 Certificates of Completion",
     ],
     keys: [
       "Public_Relations_Community_BSIS_Skills_MACCESS_INC",
@@ -2315,19 +2322,21 @@ const BUNDLES = {
       "Handling_Difficult_People_BSIS_Skills_MACCESS_INC",
     ],
   },
+
   full_licensing: {
     id:       "full_licensing",
     name:     "Complete Guard Licensing Bundle",
-    subtitle: "Everything from zero to fully licensed — 8-hr pre-registration + full skills training",
-    price:    "269",
+    subtitle: "Everything from zero to fully licensed — pre-registration + full skills training",
+    price:    "299",
     badge:    "MOST POPULAR",
     color:    "#C9A84C",
     hours:    "32",
-    description: "The complete path to your guard card. 8-hour pre-registration + all 4 mandatory skills courses + 2 electives. Everything BSIS requires in one discounted package.",
+    type:     "package",
+    description: "The complete path to your guard card. 8-hour pre-registration (PTA + AUF) + all 4 mandatory skills courses + 2 electives. Everything BSIS requires, bundled at a discount.",
     includes: [
-      "Full 8-Hour Pre-Registration (PTA + AUF)",
-      "All 4 Mandatory Skills Courses",
-      "2 Elective Skills Courses",
+      "Powers to Arrest + Use of Force — 8 hrs pre-registration",
+      "All 4 Mandatory Skills Courses — 16 hrs",
+      "Officer Safety + Handling Difficult People — 8 hrs",
       "8 BSIS exams + 8 Certificates of Completion",
       "32 total training hours",
       "Priority email support from MACCESS INC.",
@@ -2343,32 +2352,89 @@ const BUNDLES = {
       "Handling_Difficult_People_BSIS_Skills_MACCESS_INC",
     ],
   },
+
+  // ── LESS-LETHAL CERTIFICATION BUNDLE ─────────────────────────────────────
+
+  less_lethal_bundle: {
+    id:       "less_lethal_bundle",
+    name:     "Less-Lethal Certification Bundle",
+    subtitle: "Baton · OC Spray / Tear Gas · Workplace Violence — all less-lethal certifications in one",
+    price:    "265",
+    badge:    "BEST VALUE — SAVE $75",
+    color:    "#5C1A1A",
+    hours:    "12",
+    type:     "bundle",
+    description: "Everything you need to qualify for less-lethal armed assignments. Baton Permit preparation (BSIS §7583.33), OC Spray / Tear Gas certification (BPC §7583.36), and Workplace Violence (SB 553 compliance) — all three combined at a $75 discount vs. purchasing separately.",
+    includes: [
+      "Baton Certification — 4 hrs ($110 value) | BPC §§7583.33, 7585.9",
+      "OC Spray / Tear Gas Certification — 4 hrs ($110 value) | BPC §7583.36",
+      "Workplace Violence Prevention — 4 hrs ($49 value) | SB 553 compliant",
+      "3 BSIS exams + 3 Certificates of Completion",
+      "12 elective credit hours toward 32-hr requirement",
+      "Save $75 vs. purchasing individually",
+    ],
+    keys: [
+      "Baton_Certification_BSIS_MACCESS_INC",
+      "OC_Spray_Tear_Gas_BSIS_MACCESS_INC",
+      "Workplace_Violence_BSIS_Skills_MACCESS_INC",
+    ],
+    feeNote: "State permit fees are paid separately to BSIS after course completion. Baton permit fee: $66. OC Spray: no separate state fee. Courses provide required training documentation.",
+  },
+
+  // ── INDIVIDUAL ADD-ON CERTIFICATIONS ─────────────────────────────────────
+
   baton_addon: {
     id:       "baton_addon",
     name:     "Baton Certification",
-    subtitle: "BSIS Baton Permit qualification course — add-on to any package",
-    price:    "59",
+    subtitle: "BSIS Baton Permit qualification — 4-hour course + 24-question official BSIS exam",
+    price:    "110",
     badge:    "ADD-ON",
     color:    "#7B4500",
     hours:    "4",
-    description: "4-hour BSIS elective covering all baton types, vital areas, use-of-force, and the 24-question official BSIS exam. Required before carrying a baton on duty. Note: Full BSIS permit issuance requires a certified TFB facility.",
+    type:     "addon",
+    description: "4-hour BSIS elective covering all baton types, vital areas, use-of-force continuum, and the 24-question official BSIS written exam. Required before carrying a baton on duty under BPC §7583.33. Note: Full BSIS Baton Permit issuance requires a BSIS-certified TFB facility and certified instructor.",
     includes: [
-      "All 4 authorized baton types covered",
-      "7 vital areas identification (exam requirement)",
+      "All 4 BSIS-authorized baton types covered",
+      "7 vital areas — required for permit exam",
       "24 official BSIS baton exam questions",
-      "Vital areas interactive identification section",
-      "Certificate of Completion (4-hr elective credit)",
+      "Certificate of Completion — 4 elective credit hrs",
+      "Training documentation for permit application",
     ],
+    feeNote: "State fee: BSIS Baton Permit fee $66 — paid separately to BSIS after course completion.",
     keys: ["Baton_Certification_BSIS_MACCESS_INC"],
   },
+
+  teargas_addon: {
+    id:       "teargas_addon",
+    name:     "OC Spray / Tear Gas Certification",
+    subtitle: "BSIS chemical agent certification — required before carrying OC spray on duty",
+    price:    "110",
+    badge:    "ADD-ON",
+    color:    "#2E5C1A",
+    hours:    "4",
+    type:     "addon",
+    description: "4-hour BSIS certification covering OC spray and tear gas use, de-escalation requirements, legal authority under BPC §7583.36, decontamination procedures, and civil/criminal liability. Required for any guard authorized to carry OC spray on duty.",
+    includes: [
+      "Legal authority under BPC §7583.36",
+      "OC spray types, deployment, and range",
+      "Decontamination and medical response",
+      "Use-of-force continuum — OC in context",
+      "Criminal and civil liability for misuse",
+      "Certificate of Completion — 4 elective credit hrs",
+    ],
+    feeNote: "No separate BSIS state fee required for OC spray authorization. Certificate is sufficient authorization.",
+    keys: ["OC_Spray_Tear_Gas_BSIS_MACCESS_INC"],
+  },
+
   workplace_violence_addon: {
     id:       "workplace_violence_addon",
     name:     "Workplace Violence Prevention",
-    subtitle: "BSIS elective + CA SB 553 compliance — add-on to any package",
+    subtitle: "BSIS elective + CA SB 553 annual compliance — add to any package",
     price:    "49",
     badge:    "ADD-ON",
     color:    "#8B1A1A",
     hours:    "4",
+    type:     "addon",
     description: "Covers all 5 BSIS Workplace Violence syllabus topics and satisfies the annual employee training requirement under CA Labor Code §6401.9 (SB 553, eff. July 1 2024).",
     includes: [
       "All 5 BSIS WV syllabus topics",
@@ -2378,6 +2444,7 @@ const BUNDLES = {
     ],
     keys: ["Workplace_Violence_BSIS_Skills_MACCESS_INC"],
   },
+
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -2473,27 +2540,35 @@ async function buildAndPush(outputDir) {
 // STORE PAGE — Bundle pricing + individual courses
 // ═══════════════════════════════════════════════════════════════════════════════
 function buildStorePage() {
-  const bundleCards = Object.values(BUNDLES).map(b => {
-    const isAddon   = b.badge === "ADD-ON";
-    const isBest    = b.badge === "MOST POPULAR";
-    const borderCol = isBest ? b.color : "#dde4f0";
+  // Group bundles by type for display
+  const packages = Object.values(BUNDLES).filter(b => b.type === 'package');
+  const bundles  = Object.values(BUNDLES).filter(b => b.type === 'bundle');
+  const addons   = Object.values(BUNDLES).filter(b => b.type === 'addon');
+
+  function renderBundleCard(b, featured) {
+    const isFeatured = featured || b.badge === 'MOST POPULAR';
     return `
-    <div class="bundle-card ${isBest?'bundle-featured':''}" style="border-top:4px solid ${b.color};">
+    <div class="bundle-card ${isFeatured ? 'bundle-featured' : ''}" style="border-top:4px solid ${b.color};">
       <div class="bundle-badge" style="background:${b.color}">${b.badge}</div>
       <div class="bundle-name">${b.name}</div>
       <div class="bundle-sub">${b.subtitle}</div>
       <div class="bundle-price">\$${b.price}</div>
       <div class="bundle-hours">${b.hours} Credit Hours</div>
       <ul class="bundle-includes">
-        ${b.includes.map(i=>`<li>✓ ${i}</li>`).join('')}
+        ${b.includes.map(i => `<li>✓ ${i}</li>`).join('')}
       </ul>
+      ${b.feeNote ? `<div class="bundle-fee-note">⚠️ ${b.feeNote}</div>` : ''}
       <p class="bundle-desc">${b.description}</p>
-      <button class="bundle-btn" style="background:${isBest?b.color:'#1B2B5E'};color:${isBest?'#1B2B5E':'#fff'}" 
+      <button class="bundle-btn" style="background:${isFeatured ? b.color : '#1B2B5E'};color:${isFeatured ? '#1B2B5E' : '#fff'}"
         onclick="enrollBundle('${b.id}')">
-        ${isAddon?'Add to Cart —':'Enroll Now —'} \$${b.price}
+        ${b.type === 'addon' ? 'Add to Cart' : 'Enroll Now'} — \$${b.price}
       </button>
     </div>`;
-  }).join('');
+  }
+
+  const packageCards = packages.map(b => renderBundleCard(b)).join('');
+  const bundleCards2 = bundles.map(b => renderBundleCard(b, true)).join('');
+  const addonCards   = addons.map(b => renderBundleCard(b)).join('');
 
   const courseRows = Object.entries(CATALOG).map(([key, c]) => `
     <tr>
@@ -2543,6 +2618,7 @@ function buildStorePage() {
 .bundle-includes{list-style:none;display:flex;flex-direction:column;gap:6px;flex:1;}
 .bundle-includes li{font-size:13px;color:#1A1A2E;padding-left:4px;}
 .bundle-desc{font-size:12px;color:var(--gr);line-height:1.6;padding:10px;background:var(--l);border-radius:6px;}
+.bundle-fee-note{font-size:11px;color:#7B4500;background:#FFF8E1;border:1px solid #F9C757;border-radius:5px;padding:8px 10px;margin:8px 0;line-height:1.5;}
 .bundle-btn{padding:14px;border-radius:8px;font-size:15px;font-weight:700;border:none;cursor:pointer;text-align:center;transition:opacity .15s;}
 .bundle-btn:hover{opacity:.88;}
 /* Individual courses table */
@@ -2646,39 +2722,30 @@ function buildStorePage() {
     <div class="section-eye">Training Packages</div>
     <h2 class="section-title">Choose Your Path</h2>
     <p class="section-sub">Save money with smart bundles matched to your BSIS licensing stage. Individual courses also available below.</p>
+    <!-- Core Licensing Packages -->
+    <div class="section-eye" style="margin-bottom:8px;">Core Licensing Packages</div>
+    <h2 class="section-title" style="margin-bottom:24px;">Choose Your Training Path</h2>
     <div class="bundles-grid">
-      ${Object.values(BUNDLES).filter(b=>b.badge!=='ADD-ON').map(b=>`
-      <div class="bundle-card ${b.badge==='MOST POPULAR'?'bundle-featured':''}" style="border-top:4px solid ${b.color};">
-        <div class="bundle-badge" style="background:${b.color}">${b.badge}</div>
-        <div class="bundle-name">${b.name}</div>
-        <div class="bundle-sub">${b.subtitle}</div>
-        <div class="bundle-price">\$${b.price}</div>
-        <div class="bundle-hours">${b.hours} Credit Hours</div>
-        <ul class="bundle-includes">${b.includes.map(i=>`<li>✓ ${i}</li>`).join('')}</ul>
-        <p class="bundle-desc">${b.description}</p>
-        <button class="bundle-btn" style="background:${b.badge==='MOST POPULAR'?b.color:'#1B2B5E'};color:${b.badge==='MOST POPULAR'?'#1B2B5E':'#fff'}" onclick="enrollBundle('${b.id}')">
-          Enroll Now — \$${b.price}
-        </button>
-      </div>`).join('')}
+      ${packageCards}
     </div>
-    <div class="addons-label">⚡ Add-On Certifications — Add to any package</div>
+
+    <!-- Less-Lethal Bundle -->
+    <div class="addons-label" style="border-top:2px solid #5C1A1A;color:#5C1A1A;margin-top:40px;">
+      ⚡ Less-Lethal Certification Bundle — Save $75 vs. purchasing individually
+    </div>
+    <div style="max-width:620px;">
+      ${bundleCards2}
+    </div>
+
+    <!-- Add-On Certifications -->
+    <div class="addons-label" style="margin-top:40px;">
+      Individual Add-On Certifications
+    </div>
     <div class="addons-grid">
-      ${Object.values(BUNDLES).filter(b=>b.badge==='ADD-ON').map(b=>`
-      <div class="bundle-card" style="border-top:4px solid ${b.color};">
-        <div class="bundle-badge" style="background:${b.color}">${b.badge}</div>
-        <div class="bundle-name">${b.name}</div>
-        <div class="bundle-sub">${b.subtitle}</div>
-        <div class="bundle-price">\$${b.price}</div>
-        <div class="bundle-hours">${b.hours} Credit Hours</div>
-        <ul class="bundle-includes">${b.includes.map(i=>`<li>✓ ${i}</li>`).join('')}</ul>
-        <p class="bundle-desc">${b.description}</p>
-        <button class="bundle-btn" style="background:${b.color};color:#fff;" onclick="enrollBundle('${b.id}')">
-          Add to Cart — \$${b.price}
-        </button>
-      </div>`).join('')}
+      ${addonCards}
     </div>
-  </div>
-</section>
+    </div>
+  </section>
 
 <!-- Individual Courses -->
 <section class="courses-section">
