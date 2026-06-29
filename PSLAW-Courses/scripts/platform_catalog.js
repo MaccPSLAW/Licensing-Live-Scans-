@@ -360,7 +360,7 @@ const CATALOG = {
   // ═══════════════════════════════════════════════════════════════════
   Powers_to_Arrest_BSIS_Certification_MACCESS_INC: {
     title:"Powers to Arrest", subtitle:"BSIS Pre-Registration Course — 3 Credit Hours",
-    price:"39", hours:"3", bpcRef:"BPC §7583.7", authority:"BPC §7583.7 | PC §837 | SB 652",
+    price:"69", hours:"3", bpcRef:"BPC §7583.7", authority:"BPC §7583.7 | PC §837 | SB 652",
     category:"Pre-Registration", badge:"BSIS REQUIRED",
     outcomes:[
       "Understand the three conditions for a lawful citizen's arrest under PC §837",
@@ -494,7 +494,7 @@ const CATALOG = {
   // ═══════════════════════════════════════════════════════════════════
   Appropriate_Use_of_Force_BSIS_Certification_MACCESS_INC: {
     title:"Appropriate Use of Force", subtitle:"BSIS Pre-Registration Course — 5 Credit Hours",
-    price:"49", hours:"5", bpcRef:"BPC §7583.7", authority:"BPC §7583.7 | DCA AUF Manual July 2023",
+    price:"79", hours:"5", bpcRef:"BPC §7583.7", authority:"BPC §7583.7 | DCA AUF Manual July 2023",
     category:"Pre-Registration", badge:"BSIS REQUIRED",
     outcomes:[
       "Apply the objectively reasonable force standard in real-time situations",
@@ -919,7 +919,7 @@ const CATALOG = {
 
   Baton_Certification_BSIS_MACCESS_INC: {
     title:"Baton Certification", subtitle:"BSIS Elective Skills Course — 4 Credit Hours",
-    price:"59", hours:"4", bpcRef:"BPC §§7583.33 | 7585.9 | 7585.13", authority:"BPC §§7583.33 | 7585.9 | PC §22001",
+    price:"110", hours:"4", bpcRef:"BPC §§7583.33 | 7585.9 | 7585.13", authority:"BPC §§7583.33 | 7585.9 | PC §22001",
     category:"Elective", badge:"BSIS APPROVED",
     outcomes:["Understand all legal requirements for baton carry under BPC §7583.33 and PC §22001","Identify all four authorized baton types for California security guards","Name all seven vital areas that must be avoided — exam requirement","Understand criminal, civil, and employer liability for baton use","Apply the force continuum correctly with baton-level force","Comply with BSIS reporting requirements for every baton deployment"],
     modules:[
