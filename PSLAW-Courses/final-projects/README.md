@@ -430,7 +430,41 @@ The README updates itself automatically every time a new module is built and pus
 
 ---
 
-### Module 12 — Workplace Violence
+### Module 12 — redirects
+
+| | |
+|---|---|
+| **Status** | ⚠️ Incomplete |
+| **Hours** | 4 |
+| **Authority** | `BPC §7583.6(b)` |
+
+#### 12a — Course Module
+
+| File | |
+|------|:---:|
+| `_redirects.pptx` | ❌ |
+| `_redirects.pdf` | ❌ |
+
+#### 12b — Assessment
+
+| File | |
+|------|:---:|
+| `_redirects-Test.html` | ❌ |
+
+> Interactive browser assessment — one question at a time, instant feedback with legal citation, live score by module, 100% to pass, printable Certificate of Completion, BSIS Live Scan stub.
+
+#### 12c — Answer Key *(Instructor Copy — Confidential)*
+
+| File | |
+|------|:---:|
+| `_redirects-AnswerKey.pptx` | ❌ |
+| `_redirects-AnswerKey.pdf` | ❌ |
+
+> Internal instructor use only. Quick-reference answer grid, full Q&A, scoring guide. Do not distribute to students.
+
+---
+
+### Module 13 — Workplace Violence
 
 | | |
 |---|---|
@@ -439,14 +473,14 @@ The README updates itself automatically every time a new module is built and pus
 | **Authority** | `BPC §7583.6(b)` |
 | **Note** | Covers warning signs, anger management, diversity, personal security, and reporting. |
 
-#### 12a — Course Module
+#### 13a — Course Module
 
 | File | |
 |------|:---:|
 | `Workplace_Violence_BSIS_Skills_MACCESS_INC.pptx` | ✅ |
 | `Workplace_Violence_BSIS_Skills_MACCESS_INC.pdf` | ✅ |
 
-#### 12b — Assessment
+#### 13b — Assessment
 
 | File | |
 |------|:---:|
@@ -454,7 +488,7 @@ The README updates itself automatically every time a new module is built and pus
 
 > Interactive browser assessment — one question at a time, instant feedback with legal citation, live score by module, 100% to pass, printable Certificate of Completion, BSIS Live Scan stub.
 
-#### 12c — Answer Key *(Instructor Copy — Confidential)*
+#### 13c — Answer Key *(Instructor Copy — Confidential)*
 
 | File | |
 |------|:---:|
