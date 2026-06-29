@@ -1,438 +1,394 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// CONTENT RENDERER — converts content block objects to HTML strings
+// CONTENT RENDERER  — runs CLIENT-SIDE in the browser, NOT at build time
+// This function is serialized as a string and embedded in every HTML file.
+// It must use only vanilla JS compatible with modern browsers.
 // ═══════════════════════════════════════════════════════════════════════════════
+const CLIENT_RENDER_FN = `
 function renderContent(items) {
-  return items.map(item => {
+  if(!Array.isArray(items)) return '';
+  return items.map(function(item) {
     switch(item.type) {
       case 'h3':
-        return `<h3 class="sect-h3">${item.text}</h3>`;
+        return '<h3 class="sect-h3">' + (item.text||'') + '</h3>';
       case 'alert':
-        return `<div class="c-alert"><span class="c-alert-icon">⚠️</span><span>${item.text}</span></div>`;
+        return '<div class="c-alert"><span class="c-alert-icon">⚠️</span><div>' + (item.text||'') + '</div></div>';
       case 'callout':
-        return `<div class="c-callout"><strong>${item.label}:</strong> ${item.text}</div>`;
+        return '<div class="c-callout"><strong>' + (item.label||'') + ':</strong> ' + (item.text||'') + '</div>';
       case 'rule':
-        return `<div class="c-rule">${item.text}</div>`;
+        return '<div class="c-rule">' + (item.text||'') + '</div>';
+      case 'example':
+        return '<div class="c-example"><div class="c-example-label">📋 Real-World Example</div><div class="c-example-text">' + (item.text||'') + '</div></div>';
       case 'bullets':
-        return `<ul class="c-bullets">${item.items.map(b=>`<li>${b}</li>`).join('')}</ul>`;
+        return '<ul class="c-bullets">' + (item.items||[]).map(function(b){ return '<li>' + b + '</li>'; }).join('') + '</ul>';
       case 'typecards':
-        return `<div class="type-cards">${item.items.map(t=>`
-          <div class="type-card" style="border-left:4px solid ${t.color}">
-            <div class="type-card-label" style="color:${t.color}">${t.label}</div>
-            <div class="type-card-text">${t.text}</div>
-          </div>`).join('')}</div>`;
+        return '<div class="type-cards">' + (item.items||[]).map(function(t){
+          return '<div class="type-card" style="border-left:4px solid ' + t.color + '">'
+            + '<div class="type-card-label" style="color:' + t.color + '">' + (t.label||'') + '</div>'
+            + '<div class="type-card-text">' + (t.text||'') + '</div>'
+            + '</div>';
+        }).join('') + '</div>';
       case 'twocol':
-        return `<div class="two-col">
-          <div class="col-block"><div class="col-heading">${item.left.heading}</div>
-            <ul class="c-bullets">${item.left.items.map(b=>`<li>${b}</li>`).join('')}</ul></div>
-          <div class="col-block"><div class="col-heading">${item.right.heading}</div>
-            <ul class="c-bullets">${item.right.items.map(b=>`<li>${b}</li>`).join('')}</ul></div>
-        </div>`;
+        var leftBullets = ((item.left||{}).items||[]).map(function(b){ return '<li>' + b + '</li>'; }).join('');
+        var rightBullets = ((item.right||{}).items||[]).map(function(b){ return '<li>' + b + '</li>'; }).join('');
+        return '<div class="two-col">'
+          + '<div class="col-block"><div class="col-heading">' + ((item.left||{}).heading||'') + '</div><ul class="c-bullets">' + leftBullets + '</ul></div>'
+          + '<div class="col-block"><div class="col-heading">' + ((item.right||{}).heading||'') + '</div><ul class="c-bullets">' + rightBullets + '</ul></div>'
+          + '</div>';
       case 'stagelist':
-        return `<div class="stage-list">${item.items.map(s=>`
-          <div class="stage-row">
-            <div class="stage-num" style="background:${s.color}">${s.num}</div>
-            <div class="stage-body"><span class="stage-label" style="color:${s.color}">${s.label}</span><span class="stage-text"> — ${s.text}</span></div>
-          </div>`).join('')}</div>`;
+        return '<div class="stage-list">' + (item.items||[]).map(function(s){
+          return '<div class="stage-row">'
+            + '<div class="stage-num" style="background:' + s.color + '">' + s.num + '</div>'
+            + '<div class="stage-body"><span class="stage-label" style="color:' + s.color + '">' + s.label + '</span><span class="stage-text"> — ' + s.text + '</span></div>'
+            + '</div>';
+        }).join('') + '</div>';
       case 'rhf':
-        return `<div class="rhf-grid">${item.items.map(r=>`
-          <div class="rhf-card" style="border-top:4px solid ${r.color}">
-            <div class="rhf-label" style="color:${r.color}">${r.label}</div>
-            <div class="rhf-text">${r.text}</div>
-          </div>`).join('')}</div>`;
+        return '<div class="rhf-grid">' + (item.items||[]).map(function(r){
+          return '<div class="rhf-card" style="border-top:4px solid ' + r.color + '">'
+            + '<div class="rhf-label" style="color:' + r.color + '">' + r.label + '</div>'
+            + '<div class="rhf-text">' + r.text + '</div>'
+            + '</div>';
+        }).join('') + '</div>';
       default: return '';
     }
-  }).join('\n');
+  }).join('\\n');
 }
+`;
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// MAIN HTML BUILDER — one complete self-contained file per course
+// MAIN HTML BUILDER
 // ═══════════════════════════════════════════════════════════════════════════════
 function buildPlatformHTML(courseKey, course) {
-  // Pre-render all slide content to HTML strings
-  const modulesWithHTML = course.modules.map(mod => ({
-    ...mod,
-    slides: mod.slides.map(sl => ({
-      ...sl,
-      renderedHTML: renderContent(sl.content)
-    }))
-  }));
+  // NOTE: Do NOT pre-render slides. Pass raw content arrays in JSON.
+  // renderContent() runs client-side to avoid escaping bugs.
+  const TOTAL_MINS = parseInt(course.hours) * 60;
+  const IDLE_WARN  = 10;
+  const IDLE_LOCK  = 15;
+  const MAX_TRIES  = 3;
 
-  const TOTAL_MINS  = parseInt(course.hours) * 60;
-  const IDLE_WARN   = 10;   // minutes before idle warning
-  const IDLE_LOCK   = 15;   // minutes before session lock
-  const MAX_TRIES   = 3;    // final exam attempts before repurchase gate
-
-  const modulesJ = JSON.stringify(modulesWithHTML)
-    .replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$');
+  // Safe JSON embed — only escape backtick and $ (not backslashes, which JSON already handles)
+  const modulesJ = JSON.stringify(course.modules)
+    .replace(/`/g, '\\`').replace(/\$\{/g, '\\${');
   const examJ = JSON.stringify(course.exam)
-    .replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$');
+    .replace(/`/g, '\\`').replace(/\$\{/g, '\\${');
 
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>${course.title} | PSLAW Academy — MACCESS INC.</title>
+<title>${course.title} | MACCESS INC.</title>
 <style>
-/* ─── Tokens ─────────────────────────────────────────────────── */
-:root {
-  --navy:#1B2B5E; --gold:#C9A84C; --red:#8B1A1A; --green:#1A5C3A;
-  --light:#F4F6FB; --gray:#4A5568; --white:#FFFFFF; --dark:#12193A;
-  --border:#DDE4F0; --radius:10px;
-  --gold-lt:#FFF8E1; --red-lt:#FFECEC; --green-lt:#EAF3DE;
+:root{
+  --navy:#1B2B5E;--gold:#C9A84C;--red:#8B1A1A;--green:#1A5C3A;
+  --light:#F4F6FB;--gray:#4A5568;--white:#FFFFFF;--dark:#12193A;
+  --border:#DDE4F0;--r:10px;
+  --gold-lt:#FFF8E1;--red-lt:#FFECEC;--green-lt:#EAF3DE;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;}
 body{font-family:'Segoe UI',Arial,sans-serif;background:var(--light);color:#1A1A2E;line-height:1.6;}
+.screen{display:none;min-height:100vh;}.screen.active{display:block;}
 
-/* ─── Screen system ──────────────────────────────────────────── */
-.screen{display:none;min-height:100vh;}
-.screen.active{display:block;}
-
-/* ─── Global header ──────────────────────────────────────────── */
-.g-header{background:var(--navy);padding:13px 24px;display:flex;align-items:center;justify-content:space-between;}
+/* ── Global header ── */
+.g-hdr{background:var(--navy);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;}
 .g-logo{color:var(--gold);font-size:17px;font-weight:800;letter-spacing:.04em;}
 .g-meta{color:#CADCFC;font-size:11px;text-align:right;line-height:1.5;}
-.gold-bar{height:5px;background:var(--gold);}
+.gold-bar{height:4px;background:var(--gold);}
 
-/* ─── Timer strip ────────────────────────────────────────────── */
-.timer-strip{background:var(--dark);display:flex;align-items:center;gap:14px;padding:7px 24px;}
-.timer-label{font-size:11px;color:#8899BB;letter-spacing:.05em;white-space:nowrap;}
-.timer-track{flex:1;height:5px;background:rgba(255,255,255,.12);border-radius:3px;overflow:hidden;}
-.timer-fill{height:100%;background:var(--gold);border-radius:3px;transition:width 1s linear;}
-.timer-fill.warn{background:#FFA500;}
-.timer-fill.crit{background:var(--red);}
-.timer-clock{font-size:14px;font-weight:700;color:var(--gold);font-variant-numeric:tabular-nums;min-width:52px;text-align:right;}
-.timer-clock.warn{color:#FFA500;}
-.timer-clock.crit{color:var(--red);animation:blink .9s infinite;}
+/* ── Timer strip ── */
+.timer-strip{background:var(--dark);display:flex;align-items:center;gap:12px;padding:6px 22px;}
+.timer-lbl{font-size:10px;color:#8899BB;letter-spacing:.05em;white-space:nowrap;}
+.timer-track{flex:1;height:4px;background:rgba(255,255,255,.12);border-radius:2px;overflow:hidden;}
+.timer-fill{height:100%;background:var(--gold);border-radius:2px;transition:width 1s linear;}
+.timer-fill.warn{background:#FFA500;}.timer-fill.crit{background:var(--red);}
+.timer-clk{font-size:13px;font-weight:700;color:var(--gold);font-variant-numeric:tabular-nums;min-width:50px;text-align:right;}
+.timer-clk.warn{color:#FFA500;}.timer-clk.crit{color:var(--red);animation:blink .9s infinite;}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:.4;}}
 
-/* ═══════════════════════════════════════════════════
+/* ══════════════════════════════════════
    SALES PAGE
-═══════════════════════════════════════════════════ */
-.hero{background:var(--dark);color:var(--white);padding:56px 24px 44px;}
-.hero-inner{max-width:940px;margin:0 auto;}
-.hero-badge{display:inline-block;background:var(--red);color:var(--white);font-size:11px;font-weight:700;letter-spacing:.1em;padding:5px 14px;border-radius:4px;margin-bottom:16px;text-transform:uppercase;}
-.hero-title{font-size:42px;font-weight:800;line-height:1.1;margin-bottom:10px;}
-.hero-sub{font-size:17px;color:#CADCFC;margin-bottom:26px;}
-.hero-chips{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:32px;}
-.chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:7px 15px;font-size:12px;color:var(--white);}
+══════════════════════════════════════ */
+.hero{background:var(--dark);color:var(--white);padding:52px 24px 40px;}
+.hero-inner{max-width:920px;margin:0 auto;}
+.hero-badge{display:inline-block;background:var(--red);color:var(--white);font-size:10px;font-weight:700;letter-spacing:.1em;padding:4px 13px;border-radius:4px;margin-bottom:15px;text-transform:uppercase;}
+.hero-title{font-size:40px;font-weight:800;line-height:1.1;margin-bottom:10px;}
+.hero-sub{font-size:16px;color:#CADCFC;margin-bottom:24px;}
+.hero-chips{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px;}
+.chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:5px;padding:6px 13px;font-size:12px;color:var(--white);}
 .chip strong{color:var(--gold);display:block;font-size:9px;text-transform:uppercase;letter-spacing:.07em;margin-bottom:1px;}
-.cta-primary{display:inline-block;background:var(--gold);color:var(--navy);font-size:17px;font-weight:700;padding:15px 38px;border-radius:8px;border:none;cursor:pointer;}
-.cta-primary:hover{background:#b8962a;}
-.hero-trust{margin-top:12px;font-size:12px;color:#8899BB;}
-
-.sec{padding:52px 24px;}
-.sec-inner{max-width:940px;margin:0 auto;}
-.sec-eye{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin-bottom:7px;}
-.sec-title{font-size:28px;font-weight:700;color:var(--navy);margin-bottom:24px;}
-
-/* Outcomes */
-.outcomes-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
-.outcome{display:flex;align-items:flex-start;gap:11px;padding:13px;background:var(--white);border-radius:8px;border:1px solid var(--border);}
-.outcome-check{width:22px;height:22px;border-radius:50%;background:var(--green);color:var(--white);font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
-.outcome-text{font-size:13px;}
-
-/* Curriculum + price */
-.curric-wrap{display:grid;grid-template-columns:1fr 300px;gap:36px;align-items:start;}
-.curric-list{display:flex;flex-direction:column;gap:8px;}
-.curric-item{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:14px 18px;display:flex;align-items:center;gap:14px;}
-.curric-icon{font-size:20px;width:38px;height:38px;background:var(--light);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.curric-body{flex:1;}
-.curric-num{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gray);}
-.curric-name{font-size:14px;font-weight:600;color:var(--navy);margin:2px 0;}
-.curric-dur{font-size:11px;color:var(--gray);}
-.curric-lock{font-size:15px;color:var(--gray);}
-
-/* Price card */
-.price-card{background:var(--white);border-radius:var(--radius);border:2px solid var(--navy);padding:26px;position:sticky;top:20px;}
-.price-card-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gray);margin-bottom:5px;}
-.price-amt{font-size:40px;font-weight:800;color:var(--navy);}
-.price-period{font-size:13px;color:var(--gray);margin-bottom:18px;}
-.price-enroll-btn{display:block;width:100%;background:var(--gold);color:var(--navy);font-size:15px;font-weight:700;padding:14px;border-radius:8px;border:none;cursor:pointer;text-align:center;margin-bottom:10px;}
-.price-enroll-btn:hover{background:#b8962a;}
-.price-includes{margin-top:14px;font-size:13px;}
-.price-includes li{padding:6px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:7px;list-style:none;}
-.price-includes li:last-child{border:none;}
-.pi-check{color:var(--green);font-weight:700;}
-.pay-logos{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap;}
-.pay-logo{background:var(--light);border:1px solid var(--border);border-radius:4px;padding:4px 9px;font-size:10px;font-weight:600;color:var(--gray);}
-.policy-box{background:var(--gold-lt);border:1px solid #F9C757;border-radius:7px;padding:12px 14px;font-size:12px;color:#7B4F00;margin-top:12px;line-height:1.65;}
-
-/* Instructor */
-.instructor-sec{background:var(--navy);color:var(--white);padding:52px 24px;}
-.instructor-inner{max-width:940px;margin:0 auto;display:grid;grid-template-columns:88px 1fr;gap:28px;align-items:start;}
-.instructor-avatar{width:84px;height:84px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:32px;border:3px solid var(--gold);}
-.instructor-name{font-size:20px;font-weight:700;color:var(--gold);margin-bottom:3px;}
-.instructor-title{font-size:12px;color:#CADCFC;margin-bottom:12px;}
-.instructor-bio{font-size:13px;color:#CADCFC;line-height:1.7;margin-bottom:12px;}
-.creds{display:flex;flex-wrap:wrap;gap:7px;}
-.cred{background:rgba(255,255,255,.1);border-radius:4px;padding:3px 9px;font-size:11px;color:var(--white);}
-
-/* Testimonials */
-.t-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:22px;}
-.t-card{background:var(--light);border-radius:var(--radius);padding:18px;border-left:4px solid var(--gold);}
-.t-stars{color:var(--gold);font-size:13px;margin-bottom:7px;}
-.t-text{font-size:13px;color:var(--gray);line-height:1.6;margin-bottom:9px;font-style:italic;}
+.cta-btn{display:inline-block;background:var(--gold);color:var(--navy);font-size:16px;font-weight:700;padding:14px 36px;border-radius:8px;border:none;cursor:pointer;}
+.cta-btn:hover{background:#b8962a;}
+.hero-trust{margin-top:11px;font-size:11px;color:#8899BB;}
+.sec{padding:48px 24px;}.sec-inner{max-width:920px;margin:0 auto;}
+.sec-eye{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin-bottom:6px;}
+.sec-title{font-size:26px;font-weight:700;color:var(--navy);margin-bottom:22px;}
+.outcomes-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.outcome{display:flex;align-items:flex-start;gap:10px;padding:12px;background:var(--white);border-radius:7px;border:1px solid var(--border);}
+.outcome-ck{width:20px;height:20px;border-radius:50%;background:var(--green);color:var(--white);font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.outcome-txt{font-size:13px;}
+.curric-wrap{display:grid;grid-template-columns:1fr 290px;gap:32px;align-items:start;}
+.curric-list{display:flex;flex-direction:column;gap:7px;}
+.curric-item{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:13px 16px;display:flex;align-items:center;gap:13px;}
+.curric-icon{font-size:18px;width:34px;height:34px;background:var(--light);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.curric-body{flex:1;}.curric-num{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gray);}
+.curric-name{font-size:13px;font-weight:600;color:var(--navy);margin:1px 0;}.curric-dur{font-size:11px;color:var(--gray);}
+.price-card{background:var(--white);border-radius:var(--r);border:2px solid var(--navy);padding:24px;position:sticky;top:18px;}
+.price-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gray);margin-bottom:4px;}
+.price-amt{font-size:38px;font-weight:800;color:var(--navy);}
+.price-per{font-size:12px;color:var(--gray);margin-bottom:16px;}
+.price-enroll{display:block;width:100%;background:var(--gold);color:var(--navy);font-size:15px;font-weight:700;padding:13px;border-radius:8px;border:none;cursor:pointer;text-align:center;margin-bottom:10px;}
+.price-enroll:hover{background:#b8962a;}
+.pi-list{margin-top:13px;font-size:12px;}
+.pi-list li{padding:5px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;list-style:none;}
+.pi-list li:last-child{border:none;}.pi-ck{color:var(--green);font-weight:700;}
+.pay-logos{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap;}
+.pay-logo{background:var(--light);border:1px solid var(--border);border-radius:3px;padding:3px 8px;font-size:10px;font-weight:600;color:var(--gray);}
+.policy-box{background:var(--gold-lt);border:1px solid #F9C757;border-radius:6px;padding:10px 13px;font-size:11px;color:#7B4F00;margin-top:10px;line-height:1.6;}
+.instr-sec{background:var(--navy);color:var(--white);padding:48px 24px;}
+.instr-inner{max-width:920px;margin:0 auto;display:grid;grid-template-columns:80px 1fr;gap:24px;align-items:start;}
+.instr-av{width:76px;height:76px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:28px;border:3px solid var(--gold);}
+.instr-name{font-size:19px;font-weight:700;color:var(--gold);margin-bottom:3px;}
+.instr-title{font-size:12px;color:#CADCFC;margin-bottom:12px;}
+.instr-bio{font-size:13px;color:#CADCFC;line-height:1.7;margin-bottom:12px;}
+.creds{display:flex;flex-wrap:wrap;gap:6px;}
+.cred{background:rgba(255,255,255,.1);border-radius:3px;padding:3px 8px;font-size:10px;color:var(--white);}
+.t-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:20px;}
+.t-card{background:var(--light);border-radius:var(--r);padding:16px;border-left:4px solid var(--gold);}
+.t-stars{color:var(--gold);font-size:13px;margin-bottom:6px;}
+.t-text{font-size:12px;color:var(--gray);line-height:1.6;margin-bottom:8px;font-style:italic;}
 .t-name{font-size:11px;font-weight:700;color:var(--navy);}
+.bot-cta{background:var(--gold);padding:40px 24px;text-align:center;}
+.bot-cta h2{font-size:24px;font-weight:800;color:var(--navy);margin-bottom:6px;}
+.bot-cta p{font-size:14px;color:var(--dark);margin-bottom:20px;}
+.bot-cta-btn{background:var(--navy);color:var(--white);font-size:15px;font-weight:700;padding:13px 36px;border-radius:8px;border:none;cursor:pointer;}
+.site-footer{background:var(--dark);color:#8899BB;padding:16px 24px;text-align:center;font-size:11px;}
 
-/* Bottom CTA */
-.bottom-cta{background:var(--gold);padding:44px 24px;text-align:center;}
-.bottom-cta h2{font-size:26px;font-weight:800;color:var(--navy);margin-bottom:7px;}
-.bottom-cta p{font-size:14px;color:var(--dark);margin-bottom:22px;}
-.bottom-cta-btn{background:var(--navy);color:var(--white);font-size:16px;font-weight:700;padding:14px 38px;border-radius:8px;border:none;cursor:pointer;}
-.site-footer{background:var(--dark);color:#8899BB;padding:18px 24px;text-align:center;font-size:11px;}
-
-/* ═══════════════════════════════════════════════════
+/* ══════════════════════════════════════
    ENROLLMENT GATE
-═══════════════════════════════════════════════════ */
+══════════════════════════════════════ */
 .gate-outer{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--light);padding:24px;}
-.gate-card{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:38px;max-width:460px;width:100%;}
+.gate-card{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:36px;max-width:450px;width:100%;}
 .gate-logo{font-size:12px;font-weight:700;color:var(--navy);letter-spacing:.05em;margin-bottom:5px;}
-.gate-title{font-size:22px;font-weight:700;color:var(--navy);margin-bottom:4px;}
-.gate-sub{font-size:13px;color:var(--gray);margin-bottom:22px;}
-.gate-label{display:block;font-size:12px;font-weight:600;color:var(--gray);margin:11px 0 4px;}
-.gate-input{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;outline:none;transition:border .2s;}
-.gate-input:focus{border-color:var(--navy);}
-.gate-go{display:block;width:100%;background:var(--gold);color:var(--navy);font-size:15px;font-weight:700;padding:13px;border-radius:8px;border:none;cursor:pointer;margin-top:18px;}
-.gate-notice{font-size:11px;color:var(--gray);margin-top:12px;text-align:center;line-height:1.6;}
-.gate-back{text-align:center;margin-top:10px;font-size:12px;color:var(--gray);cursor:pointer;}
+.gate-title{font-size:21px;font-weight:700;color:var(--navy);margin-bottom:4px;}
+.gate-sub{font-size:12px;color:var(--gray);margin-bottom:20px;}
+.gate-lbl{display:block;font-size:11px;font-weight:600;color:var(--gray);margin:10px 0 3px;}
+.gate-inp{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:14px;outline:none;transition:border .2s;}
+.gate-inp:focus{border-color:var(--navy);}
+.gate-go{display:block;width:100%;background:var(--gold);color:var(--navy);font-size:15px;font-weight:700;padding:12px;border-radius:8px;border:none;cursor:pointer;margin-top:16px;}
+.gate-notice{font-size:11px;color:var(--gray);margin-top:10px;text-align:center;line-height:1.6;}
+.gate-back{text-align:center;margin-top:9px;font-size:11px;color:var(--gray);cursor:pointer;}
 
-/* ═══════════════════════════════════════════════════
-   COURSE PLAYER  (sidebar + content area)
-═══════════════════════════════════════════════════ */
-.player-layout{display:grid;grid-template-columns:256px 1fr;min-height:calc(100vh - 94px);}
-
-/* Sidebar */
-.sidebar{background:var(--navy);display:flex;flex-direction:column;position:sticky;top:0;height:calc(100vh - 94px);overflow-y:auto;}
-.sb-head{padding:18px 18px 0;}
+/* ══════════════════════════════════════
+   COURSE PLAYER
+══════════════════════════════════════ */
+.player-layout{display:grid;grid-template-columns:248px 1fr;min-height:calc(100vh - 88px);}
+.sidebar{background:var(--navy);display:flex;flex-direction:column;position:sticky;top:0;height:calc(100vh - 88px);overflow-y:auto;}
+.sb-head{padding:16px 16px 0;}
 .sb-logo{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.04em;}
 .sb-course{font-size:12px;color:#CADCFC;margin-top:3px;line-height:1.4;}
-.sb-prog-track{height:4px;background:rgba(255,255,255,.12);margin:11px 0 3px;border-radius:2px;}
+.sb-prog{height:3px;background:rgba(255,255,255,.12);margin:10px 0 3px;border-radius:2px;}
 .sb-prog-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .4s;}
-.sb-prog-label{font-size:10px;color:#8899BB;padding-bottom:11px;border-bottom:1px solid rgba(255,255,255,.09);}
-.sb-mods{flex:1;padding:10px 0;}
-.sbm{padding:10px 18px;cursor:pointer;border-left:3px solid transparent;transition:all .15s;}
+.sb-prog-lbl{font-size:9px;color:#8899BB;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.09);}
+.sb-mods{flex:1;padding:8px 0;}
+.sbm{padding:9px 16px;cursor:pointer;border-left:3px solid transparent;transition:all .15s;}
 .sbm:hover{background:rgba(255,255,255,.04);}
 .sbm.sbm-active{border-left-color:var(--gold);background:rgba(201,168,76,.1);}
 .sbm.sbm-done{border-left-color:var(--green);}
-.sbm.sbm-locked{opacity:.38;cursor:not-allowed;}
-.sbm-row{display:flex;align-items:center;gap:9px;}
-.sbm-icon{font-size:14px;width:24px;text-align:center;}
+.sbm.sbm-locked{opacity:.36;cursor:not-allowed;}
+.sbm-row{display:flex;align-items:center;gap:8px;}
+.sbm-icon{font-size:13px;width:22px;text-align:center;}
 .sbm-info{flex:1;}
 .sbm-num{font-size:9px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.06em;}
 .sbm-name{font-size:12px;color:var(--white);margin:1px 0;}
 .sbm-dur{font-size:10px;color:#8899BB;}
 .sbm-status{font-size:12px;margin-left:auto;}
-.sb-exam-row{padding:12px 18px;border-top:1px solid rgba(255,255,255,.09);margin-top:auto;cursor:pointer;display:flex;align-items:center;gap:9px;font-size:12px;color:#CADCFC;}
-.sb-exam-row.sb-locked{opacity:.35;cursor:not-allowed;}
-
-/* Main area */
-.player-main{display:flex;flex-direction:column;min-height:calc(100vh - 94px);}
-.player-topbar{background:var(--white);border-bottom:1px solid var(--border);padding:11px 28px;display:flex;align-items:center;justify-content:space-between;}
+.sb-exam-row{padding:10px 16px;border-top:1px solid rgba(255,255,255,.09);margin-top:auto;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:12px;color:#CADCFC;}
+.sb-exam-row.sb-locked{opacity:.34;cursor:not-allowed;}
+.player-main{display:flex;flex-direction:column;min-height:calc(100vh - 88px);}
+.player-topbar{background:var(--white);border-bottom:1px solid var(--border);padding:10px 26px;display:flex;align-items:center;justify-content:space-between;}
 .player-bc{font-size:12px;color:var(--gray);}
-.player-sc{font-size:11px;color:var(--gray);background:var(--light);padding:3px 11px;border-radius:18px;}
-.player-body{flex:1;padding:28px 36px;max-width:780px;overflow-y:auto;}
-.player-nav{background:var(--white);border-top:1px solid var(--border);padding:13px 36px;display:flex;justify-content:space-between;align-items:center;gap:12px;}
-.nav-back{padding:9px 22px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;background:var(--white);color:var(--navy);border:1.5px solid var(--navy);}
-.slide-dots{display:flex;gap:5px;}
+.player-sc{font-size:11px;color:var(--gray);background:var(--light);padding:3px 10px;border-radius:16px;}
+.player-body{flex:1;padding:26px 34px;max-width:760px;overflow-y:auto;}
+.player-nav{background:var(--white);border-top:1px solid var(--border);padding:12px 34px;display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.nav-back{padding:8px 20px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;background:var(--white);color:var(--navy);border:1.5px solid var(--navy);}
+.slide-dots{display:flex;gap:4px;}
 .dot{width:6px;height:6px;border-radius:50%;background:var(--border);}
-.dot.d-done{background:var(--gold);}
-.dot.d-active{background:var(--navy);}
-.nav-next{padding:9px 22px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;background:var(--navy);color:var(--white);border:none;}
-.nav-next:hover{background:#243a7a;}
-.nav-next:disabled{background:#A0AEC0;cursor:not-allowed;}
+.dot.d-done{background:var(--gold);}.dot.d-active{background:var(--navy);}
+.nav-next{padding:8px 20px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;background:var(--navy);color:var(--white);border:none;}
+.nav-next:hover{background:#243a7a;}.nav-next:disabled{background:#A0AEC0;cursor:not-allowed;}
 
-/* Slide content */
+/* ── Slide content styles ── */
 .slide-wrap{animation:fadeUp .2s ease;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:none;}}
-.slide-heading{font-size:24px;font-weight:700;color:var(--navy);margin-bottom:6px;line-height:1.25;}
-.slide-sub{font-size:12px;color:var(--gray);margin-bottom:18px;padding-bottom:14px;border-bottom:2px solid var(--gold);}
-.sect-h3{font-size:15px;font-weight:700;color:var(--navy);margin:16px 0 8px;}
-.c-alert{background:#FFF3CD;border:1px solid #F9C757;border-radius:7px;padding:11px 14px;margin:13px 0;display:flex;gap:9px;align-items:flex-start;font-size:13px;color:#7B4F00;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+.slide-heading{font-size:22px;font-weight:700;color:var(--navy);margin-bottom:5px;line-height:1.25;}
+.slide-sub{font-size:12px;color:var(--gray);margin-bottom:16px;padding-bottom:13px;border-bottom:2px solid var(--gold);}
+.sect-h3{font-size:14px;font-weight:700;color:var(--navy);margin:15px 0 8px;}
+.c-alert{background:#FFF3CD;border:1px solid #F9C757;border-radius:7px;padding:11px 14px;margin:12px 0;display:flex;gap:9px;align-items:flex-start;font-size:13px;color:#7B4F00;}
 .c-alert-icon{font-size:16px;flex-shrink:0;}
-.c-callout{background:var(--green-lt);border-left:4px solid var(--green);border-radius:0 7px 7px 0;padding:10px 14px;margin:13px 0;font-size:13px;color:#1A4A2A;}
-.c-rule{background:#F0F4FB;border-left:4px solid var(--navy);border-radius:0 7px 7px 0;padding:10px 14px;margin:13px 0;font-size:13px;font-weight:600;color:var(--navy);}
-.c-bullets{padding-left:2px;margin:10px 0;}
-.c-bullets li{padding:5px 0 5px 16px;position:relative;font-size:13px;border-bottom:1px solid #f0f0f0;}
+.c-callout{background:var(--green-lt);border-left:4px solid var(--green);border-radius:0 7px 7px 0;padding:10px 14px;margin:12px 0;font-size:13px;color:#1A4A2A;}
+.c-rule{background:#F0F4FB;border-left:4px solid var(--navy);border-radius:0 7px 7px 0;padding:10px 14px;margin:12px 0;font-size:13px;font-weight:600;color:var(--navy);}
+.c-example{background:#F0F8FF;border:1px solid #B3D4F0;border-radius:7px;padding:12px 15px;margin:12px 0;}
+.c-example-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#1B4A8A;margin-bottom:6px;}
+.c-example-text{font-size:13px;color:#1A2A4A;line-height:1.65;}
+.c-bullets{padding-left:2px;margin:9px 0;}
+.c-bullets li{padding:4px 0 4px 15px;position:relative;font-size:13px;border-bottom:1px solid #f0f0f0;}
 .c-bullets li:last-child{border:none;}
-.c-bullets li::before{content:"▸";position:absolute;left:0;color:var(--gold);font-size:10px;top:8px;}
+.c-bullets li::before{content:"▸";position:absolute;left:0;color:var(--gold);font-size:10px;top:7px;}
 .type-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0;}
 .type-card{background:var(--white);border-radius:7px;padding:12px;border:1px solid var(--border);}
 .type-card-label{font-size:11px;font-weight:700;margin-bottom:5px;}
 .type-card-text{font-size:12px;color:var(--gray);}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin:12px 0;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0;}
 .col-block{background:var(--light);border-radius:7px;padding:12px;}
 .col-heading{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:8px;}
-.stage-list{display:flex;flex-direction:column;gap:6px;margin:11px 0;}
-.stage-row{display:flex;align-items:center;gap:11px;background:var(--white);border-radius:7px;padding:10px 13px;border:1px solid var(--border);}
-.stage-num{width:28px;height:28px;border-radius:50%;color:var(--white);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.stage-label{font-weight:700;font-size:12px;}
-.stage-text{font-size:12px;color:var(--gray);}
+.stage-list{display:flex;flex-direction:column;gap:6px;margin:10px 0;}
+.stage-row{display:flex;align-items:center;gap:10px;background:var(--white);border-radius:7px;padding:9px 12px;border:1px solid var(--border);}
+.stage-num{width:27px;height:27px;border-radius:50%;color:var(--white);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.stage-label{font-weight:700;font-size:12px;}.stage-text{font-size:12px;color:var(--gray);}
 .rhf-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:12px 0;}
 .rhf-card{background:var(--white);border-radius:7px;padding:12px;border:1px solid var(--border);}
-.rhf-label{font-size:16px;font-weight:800;margin-bottom:6px;}
-.rhf-text{font-size:12px;color:var(--gray);}
+.rhf-label{font-size:15px;font-weight:800;margin-bottom:6px;}.rhf-text{font-size:12px;color:var(--gray);}
 
-/* ═══════════════════════════════════════════════════
-   QUESTION SCREENS  (check-in + module quiz + final exam)
-   Each question set is a DEDICATED full screen.
-═══════════════════════════════════════════════════ */
-.q-screen-wrap{max-width:680px;padding:32px 36px;}
-.q-screen-header{margin-bottom:24px;}
-.q-screen-badge{display:inline-flex;align-items:center;gap:7px;background:var(--navy);color:var(--gold);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:5px 14px;border-radius:4px;margin-bottom:12px;}
-.q-screen-title{font-size:22px;font-weight:700;color:var(--navy);margin-bottom:4px;}
-.q-screen-sub{font-size:13px;color:var(--gray);line-height:1.6;}
-
-/* Progress dots across top of question screen */
-.q-progress{display:flex;gap:5px;margin-bottom:20px;}
-.qp-dot{height:5px;flex:1;border-radius:3px;background:var(--border);}
-.qp-dot.qp-done{background:var(--gold);}
-.qp-dot.qp-active{background:var(--navy);}
-
-/* Single question card */
-.q-card{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:24px 26px;}
-.q-num{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gold);margin-bottom:7px;}
-.q-ref{font-size:9px;color:var(--gray);margin-left:8px;font-style:italic;}
-.q-text{font-size:15px;font-weight:600;line-height:1.5;color:var(--navy);margin-bottom:16px;}
-.q-opts{display:flex;flex-direction:column;gap:8px;}
-.q-opt{display:flex;align-items:center;gap:10px;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;transition:all .15s;}
+/* ══════════════════════════════════════
+   QUESTION SCREEN
+══════════════════════════════════════ */
+.q-screen-wrap{max-width:640px;padding:28px 34px;}
+.q-badge{display:inline-flex;align-items:center;gap:6px;background:var(--navy);color:var(--gold);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:4px 12px;border-radius:4px;margin-bottom:11px;}
+.q-screen-title{font-size:20px;font-weight:700;color:var(--navy);margin-bottom:4px;}
+.q-screen-sub{font-size:12px;color:var(--gray);line-height:1.6;margin-bottom:18px;}
+.q-progress{display:flex;gap:4px;margin-bottom:18px;}
+.qp-dot{height:4px;flex:1;border-radius:2px;background:var(--border);}
+.qp-dot.qp-done{background:var(--gold);}.qp-dot.qp-active{background:var(--navy);}
+.q-card{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:22px 24px;}
+.q-num{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gold);margin-bottom:6px;}
+.q-ref{font-size:9px;color:var(--gray);margin-left:7px;font-style:italic;}
+.q-text{font-size:14px;font-weight:600;line-height:1.5;color:var(--navy);margin-bottom:14px;}
+.q-opts{display:flex;flex-direction:column;gap:7px;}
+.q-opt{display:flex;align-items:center;gap:9px;padding:10px 13px;border:1.5px solid var(--border);border-radius:7px;cursor:pointer;font-size:13px;transition:all .15s;}
 .q-opt:hover:not(.q-picked){border-color:var(--navy);background:#F0F4FB;}
 .q-opt.q-selected{border-color:var(--navy);background:#EBF0FB;}
 .q-opt.q-ok{border-color:var(--green)!important;background:var(--green-lt)!important;color:var(--green);}
 .q-opt.q-no{border-color:var(--red)!important;background:var(--red-lt)!important;color:var(--red);}
 .q-opt.q-picked{pointer-events:none;}
-.q-letter{width:26px;height:26px;border-radius:50%;background:var(--light);font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--navy);border:1.5px solid var(--border);}
+.q-letter{width:24px;height:24px;border-radius:50%;background:var(--light);font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--navy);border:1.5px solid var(--border);}
 .q-opt.q-selected .q-letter{background:var(--navy);color:#fff;border-color:var(--navy);}
 .q-opt.q-ok .q-letter{background:var(--green);color:#fff;border-color:var(--green);}
 .q-opt.q-no .q-letter{background:var(--red);color:#fff;border-color:var(--red);}
-.q-feedback{margin-top:12px;padding:10px 14px;border-radius:7px;font-size:13px;line-height:1.6;}
+.q-feedback{margin-top:11px;padding:10px 13px;border-radius:7px;font-size:13px;line-height:1.6;}
 .q-fb-ok{background:var(--green-lt);color:var(--green);}
 .q-fb-no{background:var(--red-lt);color:var(--red);}
-.q-hint{margin-top:10px;font-size:12px;color:var(--gray);font-style:italic;}
-
-/* Quiz screen nav */
-.q-nav{display:flex;justify-content:space-between;align-items:center;margin-top:16px;}
+.q-no-answer{margin-top:10px;padding:9px 13px;border-radius:7px;font-size:13px;background:#FFF3CD;color:#7B4F00;border:1px solid #F9C757;display:none;}
+.q-no-answer.show{display:block;}
 .q-nav-info{font-size:12px;color:var(--gray);}
-
-/* Module quiz result banner */
-.quiz-result-banner{margin-top:16px;padding:14px 18px;border-radius:8px;font-size:14px;font-weight:600;text-align:center;}
+.quiz-result-banner{margin-top:14px;padding:12px 16px;border-radius:7px;font-size:13px;font-weight:600;text-align:center;}
 .qrb-pass{background:var(--green-lt);color:var(--green);border:1px solid #c3e6cb;}
 .qrb-fail{background:var(--red-lt);color:var(--red);border:1px solid #f5c6cb;}
-
-/* Final exam attempt tracker */
-.attempt-tracker{display:flex;align-items:center;gap:8px;margin-bottom:16px;padding:10px 14px;background:var(--white);border-radius:8px;border:1px solid var(--border);}
-.att-dot{width:13px;height:13px;border-radius:50%;border:2px solid var(--border);background:var(--white);}
+.att-tracker{display:flex;align-items:center;gap:7px;margin-bottom:14px;padding:9px 13px;background:var(--white);border-radius:7px;border:1px solid var(--border);}
+.att-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--border);background:var(--white);}
 .att-dot.att-used{background:var(--red);border-color:var(--red);}
-.att-dot.att-current{background:var(--gold);border-color:var(--gold);animation:blink .9s infinite;}
-.att-label{font-size:12px;color:var(--gray);margin-left:4px;}
+.att-dot.att-cur{background:var(--gold);border-color:var(--gold);animation:blink .9s infinite;}
+.att-lbl{font-size:11px;color:var(--gray);margin-left:3px;}
 
-/* ═══════════════════════════════════════════════════
+/* ══════════════════════════════════════
    RESULTS
-═══════════════════════════════════════════════════ */
-.results-outer{max-width:680px;padding:32px 36px;margin:0 auto;}
-.results-card{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:36px;text-align:center;}
-.score-ring{width:130px;height:130px;border-radius:50%;margin:0 auto 18px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:28px;font-weight:800;}
-.ring-pass{background:var(--green-lt);color:var(--green);border:5px solid var(--green);}
-.ring-fail{background:var(--red-lt);color:var(--red);border:5px solid var(--red);}
-.ring-sub{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-top:3px;}
-.res-title{font-size:22px;font-weight:700;margin-bottom:7px;}
-.res-pass{color:var(--green);}
-.res-fail{color:var(--red);}
-.res-sub{font-size:13px;color:var(--gray);margin-bottom:20px;line-height:1.65;}
-.res-breakdown{background:var(--light);border-radius:8px;padding:15px 17px;margin-bottom:18px;text-align:left;}
-.res-breakdown h3{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--navy);margin-bottom:10px;}
-.bd-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:13px;}
+══════════════════════════════════════ */
+.results-outer{max-width:640px;padding:28px 34px;margin:0 auto;}
+.results-card{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:34px;text-align:center;}
+.score-ring{width:120px;height:120px;border-radius:50%;margin:0 auto 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:26px;font-weight:800;}
+.ring-pass{background:var(--green-lt);color:var(--green);border:4px solid var(--green);}
+.ring-fail{background:var(--red-lt);color:var(--red);border:4px solid var(--red);}
+.ring-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-top:2px;}
+.res-title{font-size:20px;font-weight:700;margin-bottom:6px;}
+.res-pass-c{color:var(--green);}.res-fail-c{color:var(--red);}
+.res-sub{font-size:13px;color:var(--gray);margin-bottom:18px;line-height:1.65;}
+.res-bd{background:var(--light);border-radius:7px;padding:13px 16px;margin-bottom:16px;text-align:left;}
+.res-bd h3{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--navy);margin-bottom:9px;}
+.bd-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;}
 .bd-row:last-child{border:none;font-weight:700;}
-.bd-p{color:var(--green);font-weight:600;}
-.bd-f{color:var(--red);font-weight:600;}
-.res-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:14px;}
-.r-btn{padding:10px 22px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;}
+.bd-p{color:var(--green);font-weight:600;}.bd-f{color:var(--red);font-weight:600;}
+.res-btns{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin-bottom:13px;}
+.r-btn{padding:9px 20px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;border:none;}
 .r-gold{background:var(--gold);color:var(--navy);}
 .r-navy{background:var(--white);color:var(--navy);border:1.5px solid var(--navy);}
 .r-red{background:var(--red);color:var(--white);}
-.bsis-note{background:#EBF0FB;border-radius:8px;padding:12px 16px;font-size:12px;color:var(--navy);line-height:1.7;text-align:left;}
+.bsis-note{background:#EBF0FB;border-radius:7px;padding:11px 14px;font-size:12px;color:var(--navy);line-height:1.7;text-align:left;}
 
-/* ═══════════════════════════════════════════════════
-   REPURCHASE LOCK SCREEN
-═══════════════════════════════════════════════════ */
+/* ══════════════════════════════════════
+   REPURCHASE LOCK
+══════════════════════════════════════ */
 .lock-outer{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--dark);padding:24px;}
-.lock-card{background:var(--white);border-radius:var(--radius);padding:42px;max-width:500px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4);}
-.lock-icon{font-size:52px;margin-bottom:14px;}
-.lock-title{font-size:22px;font-weight:800;color:var(--red);margin-bottom:9px;}
-.lock-sub{font-size:14px;color:var(--gray);margin-bottom:20px;line-height:1.7;}
-.lock-stripe{height:4px;background:var(--gold);border-radius:2px;margin:18px 0;}
-.lock-policy{background:var(--gold-lt);border:1px solid #F9C757;border-radius:7px;padding:13px 16px;font-size:12px;color:#7B4F00;margin-bottom:20px;text-align:left;line-height:1.7;}
-.lock-btn{display:block;width:100%;background:var(--gold);color:var(--navy);font-size:16px;font-weight:700;padding:14px;border-radius:8px;border:none;cursor:pointer;margin-bottom:10px;}
+.lock-card{background:var(--white);border-radius:var(--r);padding:38px;max-width:480px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4);}
+.lock-icon{font-size:48px;margin-bottom:12px;}
+.lock-title{font-size:20px;font-weight:800;color:var(--red);margin-bottom:8px;}
+.lock-sub{font-size:13px;color:var(--gray);margin-bottom:18px;line-height:1.7;}
+.lock-stripe{height:3px;background:var(--gold);border-radius:2px;margin:16px 0;}
+.lock-policy{background:var(--gold-lt);border:1px solid #F9C757;border-radius:7px;padding:12px 14px;font-size:12px;color:#7B4F00;margin-bottom:18px;text-align:left;line-height:1.7;}
+.lock-btn{display:block;width:100%;background:var(--gold);color:var(--navy);font-size:15px;font-weight:700;padding:13px;border-radius:8px;border:none;cursor:pointer;margin-bottom:9px;}
 .lock-btn:hover{background:#b8962a;}
-.lock-outline{display:block;width:100%;background:var(--white);color:var(--navy);font-size:14px;font-weight:600;padding:12px;border-radius:8px;border:1.5px solid var(--navy);cursor:pointer;}
+.lock-outline{display:block;width:100%;background:var(--white);color:var(--navy);font-size:13px;font-weight:600;padding:11px;border-radius:8px;border:1.5px solid var(--navy);cursor:pointer;}
 
-/* ═══════════════════════════════════════════════════
+/* ══════════════════════════════════════
    CERTIFICATE
-═══════════════════════════════════════════════════ */
+══════════════════════════════════════ */
 @media print{.no-print{display:none!important;}.cert-page{padding:0;}}
-.cert-page{padding:28px;}
-.cert-wrap{background:var(--white);border:3px double var(--navy);border-radius:4px;padding:46px 56px;max-width:800px;margin:0 auto;text-align:center;position:relative;}
-.cert-wrap::before{content:'';position:absolute;inset:9px;border:1px solid var(--gold);border-radius:2px;pointer-events:none;}
-.cert-eyebrow{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--navy);margin-bottom:5px;}
-.cert-stripe{height:5px;background:var(--gold);border-radius:3px;margin:10px auto;width:72px;}
-.cert-co{font-size:22px;font-weight:800;color:var(--navy);margin-bottom:2px;}
-.cert-ppo{font-size:11px;color:var(--gray);margin-bottom:20px;}
-.cert-certifies{font-size:12px;color:var(--gray);margin-bottom:7px;}
-.cert-name{font-size:28px;font-weight:800;color:var(--navy);border-bottom:2px solid var(--navy);display:inline-block;min-width:270px;padding-bottom:3px;margin-bottom:16px;}
-.cert-body{font-size:12px;color:var(--gray);line-height:1.8;margin-bottom:5px;}
-.cert-course{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:10px;}
-.cert-badge-pass{display:inline-block;background:var(--green-lt);color:var(--green);border-radius:5px;padding:4px 13px;font-size:12px;font-weight:700;margin-bottom:18px;}
-.cert-sigs{display:flex;justify-content:space-around;margin-top:28px;gap:16px;}
+.cert-page{padding:24px;}
+.cert-wrap{background:var(--white);border:3px double var(--navy);border-radius:4px;padding:42px 52px;max-width:760px;margin:0 auto;text-align:center;position:relative;}
+.cert-wrap::before{content:'';position:absolute;inset:8px;border:1px solid var(--gold);border-radius:2px;pointer-events:none;}
+.cert-eyebrow{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--navy);margin-bottom:4px;}
+.cert-stripe{height:4px;background:var(--gold);border-radius:2px;margin:9px auto;width:64px;}
+.cert-co{font-size:20px;font-weight:800;color:var(--navy);margin-bottom:2px;}
+.cert-ppo{font-size:11px;color:var(--gray);margin-bottom:18px;}
+.cert-certifies{font-size:12px;color:var(--gray);margin-bottom:6px;}
+.cert-name{font-size:26px;font-weight:800;color:var(--navy);border-bottom:2px solid var(--navy);display:inline-block;min-width:260px;padding-bottom:3px;margin-bottom:14px;}
+.cert-body{font-size:12px;color:var(--gray);line-height:1.8;margin-bottom:4px;}
+.cert-course{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:9px;}
+.cert-badge-pass{display:inline-block;background:var(--green-lt);color:var(--green);border-radius:5px;padding:3px 12px;font-size:11px;font-weight:700;margin-bottom:16px;}
+.cert-sigs{display:flex;justify-content:space-around;margin-top:24px;gap:14px;}
 .cert-sig{flex:1;text-align:center;}
-.cert-sig-line{border-top:1.5px solid var(--navy);margin-bottom:5px;}
+.cert-sig-line{border-top:1.5px solid var(--navy);margin-bottom:4px;}
 .cert-sig-label{font-size:10px;color:var(--gray);}
 
-/* ═══════════════════════════════════════════════════
+/* ══════════════════════════════════════
    IDLE OVERLAY
-═══════════════════════════════════════════════════ */
+══════════════════════════════════════ */
 .idle-overlay{position:fixed;inset:0;background:rgba(18,25,58,.93);display:none;align-items:center;justify-content:center;z-index:999;}
 .idle-overlay.idle-show{display:flex;}
-.idle-card{background:var(--white);border-radius:var(--radius);padding:34px;max-width:380px;width:90%;text-align:center;}
-.idle-icon{font-size:44px;margin-bottom:11px;}
-.idle-title{font-size:19px;font-weight:700;color:var(--navy);margin-bottom:7px;}
-.idle-sub{font-size:13px;color:var(--gray);margin-bottom:16px;line-height:1.6;}
-.idle-count{font-size:38px;font-weight:800;color:var(--red);margin-bottom:18px;}
-.idle-btn{background:var(--gold);color:var(--navy);font-size:14px;font-weight:700;padding:12px 30px;border-radius:8px;border:none;cursor:pointer;}
+.idle-card{background:var(--white);border-radius:var(--r);padding:30px;max-width:340px;width:90%;text-align:center;}
+.idle-icon{font-size:40px;margin-bottom:10px;}
+.idle-title{font-size:17px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.idle-sub{font-size:12px;color:var(--gray);margin-bottom:14px;line-height:1.6;}
+.idle-count{font-size:34px;font-weight:800;color:var(--red);margin-bottom:16px;}
+.idle-btn{background:var(--gold);color:var(--navy);font-size:13px;font-weight:700;padding:11px 28px;border-radius:7px;border:none;cursor:pointer;}
 
-/* ─── Responsive ─────────────────────────────────── */
+/* ── Responsive ── */
 @media(max-width:768px){
   .outcomes-grid,.type-cards,.two-col,.rhf-grid,.t-grid{grid-template-columns:1fr;}
-  .curric-wrap{grid-template-columns:1fr;}
-  .price-card{position:static;}
-  .player-layout{grid-template-columns:1fr;}
-  .sidebar{height:auto;position:relative;}
-  .instructor-inner{grid-template-columns:1fr;}
-  .hero-title{font-size:28px;}
+  .curric-wrap{grid-template-columns:1fr;}.price-card{position:static;}
+  .player-layout{grid-template-columns:1fr;}.sidebar{height:auto;position:relative;}
+  .instr-inner{grid-template-columns:1fr;}.hero-title{font-size:26px;}
 }
 </style>
 </head>
 <body>
 
-<!-- ═══ IDLE OVERLAY ═══════════════════════════════════════════ -->
+<!-- IDLE OVERLAY -->
 <div class="idle-overlay" id="idle-overlay">
   <div class="idle-card">
     <div class="idle-icon">⏰</div>
     <h2 class="idle-title">Still there?</h2>
     <p class="idle-sub">Your session will lock due to inactivity. Click below to continue.</p>
     <div class="idle-count" id="idle-count">60</div>
-    <button class="idle-btn" onclick="resetIdle()">Continue Course</button>
+    <button class="idle-btn" onclick="resetIdle()">Continue</button>
   </div>
 </div>
 
-<!-- ═══ SCREEN: SALES PAGE ══════════════════════════════════════ -->
+<!-- ══ SCREEN: SALES ══════════════════════════════════════════ -->
 <div class="screen active" id="sc-sales">
-  <div class="g-header">
-    <div class="g-logo">MACCESS INC. / PSLAW</div>
-    <div class="g-meta">PPO License #122729 | BSIS-Authorized<br/>gopslaw.com</div>
+  <div class="g-hdr">
+    <div class="g-logo">MACCESS INC.</div>
+    <div class="g-meta">PPO License #122729 | BSIS-Authorized<br/>macaccesslicensing.netlify.app</div>
   </div>
   <div class="gold-bar"></div>
-
   <section class="hero">
     <div class="hero-inner">
       <div class="hero-badge">${course.badge}</div>
@@ -442,28 +398,26 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--light);color:#1A1A
         <div class="chip"><strong>Credit Hours</strong>${course.hours} Hrs</div>
         <div class="chip"><strong>Authority</strong>${course.bpcRef}</div>
         <div class="chip"><strong>Category</strong>BSIS ${course.category}</div>
-        <div class="chip"><strong>Timer</strong>${TOTAL_MINS} Min Session</div>
-        <div class="chip"><strong>Attempts</strong>${MAX_TRIES} Exam Tries</div>
+        <div class="chip"><strong>Session Limit</strong>${TOTAL_MINS} Min</div>
+        <div class="chip"><strong>Exam Attempts</strong>${MAX_TRIES}</div>
       </div>
-      <button class="cta-primary" onclick="goGate()">Enroll Now — \$${course.price}</button>
+      <button class="cta-btn" onclick="goGate()">Enroll Now — \$${course.price}</button>
       <div class="hero-trust">🔒 BSIS-Authorized · Certificate Included · PPO #122729</div>
     </div>
   </section>
-
   <section class="sec" style="background:var(--white);">
     <div class="sec-inner">
       <div class="sec-eye">What You'll Learn</div>
       <h2 class="sec-title">Course Outcomes</h2>
       <div class="outcomes-grid">
-        ${course.outcomes.map(o=>`<div class="outcome"><div class="outcome-check">✓</div><div class="outcome-text">${o}</div></div>`).join('')}
+        ${course.outcomes.map(o=>`<div class="outcome"><div class="outcome-ck">✓</div><div class="outcome-txt">${o}</div></div>`).join('')}
       </div>
     </div>
   </section>
-
   <section class="sec" style="background:var(--light);">
     <div class="sec-inner">
       <div class="sec-eye">Curriculum</div>
-      <h2 class="sec-title" style="margin-bottom:18px;">What's Inside</h2>
+      <h2 class="sec-title" style="margin-bottom:16px;">What's Inside</h2>
       <div class="curric-wrap">
         <div class="curric-list">
           ${course.modules.map((m,i)=>`
@@ -472,9 +426,9 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--light);color:#1A1A
             <div class="curric-body">
               <div class="curric-num">Module ${m.num}</div>
               <div class="curric-name">${m.title}</div>
-              <div class="curric-dur">${m.duration} · ${m.slides.length} sections · ${m.slides.reduce((a,s)=>a+(s.quiz?s.quiz.length:0),0)} check-ins · ${m.quiz?m.quiz.length:0} module quiz Qs</div>
+              <div class="curric-dur">${m.duration} · ${m.slides.length} sections · knowledge checks included</div>
             </div>
-            <div class="curric-lock">${i===0?'▶':'🔒'}</div>
+            <div style="color:var(--gray);font-size:14px;">${i===0?'▶':'🔒'}</div>
           </div>`).join('')}
           <div class="curric-item">
             <div class="curric-icon">📝</div>
@@ -483,22 +437,21 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--light);color:#1A1A
               <div class="curric-name">BSIS Written Examination</div>
               <div class="curric-dur">${course.exam.length} questions · 100% required · ${MAX_TRIES} attempts · Certificate on pass</div>
             </div>
-            <div class="curric-lock">🔒</div>
+            <div style="color:var(--gray);font-size:14px;">🔒</div>
           </div>
         </div>
         <div>
           <div class="price-card">
-            <div class="price-card-label">Full Course Access</div>
+            <div class="price-lbl">Full Course Access</div>
             <div class="price-amt">\$${course.price}</div>
-            <div class="price-period">one-time · instant access</div>
-            <button class="price-enroll-btn" onclick="goGate()">Get Started Now</button>
-            <ul class="price-includes">
-              <li><span class="pi-check">✓</span> ${course.modules.length} sequential course modules</li>
-              <li><span class="pi-check">✓</span> Section check-in questions (own screen)</li>
-              <li><span class="pi-check">✓</span> Module quiz before each unlock</li>
-              <li><span class="pi-check">✓</span> ${course.exam.length}-question BSIS final exam</li>
-              <li><span class="pi-check">✓</span> Printable BSIS Certificate</li>
-              <li><span class="pi-check">✓</span> ${TOTAL_MINS}-min timed session</li>
+            <div class="price-per">one-time · instant access</div>
+            <button class="price-enroll" onclick="goGate()">Get Started Now</button>
+            <ul class="pi-list">
+              <li><span class="pi-ck">✓</span> ${course.modules.length} course modules</li>
+              <li><span class="pi-ck">✓</span> Section check-in questions</li>
+              <li><span class="pi-ck">✓</span> Module quiz before each unlock</li>
+              <li><span class="pi-ck">✓</span> ${course.exam.length}-question BSIS exam</li>
+              <li><span class="pi-ck">✓</span> Printable BSIS Certificate</li>
             </ul>
             <div class="pay-logos">
               <div class="pay-logo">Stripe</div><div class="pay-logo">PayPal</div>
@@ -506,113 +459,96 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--light);color:#1A1A
               <div class="pay-logo">Klarna</div><div class="pay-logo">Afterpay</div>
             </div>
             <div class="policy-box">
-              <strong>Assessment Policy:</strong> ${MAX_TRIES} exam attempts included. Re-enrollment required after ${MAX_TRIES} failed attempts. Session locks after ${IDLE_LOCK} min of inactivity.
+              <strong>Policy:</strong> ${MAX_TRIES} exam attempts. Re-enrollment required after ${MAX_TRIES} failed attempts. Session locks after ${IDLE_LOCK} min idle.
             </div>
           </div>
         </div>
       </div>
     </div>
   </section>
-
-  <section class="instructor-sec">
-    <div class="instructor-inner">
-      <div class="instructor-avatar">👮</div>
+  <section class="instr-sec">
+    <div class="instr-inner">
+      <div class="instr-av">👮</div>
       <div>
-        <div class="instructor-name">James K. McMichael</div>
-        <div class="instructor-title">CEO, MACCESS INC. | Lead Instructor, PSLAW</div>
-        <p class="instructor-bio">MACCESS INC. is a California-licensed PPO (License #122729) with 14+ years of executive protection and security operational experience in Los Angeles. Every course is built directly from the official BSIS syllabus and fact-checked against current California law.</p>
+        <div class="instr-name">James K. McMichael</div>
+        <div class="instr-title">CEO, MACCESS INC. | Licensed PPO #122729</div>
+        <p class="instr-bio">MACCESS INC. is a California-licensed Private Patrol Operator (PPO #122729) with 14+ years of executive protection and security operations experience in Los Angeles. Every course is built from the official BSIS syllabus at bsis.ca.gov and verified against current California law.</p>
         <div class="creds">
           <div class="cred">PPO License #122729</div>
           <div class="cred">BSIS-Authorized</div>
-          <div class="cred">14+ Years EP Experience</div>
+          <div class="cred">14+ Years EP</div>
           <div class="cred">Los Angeles, CA</div>
         </div>
       </div>
     </div>
   </section>
-
   <section class="sec" style="background:var(--white);">
     <div class="sec-inner">
       <div class="sec-eye">Reviews</div>
       <h2 class="sec-title">What Graduates Say</h2>
       <div class="t-grid">
-        <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-text">"The questions after each section on their own screen made me actually think before moving on. By the time I hit the final exam I already knew everything."</p><div class="t-name">PSLAW Graduate · Los Angeles</div></div>
-        <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-text">"Built straight from the BSIS syllabus. The module quiz before you unlock the next section keeps you honest. No skimming."</p><div class="t-name">PSLAW Graduate · Inglewood</div></div>
-        <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-text">"Got my certificate on the first try. The check-in questions after every slide prepared me for the final exam without me realizing it."</p><div class="t-name">PSLAW Graduate · Compton</div></div>
+        <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-text">"The check-in questions after each section on their own screen made me think before moving on. By the final exam I already knew the material."</p><div class="t-name">Graduate · Los Angeles</div></div>
+        <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-text">"Built straight from the BSIS syllabus. The module quiz before unlocking the next section keeps you accountable."</p><div class="t-name">Graduate · Inglewood</div></div>
+        <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-text">"Passed on the first attempt. Real-world examples in every section made the law click immediately."</p><div class="t-name">Graduate · Compton</div></div>
       </div>
     </div>
   </section>
-
-  <section class="bottom-cta">
+  <section class="bot-cta">
     <h2>Start Today</h2>
-    <p>BSIS-compliant certificate. Real-world content. Instant access.</p>
-    <button class="bottom-cta-btn" onclick="goGate()">Enroll Now — \$${course.price}</button>
+    <p>BSIS-compliant certificate. Instant access. California law, current.</p>
+    <button class="bot-cta-btn" onclick="goGate()">Enroll Now — \$${course.price}</button>
   </section>
-
   <footer class="site-footer">
-    MACCESS INC. / Private Security LA Worldwide (PSLAW) · PPO License #122729 · BSIS-Authorized Training Provider · gopslaw.com<br/>
+    MACCESS INC. &nbsp;|&nbsp; PPO License #122729 &nbsp;|&nbsp; BSIS-Authorized Training Provider &nbsp;|&nbsp; Los Angeles, CA<br/>
     © ${new Date().getFullYear()} MACCESS INC. All rights reserved.
   </footer>
 </div>
 
-<!-- ═══ SCREEN: ENROLLMENT GATE ══════════════════════════════════ -->
+<!-- ══ SCREEN: GATE ═══════════════════════════════════════════ -->
 <div class="screen" id="sc-gate">
   <div class="gate-outer">
     <div class="gate-card">
-      <div class="gate-logo">MACCESS INC. / PSLAW</div>
+      <div class="gate-logo">MACCESS INC.</div>
       <h2 class="gate-title">You're Almost In</h2>
       <p class="gate-sub">Enter your details to access <strong>${course.title}</strong>. Your certificate will be issued in this exact name.</p>
-      <label class="gate-label">Full Legal Name * <span style="font-weight:400;font-size:11px;">(as it appears on your certificate)</span></label>
-      <input class="gate-input" type="text" id="g-name" placeholder="First Middle Last"/>
-      <label class="gate-label">Email Address *</label>
-      <input class="gate-input" type="email" id="g-email" placeholder="your@email.com"/>
-      <label class="gate-label">Phone (optional)</label>
-      <input class="gate-input" type="tel" id="g-phone" placeholder="(323) 000-0000"/>
-      <label class="gate-label">Guard Card # (optional)</label>
-      <input class="gate-input" type="text" id="g-gc" placeholder="CA-XXXXXXXX"/>
+      <label class="gate-lbl">Full Legal Name *</label>
+      <input class="gate-inp" type="text" id="g-name" placeholder="First Middle Last"/>
+      <label class="gate-lbl">Email Address *</label>
+      <input class="gate-inp" type="email" id="g-email" placeholder="your@email.com"/>
+      <label class="gate-lbl">Phone (optional)</label>
+      <input class="gate-inp" type="tel" id="g-phone" placeholder="(323) 000-0000"/>
+      <label class="gate-lbl">Guard Card # (optional)</label>
+      <input class="gate-inp" type="text" id="g-gc" placeholder="CA-XXXXXXXX"/>
       <button class="gate-go" onclick="startCourse()">Start Course →</button>
-      <p class="gate-notice">🔒 Your information is saved to issue your BSIS Certificate of Completion and kept on file so MACCESS INC. can resend it if ever lost. MACCESS INC. PPO #122729.</p>
+      <p class="gate-notice">🔒 Your information is used to issue your BSIS Certificate of Completion and kept on file so MACCESS INC. can resend it if lost. PPO #122729.</p>
       <p class="gate-back" onclick="show('sc-sales')">← Back to course details</p>
     </div>
   </div>
 </div>
 
-<!-- ═══ SCREEN: COURSE PLAYER ════════════════════════════════════ -->
+<!-- ══ SCREEN: PLAYER ════════════════════════════════════════ -->
 <div class="screen" id="sc-player">
-  <div class="g-header">
-    <div class="g-logo">MACCESS INC. / PSLAW</div>
-    <div class="g-meta" id="player-hdr-meta">PPO #122729</div>
+  <div class="g-hdr">
+    <div class="g-logo">MACCESS INC.</div>
+    <div class="g-meta">PPO #122729 | ${course.title}</div>
   </div>
   <div class="gold-bar"></div>
   <div class="timer-strip">
-    <div class="timer-label">SESSION TIME REMAINING</div>
+    <div class="timer-lbl">SESSION TIME REMAINING</div>
     <div class="timer-track"><div class="timer-fill" id="tfill" style="width:100%"></div></div>
-    <div class="timer-clock" id="tclock">--:--</div>
+    <div class="timer-clk" id="tclk">--:--</div>
   </div>
   <div class="player-layout">
-    <aside class="sidebar">
+    <aside class="sidebar" id="sb-player">
       <div class="sb-head">
-        <div class="sb-logo">MACCESS INC. / PSLAW</div>
+        <div class="sb-logo">MACCESS INC.</div>
         <div class="sb-course">${course.title}</div>
-        <div class="sb-prog-track"><div class="sb-prog-fill" id="sb-fill" style="width:0%"></div></div>
-        <div class="sb-prog-label" id="sb-label">0% complete</div>
+        <div class="sb-prog"><div class="sb-prog-fill" id="sb-fill" style="width:0%"></div></div>
+        <div class="sb-prog-lbl" id="sb-lbl">0% complete</div>
       </div>
-      <div class="sb-mods" id="sb-mods">
-        ${course.modules.map((m,i)=>`
-        <div class="sbm ${i===0?'sbm-active':'sbm-locked'}" id="sbm-${i}" onclick="jumpMod(${i})">
-          <div class="sbm-row">
-            <div class="sbm-icon">${m.icon}</div>
-            <div class="sbm-info">
-              <div class="sbm-num">Module ${m.num}</div>
-              <div class="sbm-name">${m.title}</div>
-              <div class="sbm-dur">${m.duration}</div>
-            </div>
-            <div class="sbm-status" id="sbms-${i}">${i===0?'▶':'🔒'}</div>
-          </div>
-        </div>`).join('')}
-      </div>
-      <div class="sb-exam-row sb-locked" id="sb-exam-link" onclick="goExam()">
-        <span>📝</span><span>Final BSIS Assessment</span>
+      <div class="sb-mods" id="sb-mods"></div>
+      <div class="sb-exam-row sb-locked" id="sb-exam" onclick="goExam()">
+        <span>📝</span><span>Final BSIS Exam</span>
       </div>
     </aside>
     <div class="player-main">
@@ -624,35 +560,35 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--light);color:#1A1A
       <div class="player-nav">
         <button class="nav-back" id="nav-back" onclick="navBack()" style="display:none">← Back</button>
         <div class="slide-dots" id="slide-dots"></div>
-        <button class="nav-next" id="nav-next" onclick="navNext()">Next →</button>
+        <button class="nav-next" id="nav-next" onclick="navNext()">Next Section →</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ═══ SCREEN: QUESTION (shared for check-in, module quiz, exam) ═ -->
+<!-- ══ SCREEN: QUESTION (check-in / module quiz / exam) ══════ -->
 <div class="screen" id="sc-question">
-  <div class="g-header">
-    <div class="g-logo">MACCESS INC. / PSLAW</div>
+  <div class="g-hdr">
+    <div class="g-logo">MACCESS INC.</div>
     <div class="g-meta" id="q-hdr-meta">PPO #122729</div>
   </div>
   <div class="gold-bar"></div>
   <div class="timer-strip">
-    <div class="timer-label">SESSION TIME REMAINING</div>
+    <div class="timer-lbl">SESSION TIME REMAINING</div>
     <div class="timer-track"><div class="timer-fill" id="tfill2" style="width:100%"></div></div>
-    <div class="timer-clock" id="tclock2">--:--</div>
+    <div class="timer-clk" id="tclk2">--:--</div>
   </div>
   <div class="player-layout">
-    <aside class="sidebar">
+    <aside class="sidebar" id="sb-question">
       <div class="sb-head">
-        <div class="sb-logo">MACCESS INC. / PSLAW</div>
-        <div class="sb-course" id="q-sidebar-title">${course.title}</div>
-        <div class="sb-prog-track"><div class="sb-prog-fill" id="sb-fill2" style="width:0%"></div></div>
-        <div class="sb-prog-label" id="sb-label2">0% complete</div>
+        <div class="sb-logo">MACCESS INC.</div>
+        <div class="sb-course">${course.title}</div>
+        <div class="sb-prog"><div class="sb-prog-fill" id="sb-fill2" style="width:0%"></div></div>
+        <div class="sb-prog-lbl" id="sb-lbl2">0% complete</div>
       </div>
       <div class="sb-mods" id="sb-mods2"></div>
-      <div class="sb-exam-row sb-locked" id="sb-exam-link2" onclick="goExam()">
-        <span>📝</span><span>Final BSIS Assessment</span>
+      <div class="sb-exam-row sb-locked" id="sb-exam2" onclick="goExam()">
+        <span>📝</span><span>Final BSIS Exam</span>
       </div>
     </aside>
     <div class="player-main">
@@ -662,18 +598,16 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--light);color:#1A1A
       </div>
       <div class="player-body">
         <div class="q-screen-wrap">
-          <div class="q-screen-header">
-            <div class="q-screen-badge" id="q-badge">✏️ <span id="q-badge-text">Section Check-In</span></div>
-            <h2 class="q-screen-title" id="q-screen-title"></h2>
-            <p class="q-screen-sub" id="q-screen-sub"></p>
-          </div>
+          <div class="q-badge" id="q-badge">✏️ <span id="q-badge-txt">Check-In</span></div>
+          <h2 class="q-screen-title" id="q-screen-title"></h2>
+          <p class="q-screen-sub" id="q-screen-sub"></p>
           <div class="q-progress" id="q-progress"></div>
-          <div class="q-card" id="q-card">
+          <div class="q-card">
             <div class="q-num" id="q-num"></div>
             <div class="q-text" id="q-text"></div>
             <div class="q-opts" id="q-opts"></div>
             <div id="q-feedback"></div>
-            <div class="q-hint" id="q-hint"></div>
+            <div class="q-no-answer" id="q-no-answer">Please select an answer to continue.</div>
           </div>
           <div id="q-result-banner"></div>
         </div>
@@ -687,36 +621,36 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--light);color:#1A1A
   </div>
 </div>
 
-<!-- ═══ SCREEN: RESULTS ═══════════════════════════════════════════ -->
+<!-- ══ SCREEN: RESULTS ════════════════════════════════════════ -->
 <div class="screen" id="sc-results">
-  <div class="g-header"><div class="g-logo">MACCESS INC. / PSLAW</div><div class="g-meta">Assessment Results</div></div>
+  <div class="g-hdr"><div class="g-logo">MACCESS INC.</div><div class="g-meta">Assessment Results | PPO #122729</div></div>
   <div class="gold-bar"></div>
   <div class="results-outer">
     <div class="results-card">
-      <div class="score-ring" id="res-ring"><span id="res-pct"></span><span class="ring-sub" id="res-sub-lbl"></span></div>
+      <div class="score-ring" id="res-ring"><span id="res-pct"></span><span class="ring-lbl" id="res-ring-lbl"></span></div>
       <h2 class="res-title" id="res-title"></h2>
       <p class="res-sub" id="res-sub"></p>
-      <div class="res-breakdown" id="res-bd"></div>
+      <div class="res-bd" id="res-bd"></div>
       <div class="res-btns" id="res-btns"></div>
       <div class="bsis-note" id="res-note"></div>
     </div>
   </div>
 </div>
 
-<!-- ═══ SCREEN: CERTIFICATE ════════════════════════════════════════ -->
+<!-- ══ SCREEN: CERTIFICATE ════════════════════════════════════ -->
 <div class="screen" id="sc-cert">
-  <div class="g-header no-print" style="display:flex;justify-content:space-between;align-items:center;">
-    <div class="g-logo">Certificate of Completion</div>
-    <div style="display:flex;gap:10px;">
-      <button onclick="window.print()" style="background:var(--gold);color:var(--navy);border:none;padding:8px 18px;border-radius:7px;font-weight:700;cursor:pointer;">🖨️ Print</button>
-      <button onclick="show('sc-results')" style="background:transparent;color:#fff;border:1.5px solid #fff;padding:8px 18px;border-radius:7px;font-weight:600;cursor:pointer;">← Results</button>
+  <div class="g-hdr no-print" style="display:flex;justify-content:space-between;align-items:center;">
+    <div class="g-logo">MACCESS INC. — Certificate</div>
+    <div style="display:flex;gap:9px;">
+      <button onclick="window.print()" style="background:var(--gold);color:var(--navy);border:none;padding:7px 16px;border-radius:6px;font-weight:700;cursor:pointer;font-size:13px;">🖨️ Print</button>
+      <button onclick="show('sc-results')" style="background:transparent;color:#fff;border:1.5px solid #fff;padding:7px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-size:13px;">← Results</button>
     </div>
   </div>
   <div class="gold-bar no-print"></div>
   <div class="cert-page"><div class="cert-wrap" id="cert-area"></div></div>
 </div>
 
-<!-- ═══ SCREEN: REPURCHASE LOCK ════════════════════════════════════ -->
+<!-- ══ SCREEN: LOCK ═══════════════════════════════════════════ -->
 <div class="screen" id="sc-lock">
   <div class="lock-outer">
     <div class="lock-card">
@@ -729,274 +663,182 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--light);color:#1A1A
         Re-enrollment is required after ${MAX_TRIES} failed attempts. Re-enrollment gives you full course access and ${MAX_TRIES} fresh exam attempts.
       </div>
       <button class="lock-btn" onclick="window.location.reload()">Re-Enroll — \$${course.price}</button>
-      <button class="lock-outline" onclick="show('sc-sales')">Return to Course Info</button>
+      <button class="lock-outline" onclick="show('sc-sales')">Return to Course Information</button>
     </div>
   </div>
 </div>
 
 <script>
-// ── Data ────────────────────────────────────────────────────────────────
-const MODS    = JSON.parse(\`${modulesJ}\`);
-const EXAM    = JSON.parse(\`${examJ}\`);
-const LT      = ['A','B','C','D'];
-const TOTAL_S = ${TOTAL_MINS} * 60;
-const IDLE_W  = ${IDLE_WARN} * 60;
-const IDLE_L  = ${IDLE_LOCK} * 60;
-const MAX_T   = ${MAX_TRIES};
+// ── Client-side content renderer (avoids server-side escaping bugs) ──────────
+${CLIENT_RENDER_FN}
 
-// ── Student state ────────────────────────────────────────────────────────
-let sName='', sEmail='', sPhone='', sGC='';
+// ── Data ──────────────────────────────────────────────────────────────────────
+const MODS   = JSON.parse(\`${modulesJ}\`);
+const EXAM   = JSON.parse(\`${examJ}\`);
+const LT     = ['A','B','C','D'];
+const TOTAL_S= ${TOTAL_MINS}*60;
+const IDLE_W = ${IDLE_WARN}*60;
+const IDLE_L = ${IDLE_LOCK}*60;
+const MAX_T  = ${MAX_TRIES};
 
-// ── Timer state ──────────────────────────────────────────────────────────
-let secsLeft   = TOTAL_S;
-let timerID    = null;
-let idleSecs   = 0;
-let idleID     = null;
-let idleWarned = false;
-let idleCdown  = 60;
+// ── Student state ─────────────────────────────────────────────────────────────
+let sName='',sEmail='',sPhone='',sGC='';
 
-// ── Course navigation state ──────────────────────────────────────────────
-// STEP TYPES: 'slide' | 'checkin' | 'modquiz' | 'exam_q'
-let curMod   = 0;
-let curSlide = 0;   // index within module slides
-// After last slide of module: module quiz
-// After passing module quiz: advance to next module or exam
+// ── Timer ─────────────────────────────────────────────────────────────────────
+let secsLeft=TOTAL_S,timerID=null,idleSecs=0,idleID=null,idleWarned=false;
 
-// Per-slide check-in answers: [modIdx][slideIdx][qIdx] = picked answer | null
-let ciPicks  = MODS.map(m => m.slides.map(s => (s.quiz||[]).map(()=>null)));
-let ciDone   = MODS.map(m => m.slides.map(()=>false));
+function startTimer(){
+  updateTimer();
+  timerID=setInterval(function(){ secsLeft--; updateTimer(); if(secsLeft<=0) onTimeUp(); },1000);
+}
+function updateTimer(){
+  var m=Math.floor(secsLeft/60),s=secsLeft%60;
+  var txt=pad(m)+':'+pad(s);
+  var pct=(secsLeft/TOTAL_S)*100;
+  var cls=secsLeft<300?'crit':secsLeft<600?'warn':'';
+  ['tfill','tfill2'].forEach(function(id){var el=document.getElementById(id);if(el){el.style.width=pct+'%';el.className='timer-fill '+cls;}});
+  ['tclk','tclk2'].forEach(function(id){var el=document.getElementById(id);if(el){el.textContent=txt;el.className='timer-clk '+cls;}});
+}
+function pad(n){return String(n).padStart(2,'0');}
+function onTimeUp(){ clearInterval(timerID); clearInterval(idleID); alert('Session time expired. Please re-enroll to continue.'); show('sc-sales'); }
 
-// Per-module final quiz
-let fqPicks  = MODS.map(m => (m.quiz||[]).map(()=>null));
-let fqDone   = MODS.map(()=>false);
-let modDone  = MODS.map(()=>false);
+// ── Idle detection ────────────────────────────────────────────────────────────
+function startIdleWatch(){
+  idleID=setInterval(function(){
+    idleSecs++;
+    if(idleSecs>=IDLE_L){ clearInterval(idleID); clearInterval(timerID); alert('Session locked due to inactivity.'); show('sc-sales'); return; }
+    if(idleSecs>=IDLE_W&&!idleWarned){ idleWarned=true; document.getElementById('idle-overlay').classList.add('idle-show'); }
+    if(idleWarned){ var cd=Math.max(0,IDLE_L-idleSecs); var el=document.getElementById('idle-count'); if(el)el.textContent=cd; }
+  },1000);
+}
+function resetIdle(){ idleSecs=0; idleWarned=false; document.getElementById('idle-overlay').classList.remove('idle-show'); }
+['click','keydown','mousemove','touchstart'].forEach(function(e){ document.addEventListener(e,resetIdle,{passive:true}); });
 
-// Shared question-screen state
-// mode: 'checkin' | 'modquiz' | 'exam'
-let qMode    = 'checkin';
-let qIdx     = 0;   // current question index within the set
-let qDone    = [];  // was this question answered?
-let qTotal   = 0;
+// ── Course state ──────────────────────────────────────────────────────────────
+var curMod=0, curSlide=0;
+var modDone=MODS.map(function(){return false;});
+// ciPicks[mod][slide] = array of answers (null = unanswered)
+var ciPicks=MODS.map(function(m){ return m.slides.map(function(s){ return (s.quiz||[]).map(function(){return null;}); }); });
+var ciDone=MODS.map(function(m){ return m.slides.map(function(){return false;}); });
+var fqPicks=MODS.map(function(m){ return (m.quiz||[]).map(function(){return null;}); });
+var fqDone=MODS.map(function(){return false;});
 
-// Exam
-let examIdx  = 0;
-let examAns  = EXAM.map(()=>null);
-let examDone = EXAM.map(()=>false);
-let examTries= 0;
+// Question screen state
+var qMode='checkin', qIdx=0;
+var examIdx=0, examAns=EXAM.map(function(){return null;}), examAnswered=EXAM.map(function(){return false;}), examTries=0;
 
-// ── Screen ───────────────────────────────────────────────────────────────
+// ── Screen ────────────────────────────────────────────────────────────────────
 function show(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
   syncSidebars();
 }
-
 function goGate(){ show('sc-gate'); }
 
-// ── Enrollment ───────────────────────────────────────────────────────────
+// ── Enrollment ────────────────────────────────────────────────────────────────
 function startCourse(){
-  const nm = document.getElementById('g-name').value.trim();
-  const em = document.getElementById('g-email').value.trim();
+  var nm=document.getElementById('g-name').value.trim();
+  var em=document.getElementById('g-email').value.trim();
   if(!nm){ alert('Please enter your full legal name.'); return; }
   if(!em||!em.includes('@')){ alert('Please enter a valid email address.'); return; }
-  sName  = nm;
-  sEmail = em;
-  sPhone = document.getElementById('g-phone').value.trim();
-  sGC    = document.getElementById('g-gc').value.trim();
-
-  // Save profile immediately to localStorage so admin dashboard can pull it
+  sName=nm; sEmail=em;
+  sPhone=document.getElementById('g-phone').value.trim();
+  sGC=document.getElementById('g-gc').value.trim();
   saveProfile();
-
   show('sc-player');
-  startTimer();
-  startIdleWatch();
+  startTimer(); startIdleWatch();
   renderPlayer();
 }
 
 function saveProfile(){
-  try {
-    const key = 'pslaw_students_v1';
-    let records = JSON.parse(localStorage.getItem(key)||'[]');
-    let rec = records.find(r=>r.email.toLowerCase()===sEmail.toLowerCase());
-    if(!rec){
-      rec = { id:Date.now().toString(), name:sName, email:sEmail, phone:sPhone, guardCard:sGC,
-              createdAt:new Date().toISOString(), certificates:[], status:'progress', attempts:0 };
-      records.unshift(rec);
-    }
+  try{
+    var key='pslaw_students_v1';
+    var records=JSON.parse(localStorage.getItem(key)||'[]');
+    var rec=records.find(function(r){return r.email.toLowerCase()===sEmail.toLowerCase();});
+    if(!rec){ rec={id:Date.now().toString(),name:sName,email:sEmail,phone:sPhone,guardCard:sGC,createdAt:new Date().toISOString(),certificates:[],status:'progress',attempts:0}; records.unshift(rec); }
     rec.name=sName; rec.phone=sPhone; rec.guardCard=sGC; rec.status='progress';
-    localStorage.setItem(key, JSON.stringify(records));
-  } catch(e){}
+    localStorage.setItem(key,JSON.stringify(records));
+  }catch(e){}
 }
 
-function saveCompletion(courseName, score){
-  try {
-    const key = 'pslaw_students_v1';
-    let records = JSON.parse(localStorage.getItem(key)||'[]');
-    let rec = records.find(r=>r.email.toLowerCase()===sEmail.toLowerCase());
+function saveCompletion(courseName,score){
+  try{
+    var key='pslaw_students_v1';
+    var records=JSON.parse(localStorage.getItem(key)||'[]');
+    var rec=records.find(function(r){return r.email.toLowerCase()===sEmail.toLowerCase();});
     if(!rec){ rec={id:Date.now().toString(),name:sName,email:sEmail,phone:sPhone,guardCard:sGC,createdAt:new Date().toISOString(),certificates:[],status:'pass',attempts:examTries}; records.unshift(rec); }
-    rec.status='pass'; rec.course=courseName; rec.score=score; rec.date=new Date().toLocaleDateString();
-    rec.attempts=examTries;
-    rec.certificates = rec.certificates||[];
-    rec.certificates.push({ course:courseName, date:rec.date, score, issuedAt:new Date().toISOString() });
-    localStorage.setItem(key, JSON.stringify(records));
-    // Post to admin dashboard if open in same browser
-    try{ window.parent.postMessage({type:'PSLAW_COMPLETION',name:sName,email:sEmail,course:courseName,score,date:rec.date},'*'); }catch(e){}
-  } catch(e){}
+    var d=new Date().toLocaleDateString();
+    rec.status='pass'; rec.course=courseName; rec.score=score; rec.date=d; rec.attempts=examTries;
+    rec.certificates=rec.certificates||[];
+    rec.certificates.push({course:courseName,date:d,score:score,issuedAt:new Date().toISOString()});
+    localStorage.setItem(key,JSON.stringify(records));
+    try{ window.parent.postMessage({type:'PSLAW_COMPLETION',name:sName,email:sEmail,course:courseName,score:score,date:d},'*'); }catch(e){}
+  }catch(e){}
 }
 
-// ── Timer ────────────────────────────────────────────────────────────────
-function startTimer(){
-  updateTimer();
-  timerID = setInterval(()=>{ secsLeft--; updateTimer(); if(secsLeft<=0) onTimeUp(); },1000);
-}
-function updateTimer(){
-  const m=Math.floor(secsLeft/60), s=secsLeft%60;
-  const txt=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
-  const pct=(secsLeft/TOTAL_S)*100;
-  const cls=secsLeft<300?'crit':secsLeft<600?'warn':'';
-  ['tfill','tfill2'].forEach(id=>{const el=document.getElementById(id);if(el){el.style.width=pct+'%';el.className='timer-fill '+cls;}});
-  ['tclock','tclock2'].forEach(id=>{const el=document.getElementById(id);if(el){el.textContent=txt;el.className='timer-clock '+cls;}});
-}
-function onTimeUp(){
-  clearInterval(timerID); clearInterval(idleID);
-  alert('⏰ Session time expired. Please re-enroll to continue.');
-  show('sc-sales');
-}
-
-// ── Idle detection ────────────────────────────────────────────────────────
-function startIdleWatch(){
-  idleID=setInterval(()=>{
-    idleSecs++;
-    if(idleSecs>=IDLE_L){ clearInterval(idleID); clearInterval(timerID); alert('Session locked due to inactivity.'); show('sc-sales'); return; }
-    if(idleSecs>=IDLE_W && !idleWarned){ idleWarned=true; showIdleWarn(); }
-    if(idleWarned){ idleCdown=Math.max(0,IDLE_L-idleSecs); const el=document.getElementById('idle-count'); if(el)el.textContent=idleCdown; }
-  },1000);
-}
-function resetIdle(){
-  idleSecs=0; idleWarned=false;
-  document.getElementById('idle-overlay').classList.remove('idle-show');
-}
-function showIdleWarn(){
-  document.getElementById('idle-overlay').classList.add('idle-show');
-}
-['click','keydown','mousemove','touchstart'].forEach(e=>document.addEventListener(e,resetIdle,{passive:true}));
-
-// ── Sidebar sync ─────────────────────────────────────────────────────────
+// ── Sidebar sync ──────────────────────────────────────────────────────────────
 function syncSidebars(){
-  const done  = modDone.filter(Boolean).length;
-  const total = MODS.length+1;
-  const pct   = Math.round(done/total*100);
-  ['sb-fill','sb-fill2'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.width=pct+'%';});
-  ['sb-label','sb-label2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=pct+'% complete';});
-
-  const allDone = modDone.every(Boolean);
-  ['sb-exam-link','sb-exam-link2'].forEach(id=>{const el=document.getElementById(id);if(el)el.className='sb-exam-row'+(allDone?'':' sb-locked');});
-
-  ['sb-mods','sb-mods2'].forEach(sbId=>{
-    const sb=document.getElementById(sbId); if(!sb)return;
-    sb.innerHTML = MODS.map((m,i)=>{
-      const isActive  = i===curMod;
-      const isDone    = modDone[i];
-      const isLocked  = i>0 && !modDone[i-1];
-      const cls = 'sbm'+(isActive?' sbm-active':isDone?' sbm-done':isLocked?' sbm-locked':'');
-      const stat= isDone?'✓':isActive?'▶':isLocked?'🔒':'▶';
-      return \`<div class="\${cls}" onclick="jumpMod(\${i})">
-        <div class="sbm-row">
-          <div class="sbm-icon">\${m.icon}</div>
-          <div class="sbm-info">
-            <div class="sbm-num">Module \${m.num}</div>
-            <div class="sbm-name">\${m.title}</div>
-            <div class="sbm-dur">\${m.duration}</div>
-          </div>
-          <div class="sbm-status">\${stat}</div>
-        </div>
-      </div>\`;
+  var done=modDone.filter(Boolean).length;
+  var pct=Math.round(done/(MODS.length+1)*100);
+  ['sb-fill','sb-fill2'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.width=pct+'%';});
+  ['sb-lbl','sb-lbl2'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=pct+'% complete';});
+  var allDone=modDone.every(Boolean);
+  ['sb-exam','sb-exam2'].forEach(function(id){var el=document.getElementById(id);if(el)el.className='sb-exam-row'+(allDone?'':' sb-locked');});
+  ['sb-mods','sb-mods2'].forEach(function(sbId){
+    var sb=document.getElementById(sbId); if(!sb)return;
+    sb.innerHTML=MODS.map(function(m,i){
+      var isActive=i===curMod, isDone=modDone[i], isLocked=i>0&&!modDone[i-1];
+      var cls='sbm'+(isActive?' sbm-active':isDone?' sbm-done':isLocked?' sbm-locked':'');
+      var stat=isDone?'✓':isActive?'▶':isLocked?'🔒':'▶';
+      return '<div class="'+cls+'" onclick="jumpMod('+i+')">'
+        +'<div class="sbm-row">'
+        +'<div class="sbm-icon">'+m.icon+'</div>'
+        +'<div class="sbm-info"><div class="sbm-num">Module '+m.num+'</div><div class="sbm-name">'+m.title+'</div><div class="sbm-dur">'+m.duration+'</div></div>'
+        +'<div class="sbm-status">'+stat+'</div>'
+        +'</div></div>';
     }).join('');
   });
 }
 
-function jumpMod(i){
-  if(i>0 && !modDone[i-1]) return;
-  curMod=i; curSlide=0;
-  show('sc-player');
-  renderPlayer();
-}
+function jumpMod(i){ if(i>0&&!modDone[i-1])return; curMod=i; curSlide=0; show('sc-player'); renderPlayer(); }
+function goExam(){ if(!modDone.every(Boolean))return; qMode='exam'; examIdx=0; show('sc-question'); renderQScreen(); }
 
-function goExam(){
-  if(!modDone.every(Boolean)) return;
-  qMode='exam'; examIdx=0;
-  show('sc-question');
-  renderQScreen();
-}
-
-// ── Player ───────────────────────────────────────────────────────────────
+// ── Player ────────────────────────────────────────────────────────────────────
 function renderPlayer(){
   syncSidebars();
-  const mod    = MODS[curMod];
-  const slides = mod.slides;
-  const total  = slides.length;
-
-  document.getElementById('player-bc').innerHTML = \`<strong>\${mod.icon} Module \${mod.num}: \${mod.title}</strong>\`;
-  document.getElementById('player-sc').textContent = \`Section \${curSlide+1} of \${total}\`;
-  document.getElementById('player-hdr-meta').textContent = 'PPO #122729';
-  document.getElementById('nav-back').style.display = (curSlide===0 && curMod===0) ? 'none' : 'inline-block';
-
-  // Slide dots
-  document.getElementById('slide-dots').innerHTML =
-    Array.from({length:total},(_,i)=>
-      \`<div class="dot \${i<curSlide?'d-done':i===curSlide?'d-active':''}"></div>\`
-    ).join('');
-
-  // Next label
-  const isLastSlide = curSlide === total-1;
-  document.getElementById('nav-next').textContent = isLastSlide ? 'Module Quiz →' : 'Next Section →';
-  document.getElementById('nav-next').disabled = false;
-
-  // Render slide content
-  const slide = slides[curSlide];
-  document.getElementById('player-body').innerHTML = \`
-    <div class="slide-wrap">
-      <div class="slide-heading">\${slide.heading}</div>
-      <div class="slide-sub">\${slide.subheading}</div>
-      <div class="slide-body">\${slide.renderedHTML||''}</div>
-    </div>\`;
+  var mod=MODS[curMod], slides=mod.slides, total=slides.length;
+  document.getElementById('player-bc').innerHTML='<strong>'+mod.icon+' Module '+mod.num+': '+mod.title+'</strong>';
+  document.getElementById('player-sc').textContent='Section '+(curSlide+1)+' of '+total;
+  document.getElementById('nav-back').style.display=(curSlide===0&&curMod===0)?'none':'inline-block';
+  document.getElementById('slide-dots').innerHTML=Array.from({length:total},function(_,i){
+    return '<div class="dot '+(i<curSlide?'d-done':i===curSlide?'d-active':'')+'"></div>';
+  }).join('');
+  var isLast=curSlide===total-1;
+  document.getElementById('nav-next').textContent=isLast?'Module Quiz →':'Next Section →';
+  document.getElementById('nav-next').disabled=false;
+  // Render slide content CLIENT-SIDE using renderContent()
+  var slide=slides[curSlide];
+  document.getElementById('player-body').innerHTML=
+    '<div class="slide-wrap">'
+    +'<div class="slide-heading">'+slide.heading+'</div>'
+    +'<div class="slide-sub">'+slide.subheading+'</div>'
+    +'<div class="slide-body">'+renderContent(slide.content)+'</div>'
+    +'</div>';
 }
 
 function navNext(){
-  const mod    = MODS[curMod];
-  const slides = mod.slides;
-  const slide  = slides[curSlide];
-  const hasCI  = slide.quiz && slide.quiz.length > 0;
-
-  if(hasCI && !ciDone[curMod][curSlide]){
-    // Go to check-in question screen for this slide
+  var mod=MODS[curMod], slides=mod.slides, slide=slides[curSlide];
+  var hasCI=slide.quiz&&slide.quiz.length>0;
+  if(hasCI&&!ciDone[curMod][curSlide]){
     qMode='checkin'; qIdx=0;
-    qDone = (slide.quiz||[]).map(()=>false);
-    qTotal = slide.quiz.length;
-    show('sc-question');
-    renderQScreen();
-    return;
+    show('sc-question'); renderQScreen(); return;
   }
-
-  if(curSlide < slides.length-1){
-    curSlide++;
-    show('sc-player');
-    renderPlayer();
-    return;
-  }
-
-  // Last slide — go to module quiz
-  if(mod.quiz && mod.quiz.length>0){
+  if(curSlide<slides.length-1){ curSlide++; show('sc-player'); renderPlayer(); return; }
+  if(mod.quiz&&mod.quiz.length>0){
     qMode='modquiz'; qIdx=0;
-    qDone = (mod.quiz||[]).map(()=>false);
-    qTotal = mod.quiz.length;
-    show('sc-question');
-    renderQScreen();
-    return;
+    show('sc-question'); renderQScreen(); return;
   }
-
-  // No module quiz — mark done and advance
   completeMod();
 }
 
@@ -1006,297 +848,243 @@ function navBack(){
 }
 
 function completeMod(){
-  modDone[curMod]=true;
-  syncSidebars();
-  if(curMod < MODS.length-1){
-    curMod++; curSlide=0;
-    show('sc-player');
-    renderPlayer();
-  } else {
-    // All modules done — go to exam
-    qMode='exam'; examIdx=0;
-    show('sc-question');
-    renderQScreen();
-  }
+  modDone[curMod]=true; syncSidebars();
+  if(curMod<MODS.length-1){ curMod++; curSlide=0; show('sc-player'); renderPlayer(); }
+  else { qMode='exam'; examIdx=0; show('sc-question'); renderQScreen(); }
 }
 
-// ── Question Screen ───────────────────────────────────────────────────────
-function getQSet(){
-  if(qMode==='checkin') return MODS[curMod].slides[curSlide].quiz||[];
-  if(qMode==='modquiz') return MODS[curMod].quiz||[];
-  return EXAM;
-}
-function getQPicks(){
-  if(qMode==='checkin') return ciPicks[curMod][curSlide];
-  if(qMode==='modquiz') return fqPicks[curMod];
-  return examAns;
-}
-function getQDoneArr(){
-  if(qMode==='checkin') return ciDone[curMod];  // array per slide
-  if(qMode==='modquiz') return fqDone;           // array per mod
-  return examDone;
-}
+// ── Question screen ────────────────────────────────────────────────────────────
+function getQSet(){ return qMode==='checkin'?MODS[curMod].slides[curSlide].quiz||[]:qMode==='modquiz'?MODS[curMod].quiz||[]:EXAM; }
+function getQPicks(){ return qMode==='checkin'?ciPicks[curMod][curSlide]:qMode==='modquiz'?fqPicks[curMod]:examAns; }
 
 function renderQScreen(){
   syncSidebars();
-  const qs     = getQSet();
-  const picks  = getQPicks();
-  const qi     = (qMode==='exam') ? examIdx : qIdx;
-  const q      = qs[qi];
-  if(!q) return;
+  var qs=getQSet(), picks=getQPicks();
+  var qi=qMode==='exam'?examIdx:qIdx;
+  var q=qs[qi];
 
-  // Header / badge
-  const badges = { checkin:'✏️ Section Check-In', modquiz:'📋 Module Quiz', exam:'📝 BSIS Final Exam' };
-  const titles = {
-    checkin: MODS[curMod].slides[curSlide].heading,
-    modquiz: \`Module \${MODS[curMod].num} — \${MODS[curMod].title}\`,
-    exam:    'BSIS Written Examination'
+  if(!q){ console.error('No question at index',qi,'in',qMode,'set of',qs.length); return; }
+
+  var badges={checkin:'✏️ Section Check-In',modquiz:'📋 Module Quiz',exam:'📝 BSIS Final Exam'};
+  var titles={
+    checkin:MODS[curMod].slides[curSlide].heading,
+    modquiz:'Module '+MODS[curMod].num+' — '+MODS[curMod].title,
+    exam:'BSIS Written Examination'
   };
-  const subs = {
-    checkin: \`Question \${qi+1} of \${qs.length} — Answer to continue to the next section\`,
-    modquiz: \`Question \${qi+1} of \${qs.length} — Pass this quiz to unlock the next module\`,
-    exam:    \`Question \${qi+1} of \${qs.length} · 100% required · \${MAX_T} attempts · \${course.bpcRef}\`
+  var subs={
+    checkin:'Question '+(qi+1)+' of '+qs.length+' — Answer to continue to the next section.',
+    modquiz:'Question '+(qi+1)+' of '+qs.length+' — Pass this quiz to unlock the next module.',
+    exam:'Question '+(qi+1)+' of '+qs.length+' · 100% required per ${course.bpcRef}'
   };
 
-  document.getElementById('q-badge-text').textContent = badges[qMode];
-  document.getElementById('q-screen-title').textContent = titles[qMode];
-  document.getElementById('q-screen-sub').textContent  = subs[qMode];
-  document.getElementById('q-bc').innerHTML = \`<strong>\${titles[qMode]}</strong>\`;
-  document.getElementById('q-sc').textContent = \`Q \${qi+1} of \${qs.length}\`;
+  document.getElementById('q-badge-txt').textContent=badges[qMode].replace(/^[^ ]+ /,'');
+  document.getElementById('q-badge').firstChild.textContent=badges[qMode].split(' ')[0]+' ';
+  document.getElementById('q-screen-title').textContent=titles[qMode];
+  document.getElementById('q-screen-sub').textContent=subs[qMode];
+  document.getElementById('q-bc').innerHTML='<strong>'+titles[qMode]+'</strong>';
+  document.getElementById('q-sc').textContent='Q '+(qi+1)+' of '+qs.length;
+  document.getElementById('q-hdr-meta').textContent='PPO #122729 | '+(qMode==='exam'?'Final Exam':'Knowledge Check');
 
   // Attempt tracker for exam
   if(qMode==='exam'){
-    const tracker = Array.from({length:MAX_T},(_,i)=>
-      \`<div class="att-dot \${i<examTries?'att-used':i===examTries?'att-current':''}"></div>\`
-    ).join('');
-    document.getElementById('q-num').innerHTML =
-      \`<div class="attempt-tracker">\${tracker}<span class="att-label">Attempt \${examTries+1} of \${MAX_T}</span></div>
-       <span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gold);">Question \${qi+1}</span><span class="q-ref">\${q.ref||''}</span>\`;
+    var tracker=Array.from({length:MAX_T},function(_,i){
+      return '<div class="att-dot '+(i<examTries?'att-used':i===examTries?'att-cur':'')+'"></div>';
+    }).join('');
+    document.getElementById('q-num').innerHTML=
+      '<div class="att-tracker">'+tracker+'<span class="att-lbl">Attempt '+(examTries+1)+' of '+MAX_T+'</span></div>'
+      +'<span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gold)">Question '+(qi+1)+'</span>'
+      +(q.ref?'<span class="q-ref">'+q.ref+'</span>':'');
   } else {
-    document.getElementById('q-num').innerHTML =
-      \`<span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gold);">Question \${qi+1}</span><span class="q-ref">\${q.ref||''}</span>\`;
+    document.getElementById('q-num').innerHTML=
+      '<span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gold)">Question '+(qi+1)+'</span>'
+      +(q.ref?'<span class="q-ref">'+q.ref+'</span>':'');
   }
 
   // Progress dots
-  const dotsHTML = qs.map((_,i)=>
-    \`<div class="qp-dot \${i<qi?'qp-done':i===qi?'qp-active':''}"></div>\`
-  ).join('');
-  document.getElementById('q-progress').innerHTML = dotsHTML;
+  document.getElementById('q-progress').innerHTML=qs.map(function(_,i){
+    return '<div class="qp-dot '+(i<qi?'qp-done':i===qi?'qp-active':'')+'"></div>';
+  }).join('');
 
   // Question text
-  document.getElementById('q-text').textContent = q.q;
+  document.getElementById('q-text').textContent=q.q;
 
   // Options
-  const picked   = picks[qi];
-  const answered = picked !== null && picked !== undefined;
-  document.getElementById('q-opts').innerHTML = q.options.map((opt,oi)=>{
-    let cls = 'q-opt';
-    if(answered){ cls += oi===q.answer?' q-ok':(oi===picked?' q-no':''); cls+=' q-picked'; }
+  var picked=picks[qi], answered=(picked!==null&&picked!==undefined);
+  document.getElementById('q-opts').innerHTML=(q.options||[]).map(function(opt,oi){
+    var cls='q-opt';
+    if(answered){ cls+=oi===q.answer?' q-ok':(oi===picked?' q-no':''); cls+=' q-picked'; }
     else if(oi===picked) cls+=' q-selected';
-    const clk = answered?'':(\`onclick="pickQ(\${oi})"\`);
-    return \`<div class="\${cls}" \${clk}><div class="q-letter">\${LT[oi]}</div><span>\${opt}</span></div>\`;
+    var clk=answered?'':('onclick="pickQ('+oi+')"');
+    return '<div class="'+cls+'" '+clk+'><div class="q-letter">'+LT[oi]+'</div><span>'+opt+'</span></div>';
   }).join('');
 
   // Feedback
   if(answered){
-    const ok = picked===q.answer;
-    document.getElementById('q-feedback').innerHTML =
-      \`<div class="q-feedback \${ok?'q-fb-ok':'q-fb-no'}">\${ok?'✓ Correct':'✗ Incorrect — Correct answer: '+LT[q.answer]+'. '+q.options[q.answer]}\${q.ref?' — '+q.ref:''}</div>\`;
+    var ok=picked===q.answer;
+    document.getElementById('q-feedback').innerHTML=
+      '<div class="q-feedback '+(ok?'q-fb-ok':'q-fb-no')+'">'
+      +(ok?'✓ Correct':'✗ Incorrect — Correct answer: '+LT[q.answer]+'. '+q.options[q.answer])
+      +(q.ref?' — '+q.ref:'')
+      +'</div>';
   } else {
     document.getElementById('q-feedback').innerHTML='';
   }
 
-  // Hint
-  document.getElementById('q-hint').textContent = answered ? '' : 'Select your answer to continue.';
+  // No-answer warning (inline, not alert)
+  document.getElementById('q-no-answer').classList.remove('show');
 
-  // Nav buttons
-  document.getElementById('q-back').style.display = qi>0 ? 'inline-block' : 'none';
-  document.getElementById('q-next').disabled = !answered;
+  // Nav
+  document.getElementById('q-back').style.display=qi>0?'inline-block':'none';
+  document.getElementById('q-next').disabled=false;
+  var isLast=qi===qs.length-1;
+  var nextLabel=isLast?(qMode==='checkin'?'Continue →':qMode==='modquiz'?'Submit Quiz →':'Submit Assessment →'):'Next Question →';
+  document.getElementById('q-next').textContent=nextLabel;
+  document.getElementById('q-nav-info').textContent=(qi+1)+' / '+qs.length;
 
-  // Next label
-  const isLast = qi === qs.length-1;
-  let nextLabel = isLast ? 'Submit →' : 'Next Question →';
-  if(isLast && qMode==='checkin')  nextLabel = 'Continue to Section →';
-  if(isLast && qMode==='modquiz') nextLabel = 'Submit Quiz →';
-  if(isLast && qMode==='exam')    nextLabel = 'Submit Assessment →';
-  document.getElementById('q-next').textContent = nextLabel;
-  document.getElementById('q-nav-info').textContent = \`\${qi+1} / \${qs.length}\`;
-
-  // Result banner (only after all answered in modquiz)
-  document.getElementById('q-result-banner').innerHTML = '';
-  if(qMode==='modquiz' && qi===qs.length-1 && answered){
-    const allAnswered = fqPicks[curMod].every(p=>p!==null&&p!==undefined);
-    if(allAnswered){
-      const correct = MODS[curMod].quiz.every((q2,i)=>fqPicks[curMod][i]===q2.answer);
-      document.getElementById('q-result-banner').innerHTML =
-        correct
-          ? \`<div class="quiz-result-banner qrb-pass">✓ Module quiz complete — click "Submit Quiz →" to continue.</div>\`
-          : \`<div class="quiz-result-banner qrb-fail">Some answers are incorrect. Review the feedback above. You'll need to retake this quiz to proceed — your slide content remains unlocked for review.</div>\`;
+  // Result banner after all modquiz answered
+  document.getElementById('q-result-banner').innerHTML='';
+  if(qMode==='modquiz'&&isLast&&answered){
+    var allAns=fqPicks[curMod].every(function(p){return p!==null&&p!==undefined;});
+    if(allAns){
+      var allCorrect=MODS[curMod].quiz.every(function(q2,i){return fqPicks[curMod][i]===q2.answer;});
+      document.getElementById('q-result-banner').innerHTML=
+        '<div class="quiz-result-banner '+(allCorrect?'qrb-pass':'qrb-fail')+'">'
+        +(allCorrect?'✓ Quiz complete — click Submit Quiz → to continue.':'Some answers are incorrect. Review the feedback above. The quiz will reset so you can retake it.')
+        +'</div>';
     }
   }
 }
 
 function pickQ(oi){
-  const qs    = getQSet();
-  const picks = getQPicks();
-  const qi    = (qMode==='exam') ? examIdx : qIdx;
-  if(picks[qi]!==null && picks[qi]!==undefined) return;
-
-  picks[qi] = oi;
-  if(qMode==='exam') examDone[examIdx]=true;
+  var qs=getQSet(), picks=getQPicks();
+  var qi=qMode==='exam'?examIdx:qIdx;
+  if(picks[qi]!==null&&picks[qi]!==undefined) return;
+  picks[qi]=oi;
+  if(qMode==='exam') examAnswered[examIdx]=true;
   renderQScreen();
 }
 
 function qNavNext(){
-  const qs  = getQSet();
-  const qi  = (qMode==='exam') ? examIdx : qIdx;
-  const picks = getQPicks();
-
-  if(picks[qi]===null || picks[qi]===undefined){
-    alert('Please select an answer.'); return;
+  var qs=getQSet(), picks=getQPicks();
+  var qi=qMode==='exam'?examIdx:qIdx;
+  if(picks[qi]===null||picks[qi]===undefined){
+    document.getElementById('q-no-answer').classList.add('show');
+    return;
   }
+  document.getElementById('q-no-answer').classList.remove('show');
 
   if(qMode==='exam'){
-    if(examIdx < EXAM.length-1){ examIdx++; renderQScreen(); }
+    if(examIdx<EXAM.length-1){ examIdx++; renderQScreen(); }
     else showResults();
     return;
   }
 
-  const nextQI = qi+1;
-  if(nextQI < qs.length){
-    if(qMode==='checkin') qIdx=nextQI;
-    else if(qMode==='modquiz') qIdx=nextQI;
-    renderQScreen();
-    return;
+  if(qi<qs.length-1){
+    if(qMode==='checkin') qIdx++; else qIdx++;
+    renderQScreen(); return;
   }
 
   // All questions answered
   if(qMode==='checkin'){
     ciDone[curMod][curSlide]=true;
-    // Advance to next slide
     curSlide++;
-    show('sc-player');
-    renderPlayer();
+    if(curSlide<MODS[curMod].slides.length){ show('sc-player'); renderPlayer(); }
+    else {
+      if(MODS[curMod].quiz&&MODS[curMod].quiz.length>0){ qMode='modquiz'; qIdx=0; renderQScreen(); }
+      else completeMod();
+    }
     return;
   }
 
   if(qMode==='modquiz'){
-    const allCorrect = MODS[curMod].quiz.every((q,i)=>fqPicks[curMod][i]===q.answer);
-    if(allCorrect){
-      fqDone[curMod]=true;
-      completeMod();
-    } else {
-      // Reset quiz picks so they must retake
-      fqPicks[curMod] = MODS[curMod].quiz.map(()=>null);
-      qIdx=0;
-      renderQScreen();
+    var allCorrect=MODS[curMod].quiz.every(function(q2,i){return fqPicks[curMod][i]===q2.answer;});
+    if(allCorrect){ fqDone[curMod]=true; completeMod(); }
+    else {
+      fqPicks[curMod]=MODS[curMod].quiz.map(function(){return null;});
+      qIdx=0; renderQScreen();
     }
   }
 }
 
 function qNavBack(){
-  const qi = (qMode==='exam') ? examIdx : qIdx;
-  if(qMode==='exam'){
-    if(examIdx>0){ examIdx--; renderQScreen(); }
-    return;
-  }
-  if(qi>0){
-    if(qMode==='checkin') qIdx--;
-    else if(qMode==='modquiz') qIdx--;
-    renderQScreen();
-    return;
-  }
-  // Back to slide
-  show('sc-player');
-  renderPlayer();
+  var qi=qMode==='exam'?examIdx:qIdx;
+  if(qMode==='exam'){ if(examIdx>0){examIdx--;renderQScreen();} return; }
+  if(qi>0){ qIdx--; renderQScreen(); return; }
+  show('sc-player'); renderPlayer();
 }
 
-// ── Results ───────────────────────────────────────────────────────────────
+// ── Results ────────────────────────────────────────────────────────────────────
 function showResults(){
   examTries++;
   show('sc-results');
-
-  let correct=0;
-  const mm={};
-  EXAM.forEach((q,i)=>{
+  var correct=0, mm={};
+  EXAM.forEach(function(q,i){
     if(examAns[i]===q.answer) correct++;
     if(!mm[q.module]) mm[q.module]={c:0,t:0};
     mm[q.module].t++;
     if(examAns[i]===q.answer) mm[q.module].c++;
   });
-  const pct  = Math.round(correct/EXAM.length*100);
-  const pass = pct===100;
-  const attLeft = MAX_T - examTries;
+  var pct=Math.round(correct/EXAM.length*100), pass=pct===100, attLeft=MAX_T-examTries;
 
-  const ring=document.getElementById('res-ring');
+  var ring=document.getElementById('res-ring');
   ring.className='score-ring '+(pass?'ring-pass':'ring-fail');
-  document.getElementById('res-pct').textContent   = correct+'/'+EXAM.length;
-  document.getElementById('res-sub-lbl').textContent = pass?'PASSED':'NOT PASSED';
+  document.getElementById('res-pct').textContent=correct+'/'+EXAM.length;
+  document.getElementById('res-ring-lbl').textContent=pass?'PASSED':'NOT PASSED';
 
-  const rt=document.getElementById('res-title');
-  rt.className='res-title '+(pass?'res-pass':'res-fail');
-  rt.textContent = pass ? '✓ Assessment Passed' : '✗ Assessment Not Passed';
+  var rt=document.getElementById('res-title');
+  rt.className='res-title '+(pass?'res-pass-c':'res-fail-c');
+  rt.textContent=pass?'✓ Assessment Passed':'✗ Assessment Not Passed';
 
-  document.getElementById('res-sub').innerHTML = pass
-    ? \`Congratulations <strong>\${sName}</strong> — \${correct}/\${EXAM.length} (100%). BSIS assessment requirement satisfied per ${course.bpcRef}.\`
-    : \`You scored \${correct}/\${EXAM.length} (\${pct}%). 100% required per ${course.bpcRef}.\${attLeft>0?' <strong>'+attLeft+' attempt'+(attLeft>1?'s':'')+' remaining.</strong>':' <strong>No attempts remaining — re-enrollment required.</strong>'}\`;
+  document.getElementById('res-sub').innerHTML=pass
+    ?'Congratulations <strong>'+sName+'</strong> — '+correct+'/'+EXAM.length+' (100%). BSIS requirement satisfied per ${course.bpcRef}.'
+    :'You scored '+correct+'/'+EXAM.length+' ('+pct+'%). 100% required per ${course.bpcRef}. '+(attLeft>0?'<strong>'+attLeft+' attempt'+(attLeft>1?'s':'')+' remaining.</strong>':'<strong>No attempts remaining — re-enrollment required.</strong>');
 
-  let bh='<h3>Score by Module</h3>';
-  for(const[m,d] of Object.entries(mm)){
-    const mp=Math.round(d.c/d.t*100);
-    bh+=\`<div class="bd-row"><span style="color:var(--gray)">\${m}</span><span class="\${d.c===d.t?'bd-p':'bd-f'}">\${d.c}/\${d.t} (\${mp}%)</span></div>\`;
-  }
-  bh+=\`<div class="bd-row"><span>Overall</span><span class="\${pass?'bd-p':'bd-f'}">\${correct}/\${EXAM.length} (\${pct}%)</span></div>\`;
+  var bh='<h3>Score by Module</h3>';
+  Object.keys(mm).forEach(function(m){
+    var d=mm[m],mp=Math.round(d.c/d.t*100);
+    bh+='<div class="bd-row"><span style="color:var(--gray)">'+m+'</span><span class="'+(d.c===d.t?'bd-p':'bd-f')+'">'+d.c+'/'+d.t+' ('+mp+'%)</span></div>';
+  });
+  bh+='<div class="bd-row"><span>Overall</span><span class="'+(pass?'bd-p':'bd-f')+'">'+correct+'/'+EXAM.length+' ('+pct+'%)</span></div>';
   document.getElementById('res-bd').innerHTML=bh;
 
-  let btns='';
-  if(pass){
-    saveCompletion('${course.title}', correct+'/'+EXAM.length+' (100%)');
-    btns+=\`<button class="r-btn r-gold" onclick="showCert()">View Certificate →</button>\`;
-  } else if(attLeft<=0){
-    btns+=\`<button class="r-btn r-red" onclick="show('sc-lock')">Re-Enrollment Required →</button>\`;
-  } else {
-    btns+=\`<button class="r-btn r-navy" onclick="retakeExam()">↺ Retake (Attempt \${examTries+1}/\${MAX_T})</button>\`;
-  }
+  var btns='';
+  if(pass){ saveCompletion('${course.title}',correct+'/'+EXAM.length+' (100%)'); btns+='<button class="r-btn r-gold" onclick="showCert()">View Certificate →</button>'; }
+  else if(attLeft<=0){ btns+='<button class="r-btn r-red" onclick="show(\'sc-lock\')">Re-Enrollment Required →</button>'; }
+  else { btns+='<button class="r-btn r-navy" onclick="retakeExam()">↺ Retake (Attempt '+(examTries+1)+'/'+MAX_T+')</button>'; }
   document.getElementById('res-btns').innerHTML=btns;
 
-  document.getElementById('res-note').innerHTML = pass
-    ? \`<strong>BSIS Compliance:</strong> This certificate satisfies the ${course.hours}-hour training requirement under ${course.bpcRef}. Print and retain until your guard card expires — Title 16 CCR §643(b). Record saved to MACCESS INC. file.\`
-    : attLeft<=0
-    ? \`<strong>Maximum Attempts Reached:</strong> Re-enrollment is required. Your training record has been saved.\`
-    : \`<strong>BSIS Requirement:</strong> 100% required per ${course.bpcRef}. Review incorrect answers above before retaking. \${attLeft} attempt\${attLeft>1?'s':''} remaining.\`;
+  document.getElementById('res-note').innerHTML=pass
+    ?'<strong>BSIS Compliance:</strong> This certificate satisfies the ${course.hours}-hour requirement under ${course.bpcRef}. Print and retain per Title 16 CCR §643(b). Record saved to MACCESS INC.'
+    :attLeft<=0?'<strong>Maximum Attempts Reached:</strong> Re-enrollment required. Your training record has been saved.'
+    :'<strong>BSIS Requirement:</strong> 100% required per ${course.bpcRef}. Review incorrect answers before retaking. '+attLeft+' attempt'+(attLeft>1?'s':'')+' remaining.';
 }
 
 function retakeExam(){
-  if(examTries>=MAX_T){ show('sc-lock'); return; }
-  examIdx=0;
-  examAns=EXAM.map(()=>null);
-  examDone=EXAM.map(()=>false);
-  qMode='exam';
-  show('sc-question');
-  renderQScreen();
+  if(examTries>=MAX_T){show('sc-lock');return;}
+  examIdx=0; examAns=EXAM.map(function(){return null;}); examAnswered=EXAM.map(function(){return false;});
+  qMode='exam'; show('sc-question'); renderQScreen();
 }
 
-// ── Certificate ────────────────────────────────────────────────────────────
+// ── Certificate ────────────────────────────────────────────────────────────────
 function showCert(){
-  const d=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
-  document.getElementById('cert-area').innerHTML=\`
-    <div class="cert-eyebrow">Certificate of Completion</div>
-    <div class="cert-stripe"></div>
-    <div class="cert-co">MACCESS INC.</div>
-    <div class="cert-ppo">Private Patrol Operator | PPO License #122729 | BSIS-Authorized Training Provider</div>
-    <div class="cert-certifies">This certifies that</div>
-    <div class="cert-name">\${sName}</div>
-    <div class="cert-body">has successfully completed the BSIS-compliant training course:</div>
-    <div class="cert-course">${course.title}</div>
-    <div class="cert-badge-pass">Score: 100% ✓ Passing</div>
-    <div class="cert-body">This completion satisfies the ${course.hours}-hour training requirement under ${course.bpcRef}. Retain until guard card expires — Title 16 CCR §643(b).</div>
-    <div class="cert-stripe"></div>
-    <div class="cert-sigs">
-      <div class="cert-sig"><div class="cert-sig-line"></div><div class="cert-sig-label">Student Signature</div></div>
-      <div class="cert-sig"><div class="cert-sig-line"></div><div class="cert-sig-label">Date: \${d}</div></div>
-      <div class="cert-sig"><div class="cert-sig-line"></div><div class="cert-sig-label">Instructor — MACCESS INC.</div></div>
-    </div>\`;
+  var d=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('cert-area').innerHTML=
+    '<div class="cert-eyebrow">Certificate of Completion</div>'
+    +'<div class="cert-stripe"></div>'
+    +'<div class="cert-co">MACCESS INC.</div>'
+    +'<div class="cert-ppo">Private Patrol Operator | PPO License #122729 | BSIS-Authorized Training Provider</div>'
+    +'<div class="cert-certifies">This certifies that</div>'
+    +'<div class="cert-name">'+sName+'</div>'
+    +'<div class="cert-body">has successfully completed the BSIS-compliant training course:</div>'
+    +'<div class="cert-course">${course.title}</div>'
+    +'<div class="cert-badge-pass">Score: 100% ✓ Passing</div>'
+    +'<div class="cert-body">This completion satisfies the ${course.hours}-hour training requirement under ${course.bpcRef}. Retain until guard card expires — Title 16 CCR §643(b).</div>'
+    +'<div class="cert-stripe"></div>'
+    +'<div class="cert-sigs">'
+    +'<div class="cert-sig"><div class="cert-sig-line"></div><div class="cert-sig-label">Student Signature</div></div>'
+    +'<div class="cert-sig"><div class="cert-sig-line"></div><div class="cert-sig-label">Date: '+d+'</div></div>'
+    +'<div class="cert-sig"><div class="cert-sig-line"></div><div class="cert-sig-label">Instructor — MACCESS INC.</div></div>'
+    +'</div>';
   show('sc-cert');
 }
 </script>
