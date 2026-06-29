@@ -61,6 +61,10 @@ const CATALOG = {
               ]},
               { type:"callout", label:"Penalties", text:"Up to $25,000 for serious violations. Up to $158,727 for willful violations. Cal/OSHA enforces." },
             ],
+          quiz:[
+            {q:"California SB 553 (Labor Code \u00a76401.9) became effective on:",options:["January 1, 2024", "July 1, 2024", "January 1, 2025", "July 1, 2025"],answer:1,ref:"CA Labor Code \u00a76401.9 | SB 553"},
+            {q:"Type 2 workplace violence is violence directed at employees by:",options:["Current or former coworkers", "Clients, patients, customers, or students", "Domestic partners entering the workplace", "Strangers with no legitimate relationship to the workplace"],answer:1,ref:"CA Labor Code \u00a76401.9 | Cal/OSHA"},
+          ],
           },
           {
             heading: "Four Types of Workplace Violence",
@@ -75,6 +79,10 @@ const CATALOG = {
               ]},
               { type:"callout", label:"Your Risk", text:"Security guards face elevated risk of Type 1 (external criminal) and Type 2 (client/customer) violence. Your training must reflect this." },
             ],
+          quiz:[
+            {q:"Which violence type does Cal/OSHA identify as a primary risk for security guards?",options:["Type 3 — worker-on-worker only", "Type 1 (external/criminal) and Type 2 (customer/client)", "Type 4 — personal relationship violence", "Type 2 and Type 3 only"],answer:1,ref:"CA Labor Code \u00a76401.9 | Cal/OSHA"},
+            {q:"Domestic violence that enters the workplace is classified as:",options:["Type 1 — External/Criminal", "Type 2 — Customer/Client", "Type 3 — Worker on Worker", "Type 4 — Personal Relationship"],answer:3,ref:"CA Labor Code \u00a76401.9"},
+          ],
           },
         ],
         quiz: [
@@ -103,6 +111,10 @@ const CATALOG = {
               ]},
               { type:"rule", text:"Document ALL observations objectively and report immediately. Never confront alone." },
             ],
+          quiz:[
+            {q:"A coworker repeatedly states 'I have nothing left to lose.' The guard should:",options:["Dismiss it as typical venting", "Confront the coworker privately", "Document precisely and report to a supervisor immediately", "Wait to see if the behavior escalates"],answer:2,ref:"BSIS Syllabus \u00a711.1"},
+            {q:"A supervisor publicly humiliates a specific employee repeatedly and threatens their job. The guard should:",options:["Take the employee's side and confront the supervisor", "Document observations and report to MACCESS INC. management — do not take sides in personnel matters", "Ignore it — this is outside a security guard's role", "Advise the employee to file HR paperwork independently"],answer:1,ref:"BSIS Syllabus \u00a711.1"},
+          ],
           },
           {
             heading: "Client/Customer & Supervisor Warning Signs",
@@ -129,6 +141,10 @@ const CATALOG = {
               }},
               { type:"rule", text:"Guard's role: document and report to MACCESS INC. management. Do not take sides in personnel matters." },
             ],
+          quiz:[
+            {q:"A client repeatedly seeks out and confronts the same security officer in a personally threatening manner. This is most likely:",options:["Type 1 — external criminal violence", "Type 4 — personal relationship violence", "Type 2 — client/customer targeted violence toward an employee", "Normal occupational friction"],answer:2,ref:"BSIS Syllabus \u00a711.1"},
+            {q:"Applying different levels of scrutiny to employees based on race when enforcing workplace violence policies is:",options:["Acceptable based on statistical risk assessment", "A FEHA violation that creates civil liability", "A reasonable exercise of professional judgment", "Permissible when directed by the property owner"],answer:1,ref:"BSIS Syllabus \u00a711.3 | FEHA"},
+          ],
           },
         ],
         quiz: [
@@ -155,6 +171,10 @@ const CATALOG = {
                 { num:"5", label:"POST-CRISIS", text:"Relative calm — document the incident — follow up through proper channels", color:"#1A5C3A" },
               ]},
             ],
+          quiz:[
+            {q:"The stage of the anger cycle where violence risk is highest is:",options:["The trigger stage", "The escalation stage", "The crisis stage", "The recovery stage"],answer:2,ref:"BSIS Syllabus \u00a711.2"},
+            {q:"At which stage is conflict intervention MOST effective?",options:["Manifest — when open conflict is already occurring", "Felt — when emotions have heightened", "Potential — before conflict has erupted", "Crisis — at the peak of the escalation"],answer:2,ref:"BSIS Syllabus \u00a711.2"},
+          ],
           },
           {
             heading: "De-escalation Strategies & Guard's Limits",
@@ -181,6 +201,10 @@ const CATALOG = {
                 ]
               }},
             ],
+          quiz:[
+            {q:"When a person is visibly angry and speaking loudly, a guard's most effective initial response is to:",options:["Raise their own voice to establish authority", "Match the person's energy level", "Lower their own voice and speak calmly — modeling the response they want", "Step back and say nothing until they finish"],answer:2,ref:"BSIS Syllabus \u00a711.2 | BPC \u00a77583.7(b)(6)"},
+            {q:"After 2-3 minutes of verbal de-escalation with no progress, the correct next step is:",options:["Continue indefinitely — it always works eventually", "Apply physical restraint preemptively", "Request backup, notify a supervisor, and increase distance", "Issue a formal trespass warning immediately"],answer:2,ref:"BSIS Syllabus \u00a711.2 | MACCESS INC. Policy"},
+          ],
           },
         ],
         quiz: [
@@ -208,6 +232,10 @@ const CATALOG = {
               ]},
               { type:"rule", text:"FEHA Violation: Applying different scrutiny to employees or clients based on race or national origin creates civil liability for MACCESS INC. and the guard personally." },
             ],
+          quiz:[
+            {q:"A guard observes two employees having a heated argument. One employee's culture expresses disagreement loudly as a cultural norm. The guard should:",options:["Intervene immediately — loud voices always indicate danger", "Observe for actual threatening behaviors rather than assuming danger based on volume alone", "Contact law enforcement immediately", "Separate the employees preemptively"],answer:1,ref:"BSIS Syllabus \u00a711.3 | FEHA"},
+            {q:"An employee with limited English attempts to report a threatening incident. The guard should:",options:["Direct the employee to return when an English speaker is available", "Document 'language barrier' and continue patrol", "Use a translation app, seek a bilingual colleague, or use visual aids — every employee has the right to report", "Accept only written reports from non-English speakers"],answer:2,ref:"BSIS Syllabus \u00a711.3 | CA Labor Code \u00a76401.9"},
+          ],
           },
           {
             heading: "Personal Security & Active Shooter Response",
@@ -226,6 +254,10 @@ const CATALOG = {
               ]},
               { type:"rule", text:"Security guards: PRIMARY role is protecting lives and evacuating civilians — not engaging the threat." },
             ],
+          quiz:[
+            {q:"In an active shooter situation, a security guard's FIRST priority is:",options:["Drawing any authorized weapon and moving toward the shooter", "Locking down the facility", "Evacuating themselves and others if a safe exit is available — the RUN protocol", "Calling MACCESS INC. management for authorization to respond"],answer:2,ref:"BSIS Syllabus \u00a711.4 | DHS Run-Hide-Fight"},
+            {q:"CPTED stands for:",options:["California Protocols for Threat Evaluation and Detection", "Crime Prevention Through Environmental Design", "Comprehensive Physical Training and Emergency Drill", "Command Presence Training for Emergency Deployment"],answer:1,ref:"BSIS Syllabus \u00a711.4 | Cal/OSHA"},
+          ],
           },
         ],
         quiz: [
@@ -259,6 +291,10 @@ const CATALOG = {
                 { num:"4", label:"WRITTEN REPORT", text:"Date, time, location, parties, exactly what was said/done, witnesses, actions taken", color:"#1A5C3A" },
               ]},
             ],
+          quiz:[
+            {q:"After witnessing a violent incident, a guard's FIRST action should be:",options:["Complete a detailed written report before anything else", "Ensure immediate safety of all persons — call 911 if there is any threat to life — THEN notify supervisor", "Photograph the scene to preserve evidence", "Notify the client property manager before contacting MACCESS INC."],answer:1,ref:"BSIS Syllabus \u00a711.5"},
+            {q:"SB 553 prohibits employers from:",options:["Requiring employees to report incidents within 24 hours", "Sharing Violent Incident Log data with Cal/OSHA", "Retaliating against employees who report threats or seek law enforcement help", "Maintaining records for more than 2 years"],answer:2,ref:"CA Labor Code \u00a76401.9 | SB 553"},
+          ],
           },
           {
             heading: "SB 553 Violent Incident Log",
@@ -277,6 +313,10 @@ const CATALOG = {
               { type:"callout", label:"Retention", text:"Log must be maintained for 5 years minimum and made available to employees and Cal/OSHA on request. Your incident report is the source document that feeds the log." },
               { type:"callout", label:"Anti-Retaliation", text:"CA Labor Code §6401.9: Employers may NOT punish employees for reporting threats or seeking law enforcement assistance." },
             ],
+          quiz:[
+            {q:"The Violent Incident Log required by CA Labor Code \u00a76401.9 must be retained for a minimum of:",options:["1 year", "2 years", "3 years", "5 years"],answer:3,ref:"CA Labor Code \u00a76401.9"},
+            {q:"The Violent Incident Log must be made available to:",options:["Only BSIS auditors upon request", "Only law enforcement with a valid warrant", "Employees and Cal/OSHA on request", "Only the employer's insurance carrier"],answer:2,ref:"CA Labor Code \u00a76401.9"},
+          ],
           },
         ],
         quiz: [
@@ -337,7 +377,12 @@ const CATALOG = {
               { type:"h3", text:"Your Authority as a Security Guard" },
               { type:"bullets", items:["Security guards derive arrest authority from PC §837 — the same statute that applies to any private citizen","You are NOT a peace officer. Your badge and uniform do not grant additional legal authority","Your authority exists only on your assigned post, during your assigned shift","MACCESS INC. PPO #122729 authorizes your assignment — it does not expand your legal authority"] },
               { type:"callout", label:"Key Rule", text:"When in doubt about any enforcement action, call MACCESS INC. management before acting. A wrong arrest is worse than no arrest." },
-            ]},
+            ],
+          quiz:[
+            {q:"Your authority as a security guard comes from:",options:["Your BSIS guard card", "BPC §7583.7 training completion", "PC §837 — the citizen's arrest statute", "Your employer's PPO license"],answer:2,ref:"PC \u00a7837"},
+            {q:"A security guard's arrest authority exists:",options:["Statewide under their BSIS license", "Only on their assigned post during their assigned shift", "Anywhere in the county they are assigned", "Wherever the property owner directs them"],answer:1,ref:"BPC \u00a77582.1"},
+          ],
+        },
           { heading:"PC §837 — Three Conditions for Citizen's Arrest", subheading:"PC §837(1)(2)(3) | The Only Legal Basis",
             content:[
               { type:"stagelist", items:[
@@ -346,11 +391,12 @@ const CATALOG = {
                 { num:"3", label:"PC §837(3) — Reasonable Cause (Felony)", text:"Reasonable cause to believe the person committed a felony that actually occurred in fact. Highest liability risk.", color:"#8B1A1A" },
               ]},
               { type:"rule", text:"Misdemeanor arrests REQUIRE personal observation (§837(1)). You cannot arrest for a misdemeanor you did not personally witness — even on a report from management." },
-            ]},
-        ],
-        quiz:[
-          { q:"Under PC §837, a security guard may arrest for a misdemeanor ONLY when:", options:["A manager reports the offense","The offense is captured on CCTV","The guard personally witnesses the offense","The property owner authorizes the arrest"], answer:2 },
-          { q:"Which PC §837 condition carries the greatest liability risk if used incorrectly?", options:["§837(1) — offense in presence","§837(2) — felony by that person","§837(3) — reasonable cause for felony","All carry equal risk"], answer:2 },
+            ],
+          quiz:[
+            {q:"PC \u00a7837(1) allows a citizen's arrest when a public offense is:",options:["Reported by a witness", "Suspected based on prior history", "Committed or attempted in the guard's direct personal presence", "Captured on CCTV footage"],answer:2,ref:"PC \u00a7837(1)"},
+            {q:"A guard can NEVER make a citizen's arrest for a misdemeanor if:",options:["The offense occurred on private property", "The person is not a repeat offender", "The guard did not personally witness the offense", "The offense occurred after business hours"],answer:2,ref:"PC \u00a7837 | Misdemeanors"},
+          ],
+        },
         ],
       },
       { num:2, title:"Limitations & Liability", duration:"25 min", icon:"🛡️",
@@ -365,7 +411,12 @@ const CATALOG = {
                 "Cannot hold a citizen's arrest subject for longer than necessary — deliver to police without unnecessary delay (PC §847)",
               ]},
               { type:"callout", label:"False Imprisonment", text:"PC §236: Detaining someone without a lawful basis is false imprisonment — a crime and civil tort. Courts view detentions over 20-30 minutes without police notification as potentially unlawful." },
-            ]},
+            ],
+          quiz:[
+            {q:"A guard who represents themselves as a police officer may be charged under:",options:["BPC §7583.6", "PC §538d — a criminal offense", "Title 16 CCR §643", "BPC §480 only"],answer:1,ref:"PC \u00a7538d"},
+            {q:"A security guard's search authority during a lawful detention is limited to:",options:["A full search of clothing and bags", "An unlimited search on private property", "A safety pat-down for weapons only", "Any search authorized by the property owner"],answer:2,ref:"4th Amendment | PC \u00a7837"},
+          ],
+        },
           { heading:"Criminal, Civil & Administrative Liability", subheading:"PC §242 | BPC §480 | Respondeat Superior",
             content:[
               { type:"typecards", items:[
@@ -374,11 +425,12 @@ const CATALOG = {
                 { label:"Administrative", text:"BSIS guard card suspension or revocation under BPC §480. Civil penalties and fines.", color:"#1B2B5E" },
                 { label:"PPO Liability", text:"MACCESS INC. may be vicariously liable for your wrongful acts under respondeat superior doctrine.", color:"#005C5C" },
               ]},
-            ]},
-        ],
-        quiz:[
-          { q:"A guard detains someone for 45 minutes without calling police after a citizen's arrest because the supervisor is unreachable. This may result in:", options:["No liability — waiting for authorization is justified","False imprisonment charges and BSIS action","Only an internal policy violation","Commendation for thoroughness"], answer:1 },
-          { q:"Representing yourself as a police officer while on duty as a security guard violates:", options:["BPC §7583.6","PC §538d — a criminal offense","Title 16 CCR §643","BPC §480 only"], answer:1 },
+            ],
+          quiz:[
+            {q:"All three types of liability \u2014 criminal, civil, and administrative \u2014 can arise:",options:["Only from the most serious incidents involving death or injury", "From a single incident simultaneously", "From separate incidents only — they cannot all apply at once", "Only from incidents reported to BSIS within 24 hours"],answer:1,ref:"PC \u00a7\u00a7236,242 | BPC \u00a7480 | Tort Law"},
+            {q:"BSIS administrative liability under BPC \u00a7480 can result in:",options:["Criminal prosecution only", "Only a written warning for first offenses", "Suspension or revocation of the guard card", "A civil judgment for damages"],answer:2,ref:"BPC \u00a7480"},
+          ],
+        },
         ],
       },
       { num:3, title:"Trespass, Ethics & Emergency Response", duration:"25 min", icon:"📋",
@@ -389,7 +441,12 @@ const CATALOG = {
               { type:"bullets", items:["Trespass is generally a misdemeanor — permits a citizen's arrest under §837(1) if you observe the refusal to leave","Clear posting or fencing required for open land before detention","Private property: a lawful order to leave must be given before trespass occurs","Detention for trespass must be brief — call police promptly"] },
               { type:"h3", text:"Shopkeeper's Privilege — PC §490.5" },
               { type:"callout", label:"PC §490.5", text:"When working for a retail merchant, you may detain a shoplifting suspect when you have PROBABLE CAUSE based on your own DIRECT PERSONAL OBSERVATION. A report from another employee alone is NOT sufficient." },
-            ]},
+            ],
+          quiz:[
+            {q:"Under PC \u00a7490.5, a guard may detain a shoplifting suspect when:",options:["A manager reports the theft", "The guard has probable cause from direct personal observation", "The loss prevention system flags the person", "Any store employee reports the theft"],answer:1,ref:"PC \u00a7490.5"},
+            {q:"For a trespass arrest to be lawful, the guard must have:",options:["Written authorization from the property owner", "Personally witnessed the refusal to leave after a lawful order", "Police authorization in advance", "A prior written trespass warning on file"],answer:1,ref:"PC \u00a7602"},
+          ],
+        },
           { heading:"Ethics, Communications & Emergency Response", subheading:"BSIS Ethics | BPC §7583.7 | Emergency Procedures",
             content:[
               { type:"bullets", items:[
@@ -400,11 +457,12 @@ const CATALOG = {
                 "Ethics: your enforcement decisions must be free from bias based on race, gender, religion, or any protected characteristic",
               ]},
               { type:"rule", text:"Falsifying any incident report or arrest record is a crime and grounds for immediate BSIS revocation." },
-            ]},
-        ],
-        quiz:[
-          { q:"Under PC §490.5, a guard may detain a shoplifting suspect when:", options:["A manager reports the theft","Any store employee witnesses the theft","The guard has probable cause based on their own direct personal observation","The loss prevention system flags the person"], answer:2 },
-          { q:"After making a lawful citizen's arrest, the guard must deliver the subject to police:", options:["Within 4 hours","At the end of the shift","Without unnecessary delay","After completing the written report"], answer:2 },
+            ],
+          quiz:[
+            {q:"Falsifying an incident report may result in:",options:["A verbal warning only", "A civil fine only", "Termination and BSIS license revocation", "No consequences if the incident was minor"],answer:2,ref:"BSIS Ethics"},
+            {q:"After making a citizen's arrest, the guard must deliver the subject to police:",options:["Within 4 hours", "At the end of the shift", "Without unnecessary delay", "After completing the written report"],answer:2,ref:"PC \u00a7847"},
+          ],
+        },
         ],
       },
     ],
@@ -449,7 +507,12 @@ const CATALOG = {
             content:[
               { type:"callout", label:"The Standard", text:"Force must be OBJECTIVELY REASONABLE — evaluated from the perspective of a reasonable officer at the scene with the same information. Not judged in hindsight." },
               { type:"bullets", items:["BPC §7583.7 mandates AUF training for all California security guards","PC §242 Battery, PC §236 False Imprisonment, PC §245 Assault with deadly weapon — all apply","4th Amendment unreasonable seizure standards apply","Force must be proportionate to the specific threat and stepped down as threat decreases","Document every use of force — even if no contact is made"] },
-            ]},
+            ],
+          quiz:[
+            {q:"The standard for evaluating a security guard's use of force under California law is:",options:["Whatever the guard personally felt was necessary", "Objectively reasonable under the circumstances", "Whatever the property owner authorizes", "Whatever force stops the situation"],answer:1,ref:"BPC \u00a77583.7 | Graham v. Connor"},
+            {q:"Force must be reduced or stopped when:",options:["The subject verbally protests", "The guard's supervisor arrives", "The threat that justified the force no longer exists", "The guard has documented the incident"],answer:2,ref:"BPC \u00a77583.7 | Proportionality"},
+          ],
+        },
           { heading:"Force Options Continuum", subheading:"Proportionality | Escalation & De-escalation",
             content:[
               { type:"stagelist", items:[
@@ -460,11 +523,12 @@ const CATALOG = {
                 { num:"5", label:"Lethal Force — Last Resort", text:"Only when facing imminent death or serious bodily injury", color:"#8B1A1A" },
               ]},
               { type:"rule", text:"Force must be stepped DOWN immediately as the threat level decreases. Using force after submission is excessive — and criminal." },
-            ]},
-        ],
-        quiz:[
-          { q:"'Objectively reasonable force' is evaluated from the perspective of:", options:["A legal expert reviewing the incident afterward","The guard's supervisor on CCTV","A reasonable officer at the scene with the same information","The property owner who hired the guard"], answer:2 },
-          { q:"Force used against a person must be reduced or stopped when:", options:["The subject verbally protests","The guard's supervisor arrives","The threat that justified the force no longer exists","The guard has documented the incident"], answer:2 },
+            ],
+          quiz:[
+            {q:"In the force continuum, which response should always be attempted first?",options:["Physical restraint", "Verbal commands and de-escalation", "Drawing any authorized weapon", "Calling police before any action"],answer:1,ref:"Use of Force Continuum"},
+            {q:"Using force after a subject has submitted and the threat has ended is:",options:["Acceptable to ensure full compliance", "Required for documentation purposes", "Excessive force — and potentially criminal", "At the guard's discretion"],answer:2,ref:"BPC \u00a77583.7 | Proportionality"},
+          ],
+        },
         ],
       },
       { num:2, title:"De-escalation — Four Core Concepts", duration:"30 min", icon:"🧠",
@@ -478,18 +542,24 @@ const CATALOG = {
                 { label:"4. Force Options Awareness", text:"Know your options before you need them. Always start at the lowest effective level. Step down as threat decreases.", color:"#8B1A1A" },
               ]},
               { type:"callout", label:"Tactical Methods", text:"Time, Distance, Cover, and Concealment — use all four together to create space, call for help, and avoid force." },
-            ]},
+            ],
+          quiz:[
+            {q:"The four core concepts of de-escalation per BSIS training are:",options:["Run, Hide, Fight, Report", "Self-control, Effective Communication, Scene Assessment, Force Options", "Observe, Orient, Decide, Act", "Approach, Contain, Communicate, Resolve"],answer:1,ref:"BPC \u00a77583.7(b)(6)"},
+            {q:"Which tactical method uses distance and barriers to reduce threat and buy time?",options:["Restraint", "Escalation of force", "Time, distance, cover, and concealment", "Verbal confrontation"],answer:2,ref:"BPC \u00a77583.7(b)(6)"},
+          ],
+        },
           { heading:"When Force IS and IS NOT Justified", subheading:"BPC §7583.7(b)(2) | Proportionality",
             content:[
               { type:"twocol",
                 left:{ heading:"Force IS Justified", items:["Active physical aggression toward you or another person","Imminent threat of serious bodily injury — objectively reasonable belief","Subject is armed and threatening imminent attack","Threat level exceeds what verbal and soft control can address"] },
                 right:{ heading:"Force Is NOT Justified", items:["Passive resistance alone — refusal to move","Verbal abuse or profanity — words alone","Property protection alone — baton cannot be used solely for property","After the threat has ended and subject is controlled","Punishment or intimidation after control is established"] }
               },
-            ]},
-        ],
-        quiz:[
-          { q:"De-escalation is NOT appropriate as a primary response when:", options:["A subject is verbally hostile but not threatening","A subject refuses to show identification","The subject poses an immediate physical threat requiring defensive action","A subject is crying or upset"], answer:2 },
-          { q:"Which tactical de-escalation method uses physical barriers and distance to reduce threat?", options:["Restraint","Escalation of force","Time, distance, cover, and concealment","Verbal confrontation"], answer:2 },
+            ],
+          quiz:[
+            {q:"A guard uses a pain compliance hold on a cooperative subject who declined to show ID. This is:",options:["Lawful — compliance with ID checks can be enforced", "Potentially excessive — the situation did not justify that level of force", "Lawful if the client contract permits it", "Required protocol per BSIS"],answer:1,ref:"BPC \u00a77583.7(b)(2) | Proportionality"},
+            {q:"Baton force against a subject who is passively sitting and refusing to move is:",options:["Justified — passive resistance is still resistance", "Potentially justified if directed by management", "Not justified — baton-level force requires active aggression", "At the guard's discretion"],answer:2,ref:"BPC \u00a77583.7 | Force Continuum"},
+          ],
+        },
         ],
       },
       { num:3, title:"Duty to Intercede, Bias & Active Shooter", duration:"25 min", icon:"🛡️",
@@ -513,10 +583,6 @@ const CATALOG = {
                 { label:"FIGHT", text:"Absolute last resort only — when life is in imminent danger and no other option exists.", color:"#8B1A1A" },
               ]},
             ]},
-        ],
-        quiz:[
-          { q:"A guard witnesses a coworker continuing to strike a handcuffed, compliant subject. The guard should:", options:["Document and raise at next staff meeting","Intervene immediately to stop the force and report the incident","Defer to the senior guard's judgment","Notify the client only"], answer:1 },
-          { q:"Implicit bias in security work is best described as:", options:["Conscious prejudice guards are aware of","Automatic unconscious attitudes that affect perceptions and decisions","Bias found only in law enforcement","A type of bias training completely eliminates"], answer:1 },
         ],
       },
     ],
@@ -552,15 +618,21 @@ const CATALOG = {
             content:[
               { type:"bullets", items:["Gender harassment: unwelcome sexual comments, gestures, physical contact, or quid pro quo conditions","Racial harassment: slurs, stereotypes, hostile conduct based on race or ethnicity","FEHA prohibits all workplace harassment — guards are covered as employees AND in public interactions","Stereotyping: applying group-based assumptions to individuals — never a basis for enforcement decisions","Racial profiling is prohibited under California Penal Code §13519.4","Document only specific observed behaviors — never document race as a reason for contact"] },
               { type:"rule", text:"Disparate enforcement of security policies based on protected characteristics = FEHA violation + civil liability for MACCESS INC. and the guard personally." },
-            ]},
+            ],
+          quiz:[
+            {q:"A guard whose enforcement decisions are influenced by a visitor's race is:",options:["Exercising professional judgment", "Violating PC §13519.4 and FEHA — creating civil liability", "Applying statistically informed risk assessment", "Acting within authorized discretion"],answer:1,ref:"FEHA | PC \u00a713519.4"},
+            {q:"Documenting race as the reason for approaching a subject is:",options:["Required for accurate record-keeping", "Acceptable when race is the primary reason for suspicion", "Never acceptable — document specific observed behaviors only", "Required by BSIS for profiling data collection"],answer:2,ref:"FEHA | Civil Rights Law"},
+          ],
+        },
           { heading:"Respect, Attitude & Command Presence", subheading:"BSIS Ethics | Professional Standards",
             content:[
               { type:"bullets", items:["Command presence: projecting calm authority through posture and demeanor — not aggression","Treat every person with equal dignity regardless of appearance, behavior, or perceived status","Apply the same enforcement standard to everyone — consistency is your legal protection","Your appearance reflects MACCESS INC., the client, and the profession — clean uniform required","Ethics: honest in all reports, minimum necessary force, no conflicts of interest, no gratuities","Falsifying a report = crime + BSIS revocation + personal perjury exposure in legal proceedings"] },
-            ]},
-        ],
-        quiz:[
-          { q:"A guard whose enforcement decisions are influenced by a person's race or appearance is:", options:["Exercising professional judgment","Violating PC §13519.4 and FEHA — creating civil liability","Applying post orders correctly","Acting within their discretion as a security professional"], answer:1 },
-          { q:"Command presence means:", options:["Being physically intimidating and aggressive","Projecting calm authority through posture and demeanor","Always having a hand near your baton","Speaking loudly in all situations"], answer:1 },
+            ],
+          quiz:[
+            {q:"Command presence means:",options:["Being physically intimidating and aggressive", "Projecting calm authority through posture and professional demeanor", "Always having a hand near your authorized equipment", "Speaking loudly in all situations"],answer:1,ref:"BSIS Ethics"},
+            {q:"A guard with a consistently negative attitude toward the public creates:",options:["A stronger deterrent effect", "Liability for themselves and for MACCESS INC.", "A more efficient security operation", "No professional concern — attitude is subjective"],answer:1,ref:"BSIS Ethics | BPC \u00a77583.6(b)"},
+          ],
+        },
         ],
       },
       { num:2, title:"Verbal Skills, Diversity & Ethics", duration:"30 min", icon:"🗣️",
@@ -574,18 +646,24 @@ const CATALOG = {
                 { num:"4", label:"Ask Open-Ended Questions", text:"'Can you tell me what's going on?' Let them talk — listening de-escalates faster than commanding.", color:"#005C5C" },
                 { num:"5", label:"Offer a Path Forward", text:"Provide choices where possible. Avoid ultimatums early in the contact.", color:"#1A5C3A" },
               ]},
-            ]},
+            ],
+          quiz:[
+            {q:"Active listening during a crisis interaction requires the guard to:",options:["Wait for their turn to speak while preparing their next command", "Focus primarily on identifying grounds for arrest", "Fully attend to the person, acknowledge concerns, and confirm understanding", "Document the conversation in real time"],answer:2,ref:"BSIS Training Manual"},
+            {q:"A guard who validates a person's emotion is:",options:["Agreeing with their position and supporting their grievance", "Acknowledging how they feel without condoning their behavior", "Telling them their anger is justified and correct", "Remaining silent to avoid inflaming the situation"],answer:1,ref:"BSIS Training Manual"},
+          ],
+        },
           { heading:"Substance Abuse, Mental Illness & Professional Ethics", subheading:"BSIS Training Manual | BSIS Code of Ethics",
             content:[
               { type:"twocol",
                 left:{ heading:"Recognizing Impairment", items:["Stimulants (meth/cocaine): rapid speech, agitation, dilated pupils, excessive energy","CNS depressants (alcohol/opioids): slurred speech, staggering, pinpoint pupils, slow response","Mental health crisis: disorganized speech, paranoia, responding to things others can't perceive","Document behaviors — never diagnose","Call 911 for mental health support — do not try to manage crisis alone"] },
                 right:{ heading:"Professional Ethics", items:["Honest in all reports — no falsification ever","Minimum necessary force — always","No gifts or gratuities from clients or vendors","Social media: never post client, incident, or post location information","When in doubt: call MACCESS INC. management before acting","You represent MACCESS INC. and the profession 24/7 while in uniform"] }
               },
-            ]},
-        ],
-        quiz:[
-          { q:"A person shows rapid speech, dilated pupils, and extreme agitation. These signs are most consistent with:", options:["Alcohol intoxication","Stimulant drug use","A mental health crisis requiring immediate detention","Normal emotional distress"], answer:1 },
-          { q:"If a supervisor instructs a guard to falsify an incident report, the guard should:", options:["Comply — supervisors have authority over reports","Comply only if the incident was minor","Refuse and report the request to MACCESS INC. management","Complete as directed but note it privately"], answer:2 },
+            ],
+          quiz:[
+            {q:"Signs of stimulant intoxication (methamphetamine, cocaine) include:",options:["Slurred speech, drooping eyelids, and slow reaction time", "Rapid speech, heightened agitation, dilated pupils, excessive energy", "Calm demeanor with marked disorientation", "Confusion and extremely slow response"],answer:1,ref:"BSIS Training Manual"},
+            {q:"If a supervisor instructs a guard to falsify an incident report, the guard should:",options:["Comply — supervisors have authority over report content", "Comply only if the incident was minor", "Refuse and report the request to MACCESS INC. management", "Complete as directed but note it privately"],answer:2,ref:"BSIS Code of Ethics"},
+          ],
+        },
         ],
       },
     ],
@@ -622,15 +700,21 @@ const CATALOG = {
                 { label:"TIMELY", text:"Completed as close to the incident as possible — ideally within 1 hour.", color:"#8B1A1A" },
               ]},
               { type:"rule", text:"NEVER erase or white-out an error. Draw a single line through it, initial it, and date it. Reports are legal documents — falsification is a crime." },
-            ]},
+            ],
+          quiz:[
+            {q:"Which should NEVER appear in a security incident report?",options:["The precise time and date", "Direct quotes from witnesses", "The guard's personal opinions, speculation, or conclusions", "A physical description of persons involved"],answer:2,ref:"BSIS Training Standards"},
+            {q:"An incident report should ideally be completed:",options:["At the end of the shift", "Within 72 hours", "As close to the incident as possible — ideally within 1 hour", "Only after consulting with a supervisor"],answer:2,ref:"BSIS Training Standards"},
+          ],
+        },
           { heading:"What to Include — Required Report Elements", subheading:"BSIS Standards | Legal Documentation",
             content:[
               { type:"bullets", items:["Date, time, and exact location (address, floor, area)","Description of events in chronological order","Parties involved: sex, race, approximate age, height, weight, hair, clothing, distinctive marks","Witnesses: names and contact information if available","Actions taken by the guard: verbal commands, physical actions, calls made, persons notified","Evidence observed or secured — describe, do not move unless for safety","Outcome: subject detained, released, turned over to police, medical response","Your name, guard card number, and MACCESS INC. PPO #122729 on every report"] },
-            ]},
-        ],
-        quiz:[
-          { q:"Which should NEVER appear in a security incident report?", options:["The time and date of the incident","Verbatim quotes from witnesses","The guard's personal opinions and conclusions about guilt","The physical description of the subject"], answer:2 },
-          { q:"A guard discovers a factual error in a report already submitted. They should:", options:["Destroy it and write a new one","Draw a single line through the error, write the correction, initial and date it — never erase","Leave the error in place","Ask a colleague to correct it on their behalf"], answer:1 },
+            ],
+          quiz:[
+            {q:"A guard discovers a factual error in a submitted report. They should:",options:["Destroy it and write a new one", "Draw a single line through the error, write the correction, initial and date — never erase", "Leave it in place — already submitted", "Ask a colleague to correct it"],answer:1,ref:"BSIS Training Standards"},
+            {q:"Security incident reports must be written in:",options:["First person — 'I observed...', 'I heard...'", "Third person to appear objective", "Passive voice to avoid blame", "Abbreviated shorthand for efficiency"],answer:0,ref:"BSIS Training Standards"},
+          ],
+        },
         ],
       },
       { num:2, title:"Patrol, Questioning & Suspicious Activity", duration:"25 min", icon:"👁️",
@@ -639,7 +723,12 @@ const CATALOG = {
             content:[
               { type:"bullets", items:["Vary patrol route AND timing — predictable patrols are exploitable","Know the baseline: what is normal so anomalies stand out","Use all senses: sight, sound, smell (smoke, gas, chemicals)","Log every round: start/end time, route, all observations — 'nothing to report' must still be logged","Report immediately: propped doors, broken locks, unfamiliar vehicles, unusual odors, unauthorized persons","Night observation: use peripheral vision, not direct stare"] },
               { type:"rule", text:"Vary patrol route AND timing every single round. Same-time same-route patrols advertise your schedule to anyone watching." },
-            ]},
+            ],
+          quiz:[
+            {q:"Effective patrol technique requires a guard to:",options:["Follow the identical route at the same time every round", "Vary both the timing and route to avoid a predictable pattern", "Minimize movement to preserve energy", "Stay at a central observation point"],answer:1,ref:"BSIS Training Manual"},
+            {q:"A guard discovers a propped emergency exit that is normally secured. The correct response is:",options:["Assume it was left opened accidentally and continue patrol", "Close the door, document it in the shift log, and notify the supervisor", "Leave it and report only if still open at end of shift", "Alert law enforcement immediately"],answer:1,ref:"BSIS Training Manual"},
+          ],
+        },
           { heading:"Questioning Techniques & Documenting Suspicious Activity", subheading:"BSIS Training Manual | Legal Limits on Questioning",
             content:[
               { type:"twocol",
@@ -647,11 +736,12 @@ const CATALOG = {
                 right:{ heading:"BOLO Description Format", items:["Sex | Race | Age | Height | Weight","Hair: color, length, style","Eyes: color if observed","Clothing: colors, brands, footwear","Distinctive features: tattoos, scars, glasses","Direction of travel","Vehicle: make, model, color, plate state + number"] }
               },
               { type:"rule", text:"Never document race as the reason for suspicion. Document specific observed behaviors only. A BOLO must be as specific and accurate as possible." },
-            ]},
-        ],
-        quiz:[
-          { q:"Effective security patrol technique requires a guard to:", options:["Follow the identical route at the same time every round","Vary both the timing and route to avoid a predictable pattern","Minimize movement to preserve energy","Stay at a central observation point"], answer:1 },
-          { q:"When a witness speaks limited English, a guard should:", options:["Skip documenting the witness account","Use an interpreter or translation aids and document the method used","Write the account based on assumption","Require the witness to return when a bilingual guard is available"], answer:1 },
+            ],
+          quiz:[
+            {q:"An open-ended question is designed to:",options:["Confirm a specific fact with yes or no", "Limit the subject to a defined set of responses", "Encourage a detailed narrative response providing maximum information", "Direct the subject toward a predetermined answer"],answer:2,ref:"BSIS Training Manual"},
+            {q:"A guard should NEVER document which of the following as the basis for suspicious activity:",options:["A person photographing security cameras", "An unattended bag in an unusual location", "A person's race or ethnicity", "A vehicle circling the property multiple times"],answer:2,ref:"BSIS Training Manual | FEHA"},
+          ],
+        },
         ],
       },
     ],
@@ -682,7 +772,12 @@ const CATALOG = {
             content:[
               { type:"bullets", items:["Know your chain of command before your first shift: lead guard → site supervisor → MACCESS INC. dispatch","Radio protocol: listen before transmitting — do not interrupt ongoing communications","Identify yourself on every transmission: '[Post/Name] to [Recipient]...' — keep it brief and professional","CCTV: log timestamps and camera IDs for any incident footage","Alarm systems: know each alarm type, required response, and reset authority","Access control: verify credentials for every person — never allow tailgating through secured doors","Technology failure: know the manual backup procedure for every system at your post"] },
               { type:"callout", label:"Log Everything", text:"Every contact must be logged: who, when, what was communicated, and the response. Verbal-only reports are insufficient." },
-            ]},
+            ],
+          quiz:[
+            {q:"Before transmitting on a radio, a guard should:",options:["Speak immediately — delays waste time", "Listen to confirm the channel is clear, press PTT, wait one second, then speak", "Announce their full name and location before every transmission", "Contact dispatch for permission to transmit"],answer:1,ref:"BSIS Training Manual"},
+            {q:"Every contact and observation must be:",options:["Reported verbally to a supervisor only", "Logged in writing — who, when, what was communicated, and the response", "Kept private unless a formal incident occurs", "Reported only if unusual or out of the ordinary"],answer:1,ref:"BSIS Training Manual"},
+          ],
+        },
           { heading:"Calling 911 & Briefing Law Enforcement", subheading:"911 Protocol | Law Enforcement Arrival",
             content:[
               { type:"stagelist", items:[
@@ -692,11 +787,12 @@ const CATALOG = {
                 { num:"4", label:"YOUR IDENTITY", text:"Your name and callback number — STAY ON THE LINE until dispatcher releases you", color:"#1A5C3A" },
               ]},
               { type:"rule", text:"When law enforcement arrives: hands visible at all times. Brief officers: situation, parties, hazards, actions taken. Transfer custody of any citizen's arrest subject immediately." },
-            ]},
-        ],
-        quiz:[
-          { q:"When placing a 911 call, the guard must provide which information FIRST?", options:["Their BSIS license number and PPO name","Location — full address, building, floor, and specific area","Only their name and company","A complete incident report summary"], answer:1 },
-          { q:"Before transmitting on a radio, a guard should:", options:["Speak immediately — delays waste time","Listen to confirm the channel is clear, press PTT, wait one second, then speak","Announce their full name and location before every transmission","Contact dispatch for permission"], answer:1 },
+            ],
+          quiz:[
+            {q:"When placing a 911 call, the guard must provide which information FIRST?",options:["Their BSIS license number and PPO name", "Location — full address, building, floor, and specific area", "Only their name and company", "A complete incident report summary"],answer:1,ref:"BSIS Training Manual | 911"},
+            {q:"When law enforcement arrives at a security incident, the guard should:",options:["Continue managing until officers formally request handoff", "Present the written report before briefing verbally", "Provide a brief accurate verbal briefing: situation, parties, hazards, actions taken", "Step back entirely and have no further communication"],answer:2,ref:"BSIS Training Manual"},
+          ],
+        },
         ],
       },
       { num:2, title:"External Communications & Non-Verbal Skills", duration:"30 min", icon:"🤝",
@@ -707,15 +803,21 @@ const CATALOG = {
                 left:{ heading:"Medical Personnel (EMS)", items:["Call 911 immediately for any medical emergency — no delay","Clear path to the patient — move bystanders back","Brief EMS on scene: what you observed, time of onset, any known conditions","Limit patient information to only what responders need — confidentiality","If patient is also a detainee: notify police before EMS departs"] },
                 right:{ heading:"City & Government Agencies", items:["Code enforcement: allow entry, notify property manager immediately, document visit","Fire department: execute evacuation plan, meet at command post","Utilities emergency (gas, water, power): call emergency line + 911, evacuate if directed","All government agency visits must be logged in your shift report","Media: no comments — refer all media inquiries to MACCESS INC. management"] }
               },
-            ]},
+            ],
+          quiz:[
+            {q:"When paramedics arrive at a scene, a security guard's role is to:",options:["Continue providing first aid alongside paramedics", "Clear the area, brief paramedics on the situation, and stand by for instructions", "Take over crowd control only — do not speak to medical personnel", "Document the paramedics' clinical actions in full detail"],answer:1,ref:"BSIS Training Manual"},
+            {q:"A guard discovers a strong odor of natural gas. The correct immediate action is:",options:["Locate and attempt to seal the leak", "Use the radio to report while investigating", "Evacuate immediately without using any electrical switches or radio — call 911 from a safe distance", "Document in the shift log and notify the property manager"],answer:2,ref:"Cal/OSHA | BSIS Training Manual"},
+          ],
+        },
           { heading:"Non-Verbal Communication & Professional Presence", subheading:"BSIS Training Manual | Body Language as a Security Tool",
             content:[
               { type:"bullets", items:["Posture: upright and alert — signals confidence and authority","Eye contact: professional, not aggressive staring — avoiding eye contact signals uncertainty","Hands: visible and open — closed fists or crossed arms signal aggression","Proximity: maintain appropriate distance — do not crowd","Tone of voice: calm, controlled, even — never match an agitated person's energy","Facial expression: neutral and professional — visible contempt escalates every situation","Announce movements in tense situations: 'I'm going to step back now'"] },
-            ]},
-        ],
-        quiz:[
-          { q:"When law enforcement arrives at a security incident, the guard should:", options:["Continue managing until officers formally request handoff","Present the written report before briefing verbally","Provide a brief accurate verbal briefing: situation, parties, hazards, actions taken","Step back entirely and have no further communication"], answer:2 },
-          { q:"A guard discovers a strong odor of natural gas at their post. The correct immediate action is:", options:["Locate and attempt to seal the leak","Use the radio to report while investigating the source","Evacuate immediately without using any electrical switches or radio — call 911 from a safe distance","Document in the shift log and notify the property manager at next opportunity"], answer:2 },
+            ],
+          quiz:[
+            {q:"A security guard's body language on post should convey:",options:["Physical dominance to deter potential threats", "Professional alertness, calm confidence, and an approachable demeanor", "Deliberate disengagement to reduce confrontations", "Visible deference and submission to reduce escalation"],answer:1,ref:"BSIS Training Manual"},
+            {q:"Tone of voice in a tense interaction should be:",options:["Loud and firm to establish authority", "Matched to the agitated person's energy level", "Calm, controlled, and even — never matching an agitated person's energy", "Soft and apologetic to defuse tension"],answer:2,ref:"BSIS Training Manual"},
+          ],
+        },
         ],
       },
     ],
@@ -749,7 +851,12 @@ const CATALOG = {
                 { label:"Contractor (MACCESS INC.)", text:"MACCESS INC. as PPO may be vicariously liable under respondeat superior for acts within scope of employment. Negligent hiring (failure to vet) and negligent training create additional exposure.", color:"#1B2B5E" },
                 { label:"Property Owner / Client", text:"Client may share liability if they directed the guard's actions or failed to maintain safe conditions. Contractual indemnification clauses typically shift liability back to the PPO.", color:"#005C5C" },
               ]},
-            ]},
+            ],
+          quiz:[
+            {q:"'Respondeat superior' establishes that:",options:["Guards are personally liable for all use-of-force incidents", "Employers may be vicariously liable for employee wrongful acts within scope of employment", "Property owners are responsible for all incidents on their premises", "BSIS bears liability for improperly trained guards"],answer:1,ref:"Respondeat Superior"},
+            {q:"A PPO that fails to verify a guard's baton permit before a baton-authorized assignment may face:",options:["Only a minor administrative warning", "Negligent hiring liability and BSIS fines", "No liability — the guard is personally responsible", "Liability only if the guard uses the baton improperly"],answer:1,ref:"Negligent Hiring | BPC \u00a77585.19"},
+          ],
+        },
           { heading:"Criminal, Civil & Administrative Liability", subheading:"PC §§236, 242, 207 | BPC §480 | Title 16 CCR",
             content:[
               { type:"twocol",
@@ -758,28 +865,30 @@ const CATALOG = {
               },
             ]},
         ],
-        quiz:[
-          { q:"A PPO that fails to conduct required background checks before hiring a guard may face liability for:", options:["False imprisonment only","Negligent hiring if the guard causes harm the check would have predicted","Statutory violations only — no civil liability","BSIS administrative penalties only"], answer:1 },
-          { q:"'Respondeat superior' establishes that:", options:["Guards are personally liable for all use-of-force incidents","Employers may be vicariously liable for wrongful acts by employees acting within scope of employment","Property owners are responsible for all incidents on their premises","BSIS bears liability for improperly trained guards"], answer:1 },
-        ],
       },
       { num:2, title:"BSIS Regulations & Guard's Legal Role", duration:"30 min", icon:"📋",
         slides:[
           { heading:"Key BSIS Statutes — What You Must Know", subheading:"BPC §7583 et seq. | Title 16 CCR | SB 652",
             content:[
               { type:"bullets", items:["BPC §7583.6: Training requirements — 8 hrs PTA/AUF pre-registration; 32 hrs skills within 6 months; 8 hrs annual CE","BPC §7583.7: PTA and AUF — 100% exam score required. Single provider per SB 652 (eff. Jan 1, 2026)","BPC §7583.9: Criminal history background check — DOJ + FBI via Live Scan required for all applicants","BPC §7583.20: Guard card renewal — must renew within 60 days of expiration or registration is canceled ($44 fee)","BPC §480: Grounds for denial/revocation — certain criminal convictions disqualify applicants","Title 16 CCR §643(b): Certificate requirements — provider name, BSIS license number, course name, dates, hours, serial number"] },
-            ]},
+            ],
+          quiz:[
+            {q:"Under SB 652 (eff. Jan 1, 2026), the 8-hour PTA/AUF training must be completed by:",options:["Any two BSIS-approved providers", "The applicant's employer only", "A single BSIS-approved course provider", "An online provider plus a separate in-person facility"],answer:2,ref:"BPC \u00a77583.7 | SB 652"},
+            {q:"A guard card may be renewed with a delinquency fee within how many days of expiration?",options:["30 days", "60 days", "90 days", "120 days"],answer:1,ref:"BPC \u00a77583.20"},
+          ],
+        },
           { heading:"The Legal Role of a Security Guard", subheading:"BPC §7582.1 | PC §837 | PC §490.5",
             content:[
               { type:"twocol",
                 left:{ heading:"What Guards CAN Do", items:["Protect persons and property on assigned post (BPC §7582.1)","Make citizen's arrests under PC §837 when lawful conditions are met","Detain shoplifting suspects under PC §490.5 with probable cause from personal observation","Use reasonable proportionate force during lawful citizen's arrest","Observe and document incidents for law enforcement"] },
                 right:{ heading:"What Guards CANNOT Do", items:["Claim or imply peace officer authority — PC §538d (criminal)","Conduct searches beyond safety pat-down during lawful detention","Compel answers to questions","Hold a citizen's arrest subject longer than necessary before delivering to police","Act outside their assigned post or off-duty","Annual CE: 8 hours/year including 2 hours AUF review — required for license maintenance"] }
               },
-            ]},
-        ],
-        quiz:[
-          { q:"Under BPC §7582.1, a security guard is employed to:", options:["Enforce municipal laws and ordinances","Arrest persons suspected of crimes on public property","Protect persons or property or prevent theft for a licensed PPO","Conduct criminal investigations for law enforcement"], answer:2 },
-          { q:"A security guard's registration is valid for how long before renewal is required?", options:["1 year","2 years","3 years","5 years"], answer:1 },
+            ],
+          quiz:[
+            {q:"Under BPC \u00a77582.1, a security guard is employed to:",options:["Enforce municipal laws and ordinances", "Arrest persons suspected of crimes on public property", "Protect persons or property or prevent theft for a licensed PPO", "Conduct criminal investigations for law enforcement"],answer:2,ref:"BPC \u00a77582.1"},
+            {q:"The annual CE requirement for registered security guards includes a minimum of how many hours of AUF review?",options:["1 hour", "2 hours", "4 hours", "8 hours"],answer:1,ref:"BPC \u00a77583.6(e)"},
+          ],
+        },
         ],
       },
     ],
@@ -812,7 +921,12 @@ const CATALOG = {
               { type:"alert", text:"PC §22001: Carrying a baton without a BSIS Baton Permit is a FELONY. BPC §7583.33 requires every guard who carries a baton on duty to hold BOTH a valid guard card AND a valid BSIS Baton Permit." },
               { type:"bullets", items:["Baton permit expires every 2 years — renewal requires an 8-hour refresher course","Off-duty: you may NOT carry a baton — the permit is for on-duty carry only","A firearms permit does NOT authorize baton carry — separate permit required","Baton permits are issued ONLY by BSIS-certified Baton Training Facilities (TFB license)","PPO that allows a guard to carry without a permit may be fined by BSIS","MACCESS INC. must verify each guard's permit before any baton-authorized assignment"] },
               { type:"rule", text:"The baton is a DEFENSIVE tool — to protect yourself and others. Using it offensively as a weapon or for intimidation is a crime." },
-            ]},
+            ],
+          quiz:[
+            {q:"A guard who carries a baton without a BSIS Baton Permit may be charged with:",options:["A misdemeanor and $100 fine", "A felony violation of PC §22001", "Only a BSIS administrative penalty", "Nothing — the guard card is sufficient"],answer:1,ref:"PC \u00a722001 | BPC \u00a77583.33"},
+            {q:"A baton permit expires every:",options:["1 year", "2 years — renewal requires an 8-hour refresher", "3 years", "5 years"],answer:1,ref:"BSIS Baton Fact Sheet 2024"},
+          ],
+        },
           { heading:"Criminal, Civil & Vicarious Liability", subheading:"PC §§242, 245 | BPC §7585.19 | Respondeat Superior",
             content:[
               { type:"typecards", items:[
@@ -820,11 +934,12 @@ const CATALOG = {
                 { label:"Civil", text:"Excessive force tort — compensatory and punitive damages. Wrongful death if baton use results in death. Intentional infliction of emotional distress.", color:"#7B4500" },
                 { label:"PPO (MACCESS INC.)", text:"Vicariously liable for guard's actions in scope of employment. Negligent hiring (not verifying permit) and negligent training create additional exposure. BPC §7585.19: $100–$1,000 fines per violation.", color:"#1B2B5E" },
               ]},
-            ]},
-        ],
-        quiz:[
-          { q:"A guard who carries a baton without a BSIS Baton Permit may be charged with:", options:["A misdemeanor and $100 fine","A felony violation of PC §22001","Only a BSIS administrative penalty","Nothing — the guard card is sufficient authorization"], answer:1 },
-          { q:"The baton is defined under California law as:", options:["An offensive weapon","A defensive tool — to protect yourself and others","A less-lethal firearm alternative","Standard security guard equipment authorized by the guard card"], answer:1 },
+            ],
+          quiz:[
+            {q:"If MACCESS INC. allows a guard to carry a baton before completing training and receiving a permit, the company may be fined:",options:["$100", "$300", "$2,500", "Nothing — the PPO's license is automatically revoked"],answer:2,ref:"BPC \u00a77585.19"},
+            {q:"The baton is defined under California law as:",options:["An offensive weapon", "A defensive tool — to protect yourself and others", "A less-lethal firearm alternative", "Standard equipment authorized by the guard card"],answer:1,ref:"BSIS Baton Manual Preface"},
+          ],
+        },
         ],
       },
       { num:2, title:"Baton Types, Vital Areas & Force Continuum", duration:"30 min", icon:"🔩",
@@ -834,16 +949,22 @@ const CATALOG = {
               { type:"h3", text:"Four Authorized Baton Types" },
               { type:"bullets", items:["Straight Baton: single-grip straight, 22-26 inches, solid or hollow. Ring carrier required.","Straight Expandable (ASP): telescoping — collapses for carry, expands on deployment. Holster required.","Side-Handle Baton (PR-24): T-shaped — perpendicular handle allows blocking techniques. Side-handle ring required.","Side-Handle Expandable: combines side-handle blocking with compact expandable design.","Guards may only carry the type for which they were trained. Switching types requires additional training."] },
               { type:"alert", text:"VITAL AREAS — PROHIBITED STRIKE ZONES (unless facing imminent death or serious bodily injury): A-Head | B-Throat/Neck | C-Spine | D-Kidneys | E-Groin | F-Sternum/Solar Plexus | G-Knees. All 7 must be correctly named on the permit exam." },
-            ]},
+            ],
+          quiz:[
+            {q:"During a non-life-threatening situation, the baton should NOT be used to strike above the:",options:["Waist", "Shoulders", "Groin", "Knees"],answer:1,ref:"BSIS Baton Manual Ch. 5"},
+            {q:"Which of the following IS a vital area that must be avoided in non-lethal-force situations?",options:["Outer thigh", "Upper arm", "Spine", "Calf"],answer:2,ref:"BSIS Baton Manual Ch. 5"},
+          ],
+        },
           { heading:"Force Continuum with Baton & Authorized Target Areas", subheading:"BSIS Baton Manual Ch. 2 & 5 | Proportionality",
             content:[
               { type:"bullets", items:["Baton use is justified ONLY at active aggression level or above — always exhaust verbal and soft control first","Authorized target areas: common peroneal nerve (outer thigh/knee), radial nerve (outer forearm), inner thigh, upper arms, calf/lower leg","Baton use must stop immediately when the threat stops — continuing after submission is excessive force and criminal","Every deployment of the baton — even if no contact is made — must be reported in writing within 1 hour","Call 911 immediately for ANY baton contact resulting in visible injury or loss of consciousness"] },
               { type:"callout", label:"Exam Requirement", text:"BSIS Baton Written Exam: 24 questions, pass ≥ 20/24 AND correctly identify all 7 vital areas. Both components required. Issued only by BSIS-certified Baton Training Facility (TFB)." },
-            ]},
-        ],
-        quiz:[
-          { q:"During a non-life-threatening situation, the baton should NOT be used to strike above the:", options:["Waist","Shoulders","Groin","Knees"], answer:1 },
-          { q:"The BSIS Baton Written Exam passing requirement is:", options:["100% on all 24 questions","At least 20/24 AND correctly identify all 7 vital areas","At least 20/24 — vital areas identification is optional","At least 18/24"], answer:1 },
+            ],
+          quiz:[
+            {q:"The BSIS Baton Written Exam passing requirement is:",options:["100% on all 24 questions", "At least 20/24 AND correctly identify all 7 vital areas", "At least 20/24 — vital areas identification is optional", "At least 18/24"],answer:1,ref:"BSIS Baton Manual Admin. Procedures"},
+            {q:"Every deployment of the baton \u2014 even if no contact is made \u2014 must be:",options:["Reported to BSIS directly within 24 hours", "Reported in writing to the supervisor within 1 hour", "Kept confidential per client contract", "Photographed before leaving the scene"],answer:1,ref:"BPC \u00a77583.2 | MACCESS INC. Policy"},
+          ],
+        },
         ],
       },
     ],
@@ -884,15 +1005,21 @@ const CATALOG = {
                 { label:"RED — Ready to Act", text:"Threat confirmed. Response initiated. Act decisively with your training.", color:"#8B1A1A" },
               ]},
               { type:"bullets", items:["Pre-incident threat indicators: photographing security cameras, testing locked doors, loitering without purpose, vehicles circling property","Most important initial observation: a subject's HANDS — hands are where threats originate","Trust your trained instincts — document and report before a threat materializes","Contact your supervisor or 911 based on threat level — do not underreact or over-commit"] },
-            ]},
+            ],
+          quiz:[
+            {q:"The baseline situational awareness level for all on-duty guards is:",options:["White — relaxed and unaware", "Yellow — relaxed alertness with environmental awareness", "Orange — focused on a specific potential threat", "Red — prepared to immediately take action"],answer:1,ref:"Cooper Color Code | BSIS Training Manual"},
+            {q:"The most important initial observation when approaching an unknown subject is:",options:["The subject's facial expression", "The subject's hands — the primary source of potential threats", "The subject's clothing and apparent socioeconomic status", "The subject's race and gender"],answer:1,ref:"BSIS Training Manual"},
+          ],
+        },
           { heading:"Safe Subject Contact — Approach & Positioning", subheading:"BSIS Syllabus §4.2 | Subject Contact Procedures",
             content:[
               { type:"bullets", items:["Maintain reactionary gap: 6-10 feet from unknown or agitated subjects","Approach at 45-degree angle — reduces your target profile and improves reactionary options","Announce yourself clearly: 'MACCESS INC. Security — may I speak with you?'","Never approach a potentially hostile subject without a means of communication and a clear exit","Tactical L positioning: two guards should never align in a straight line — reduces dual exposure to a single threat","COVER stops projectiles (car engine block, concrete wall). CONCEALMENT hides you from view but does NOT stop projectiles.","Re-holster / stand down only after the threat has fully resolved — keep eyes on subject"] },
-            ]},
-        ],
-        quiz:[
-          { q:"The baseline level of situational awareness a guard should maintain at all times on duty is:", options:["White — relaxed and at ease","Yellow — relaxed alertness, aware of surroundings without fixating on a specific threat","Orange — focused attention on a specific identified threat","Red — prepared to immediately take action"], answer:1 },
-          { q:"The critical distinction between cover and concealment is that:", options:["Cover hides you from view but does not stop projectiles; concealment provides ballistic protection","Concealment hides you from view but does not stop projectiles; cover provides a barrier that can stop projectiles","Cover and concealment are functionally identical","Cover applies only to firearms threats; concealment is effective against all other threats"], answer:1 },
+            ],
+          quiz:[
+            {q:"The recommended reactionary gap from an unknown subject is:",options:["1-2 feet — close enough to maintain control", "6-10 feet — provides time to respond to a threat", "15 or more feet — maximum distance to minimize risk", "At the guard's discretion based on intuition"],answer:1,ref:"BSIS Training Manual"},
+            {q:"Cover vs. concealment: cover means:",options:["Hiding from view but not stopping projectiles", "A barrier that can physically stop projectiles", "The same as concealment — both protect equally", "A barrier effective only against non-firearm threats"],answer:1,ref:"BSIS Training Manual"},
+          ],
+        },
         ],
       },
       { num:2, title:"Blood-Borne Pathogens & Environmental Hazards", duration:"25 min", icon:"🧤",
@@ -901,7 +1028,12 @@ const CATALOG = {
             content:[
               { type:"alert", text:"OSHA 29 CFR 1910.1030: Assume ALL blood and body fluids from any person may be infectious — HIV, Hepatitis B, Hepatitis C, and others. Standard precautions apply universally." },
               { type:"bullets", items:["Minimum PPE before any contact with blood or body fluids: disposable gloves — always","Do not touch eyes, nose, or mouth until hands are washed with soap and water","If exposed: wash area immediately with soap and water, notify supervisor, seek prompt medical evaluation","MACCESS INC. is required to provide BBP training and PPE at no cost to guards","Avoid touching any blood-stained materials without gloves — even dried blood can be infectious","Document all BBP exposure incidents immediately — OSHA recordkeeping required"] },
-            ]},
+            ],
+          quiz:[
+            {q:"Under OSHA blood-borne pathogen standards, a guard must assume that:",options:["Only visibly blood-stained materials pose a transmission risk", "All blood and body fluids from any person may be infectious", "Gloves are only required when contact with blood is likely", "HIV is the only BBP of concern in security work"],answer:1,ref:"OSHA 29 CFR 1910.1030"},
+            {q:"The minimum PPE before any contact with blood or body fluids is:",options:["A full-face shield and protective gown", "Disposable gloves", "Safety glasses only", "No PPE required unless blood is confirmed infectious"],answer:1,ref:"OSHA 29 CFR 1910.1030"},
+          ],
+        },
           { heading:"Environmental & Hazardous Materials Hazards", subheading:"BSIS Syllabus §4.5 | Cal/OSHA | OSHA",
             content:[
               { type:"stagelist", items:[
@@ -911,11 +1043,12 @@ const CATALOG = {
                 { num:"4", label:"POWER OUTAGE", text:"Know manual backup procedures for every system at your post before your first shift", color:"#005C5C" },
               ]},
               { type:"rule", text:"Know the location of every Safety Data Sheet (SDS/MSDS) for chemicals at your post. Cal/OSHA requires guards to report workplace hazards they observe." },
-            ]},
-        ],
-        quiz:[
-          { q:"Under OSHA blood-borne pathogen standards, a guard must assume that:", options:["Only visibly blood-stained materials pose a transmission risk","All blood and body fluids from any person may be infectious — standard precautions apply universally","Gloves are only required when direct contact with blood is likely","HIV is the only blood-borne pathogen of practical concern in security work"], answer:1 },
-          { q:"A guard detects a strong odor of natural gas at their post. The correct immediate action is:", options:["Locate the source and attempt to seal it","Use the radio to report the odor while investigating","Evacuate immediately without using any electrical switches or radio — call 911 from a safe distance","Document in the shift log and notify the property manager at the next opportunity"], answer:2 },
+            ],
+          quiz:[
+            {q:"A guard detects a strong odor of natural gas at their post. The correct immediate action is:",options:["Locate the source and attempt to seal it", "Use the radio to report while investigating", "Evacuate immediately without using any electrical switches or radio — call 911 from a safe distance", "Document in the shift log and notify the property manager"],answer:2,ref:"Cal/OSHA | BSIS Training Manual"},
+            {q:"Cal/OSHA requires guards to:",options:["Attempt to handle minor chemical spills independently", "Enter hazardous areas with any available PPE", "Report workplace hazards they observe to their supervisor", "Avoid documenting hazardous conditions to limit liability"],answer:2,ref:"Cal/OSHA"},
+          ],
+        },
         ],
       },
     ],
@@ -953,7 +1086,12 @@ const CATALOG = {
                 "Watch for underlying needs: anger often masks fear, humiliation, or helplessness — address the need, not the behavior",
                 "Never argue about who is 'right' — focus on the next step forward, not the grievance",
               ]},
-            ]},
+            ],
+          quiz:[
+            {q:"Using 'I' statements in a difficult interaction is preferable because:",options:["'I' statements are more legally defensible in documentation", "'I' statements express personal responsibility without creating an adversarial framing", "'I' statements are always perceived as more authoritative", "'I' statements are required by BSIS protocol for all verbal contacts"],answer:1,ref:"BSIS Syllabus \u00a710.1"},
+            {q:"The most effective opening strategy when approaching a difficult person is to:",options:["Immediately establish authority by stating consequences", "Lead with empathy — acknowledge the situation before giving directives", "State the policy violation clearly and firmly", "Step back and allow the person to resolve their own situation"],answer:1,ref:"BSIS Syllabus \u00a710.1"},
+          ],
+        },
           { heading:"Stages of Conflict Escalation", subheading:"BSIS Syllabus §10.2 | Intervene Early",
             content:[
               { type:"stagelist", items:[
@@ -964,11 +1102,12 @@ const CATALOG = {
                 { num:"5", label:"AFTERMATH", text:"Conflict subsided. Document, follow up through proper channels, debrief.", color:"#005C5C" },
               ]},
               { type:"rule", text:"Every minute you intervene earlier in the escalation cycle reduces the need for force by an order of magnitude. Intervene at Potential or Perceived every time." },
-            ]},
-        ],
-        quiz:[
-          { q:"The earliest and most effective stage to intervene in a conflict escalation cycle is:", options:["Manifest — when open conflict has erupted","Felt — when emotions have heightened","Perceived — when parties believe conflict exists","Potential — when tension is present but conflict has not yet developed"], answer:3 },
-          { q:"Which communication approach leads with empathy before issuing directives?", options:["'Stop that behavior immediately or there will be consequences.'","'I understand this is frustrating. Here is what I can do to help resolve this.'","'You always cause problems at this location.'","'I am not going to discuss this further until you calm down.'"], answer:1 },
+            ],
+          quiz:[
+            {q:"The earliest and most effective stage to intervene in the escalation cycle is:",options:["Manifest — when open conflict has erupted", "Felt — when emotions have heightened", "Perceived — when parties believe conflict exists", "Potential — when tension is present but conflict has not yet developed"],answer:3,ref:"BSIS Syllabus \u00a710.2"},
+            {q:"Following through on stated consequences is critical because:",options:["It satisfies BSIS documentation requirements", "Empty threats permanently destroy the guard's credibility and make future escalations more likely", "It creates a legal record that fair warning was given", "Following through is not always necessary — situational judgment allows flexibility"],answer:1,ref:"BSIS Syllabus \u00a710.2"},
+          ],
+        },
         ],
       },
       { num:2, title:"Diversity, Negotiation & Verbal Diffusion", duration:"30 min", icon:"🤝",
@@ -979,16 +1118,22 @@ const CATALOG = {
                 left:{ heading:"Valuing Diversity in Conflict", items:["Cultural norms: some cultures express disagreement loudly — loudness alone is not a threat indicator","Language barriers: slow down, simplify, seek interpreter or translation tool — never assume non-cooperation","Age: older persons may respond differently to authority — adjust tone accordingly","Disability: behavioral differences may not indicate hostility — assess context before responding","Apply identical standards to every person regardless of background — FEHA requires this"] },
                 right:{ heading:"Basic Negotiation", items:["Find common ground: 'We both want this to be resolved calmly' — reframes from adversarial to collaborative","Offer choices: 'You can wait calmly, or I will need to ask you to leave' — giving choices reduces resistance","Know your limits: you cannot negotiate away post orders or the law","When negotiation fails: escalate to supervisor — never make unauthorized concessions","Follow through: empty threats permanently destroy your credibility with future difficult encounters"] }
               },
-            ]},
+            ],
+          quiz:[
+            {q:"When a language barrier creates difficulty during a conflict interaction, the recommended approach is:",options:["Speak more loudly and repeat commands with greater firmness", "Immediately call law enforcement — language barriers make contact unsafe", "Slow down, use simpler language, and seek an interpreter or translation tool", "Assume non-cooperation and document as a refusal to comply"],answer:2,ref:"BSIS Syllabus \u00a710.4 | FEHA"},
+            {q:"A guard is negotiating with a difficult person who demands an exception to a post rule. The guard should:",options:["Grant the exception to restore peace", "Make the exception if the person seems reasonable and compliant", "Explain the rule cannot be negotiated — offer to escalate to a supervisor who may assist", "Threaten consequences and repeat the rule until the person complies"],answer:2,ref:"BSIS Syllabus \u00a710.5"},
+          ],
+        },
           { heading:"Verbal Diffusion Techniques", subheading:"BSIS Syllabus §10.6 | When Talking Fails",
             content:[
               { type:"bullets", items:["Lower your own voice when they raise theirs — people unconsciously mirror the tone of those they speak with","Name the emotion: 'It sounds like you are really frustrated right now' — demonstrates the person is being heard","Redirect: 'Let's focus on how we can fix this' — moves from the past grievance to the future solution","Strategic agreement: agree on minor points to reduce overall tension before addressing the main issue","Create distance: if verbal diffusion is not working, step back, change location, reduce environmental stimuli","Request backup: do not handle escalating situations alone — call for support before force becomes necessary","Document: record all verbal diffusion attempts in the incident report — protects you legally if force is later needed"] },
               { type:"callout", label:"When Verbal Diffusion Has Failed", text:"Recognize the point of no return. Disengage without capitulating: 'I am going to give you a moment to think about this.' Create distance. Request backup. Establish a perimeter. Do not continue verbal engagement that is escalating the situation." },
-            ]},
-        ],
-        quiz:[
-          { q:"When a guard deliberately lowers their own voice in response to an agitated person speaking loudly, the intended effect is:", options:["To signal to the person that the guard is also becoming agitated","To demonstrate professional control to bystanders","To model calm behavior — people often unconsciously mirror the tone and volume of those they speak with","To reduce the chance of a third party overhearing the exchange"], answer:2 },
-          { q:"A guard is negotiating with a difficult person who demands an exception to a clearly stated post rule. The guard's response should be:", options:["Grant the exception to restore peace","Make the exception if the person seems reasonable","Explain that the post rule cannot be negotiated — and offer to escalate to a supervisor who may be able to assist","Threaten consequences and repeat the rule until the person complies"], answer:2 },
+            ],
+          quiz:[
+            {q:"When a guard deliberately lowers their own voice in response to an agitated person, the intended effect is:",options:["To signal the guard is also becoming agitated", "To demonstrate professional control to bystanders", "To model calm behavior — people often unconsciously mirror the tone and volume of those they speak with", "To reduce the chance of third parties overhearing"],answer:2,ref:"BSIS Syllabus \u00a710.6"},
+            {q:"When verbal diffusion is not working, the correct response is to:",options:["Increase the firmness of verbal commands until compliance is achieved", "Apply physical restraint before the situation escalates further", "Create distance, request backup, and allow the situation to stabilize before re-engaging", "Continue the same approach — consistency eventually produces compliance"],answer:2,ref:"BSIS Syllabus \u00a710.6"},
+          ],
+        },
         ],
       },
     ],
@@ -1012,7 +1157,9 @@ const CATALOG = {
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// HTML RENDERER — builds the complete course platform page
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CONTENT RENDERER — converts content block objects to HTML strings
 // ═══════════════════════════════════════════════════════════════════════════════
 function renderContent(items) {
   return items.map(item => {
@@ -1020,13 +1167,13 @@ function renderContent(items) {
       case 'h3':
         return `<h3 class="sect-h3">${item.text}</h3>`;
       case 'alert':
-        return `<div class="content-alert"><span class="alert-icon">⚠️</span><span>${item.text}</span></div>`;
+        return `<div class="c-alert"><span class="alert-icon">⚠️</span><span>${item.text}</span></div>`;
       case 'callout':
-        return `<div class="content-callout"><strong>${item.label}:</strong> ${item.text}</div>`;
+        return `<div class="c-callout"><strong>${item.label}:</strong> ${item.text}</div>`;
       case 'rule':
-        return `<div class="content-rule">${item.text}</div>`;
+        return `<div class="c-rule">${item.text}</div>`;
       case 'bullets':
-        return `<ul class="content-bullets">${item.items.map(b=>`<li>${b}</li>`).join('')}</ul>`;
+        return `<ul class="c-bullets">${item.items.map(b=>`<li>${b}</li>`).join('')}</ul>`;
       case 'typecards':
         return `<div class="type-cards">${item.items.map(t=>`
           <div class="type-card" style="border-left:4px solid ${t.color}">
@@ -1035,8 +1182,10 @@ function renderContent(items) {
           </div>`).join('')}</div>`;
       case 'twocol':
         return `<div class="two-col">
-          <div class="col-block"><div class="col-heading">${item.left.heading}</div><ul class="content-bullets">${item.left.items.map(b=>`<li>${b}</li>`).join('')}</ul></div>
-          <div class="col-block"><div class="col-heading">${item.right.heading}</div><ul class="content-bullets">${item.right.items.map(b=>`<li>${b}</li>`).join('')}</ul></div>
+          <div class="col-block"><div class="col-heading">${item.left.heading}</div>
+            <ul class="c-bullets">${item.left.items.map(b=>`<li>${b}</li>`).join('')}</ul></div>
+          <div class="col-block"><div class="col-heading">${item.right.heading}</div>
+            <ul class="c-bullets">${item.right.items.map(b=>`<li>${b}</li>`).join('')}</ul></div>
         </div>`;
       case 'stagelist':
         return `<div class="stage-list">${item.items.map(s=>`
@@ -1050,44 +1199,38 @@ function renderContent(items) {
             <div class="rhf-label" style="color:${r.color}">${r.label}</div>
             <div class="rhf-text">${r.text}</div>
           </div>`).join('')}</div>`;
-      default:
-        return '';
+      default: return '';
     }
   }).join('\n');
 }
 
+// ═══════════════════════════════════════════════════════════════════════════════
+// MAIN HTML BUILDER
+// ═══════════════════════════════════════════════════════════════════════════════
 function buildPlatformHTML(courseKey, course) {
   const today = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
-  const modulesJ = JSON.stringify(course.modules).replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$');
-  const examJ    = JSON.stringify(course.exam).replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$');
 
-  // Pre-render slide HTML for each module
-  const slideHTML = course.modules.map(mod =>
-    mod.slides.map(slide => `
-      <div class="slide-content">
-        <div class="slide-heading">${slide.heading}</div>
-        <div class="slide-subheading">${slide.subheading}</div>
-        <div class="slide-body">${renderContent(slide.content)}</div>
-      </div>`).join('')
-  );
+  // ── Timing config ──────────────────────────────────────────────────────────
+  // Session timer: total minutes to complete module content
+  // Idle timeout: minutes of no interaction before warning
+  const TOTAL_MINUTES = parseInt(course.hours) * 60;  // 1 hr per credit hour
+  const IDLE_MINUTES  = 10;                            // 10 min idle = warning
+  const IDLE_LOCK     = 15;                            // 15 min idle = lock
+  const MAX_ATTEMPTS  = 3;                             // failed final exam attempts before repurchase
 
-  // Quiz HTML for each module
-  const quizHTML = course.modules.map(mod => `
-    <div class="quiz-block">
-      <div class="quiz-title">✓ Module ${mod.num} Knowledge Check</div>
-      ${mod.quiz.map((q,qi) => `
-        <div class="quiz-q" id="mq-${mod.num-1}-${qi}">
-          <div class="quiz-qtext">${q.q}</div>
-          <div class="quiz-opts">
-            ${q.options.map((opt,oi) => `
-              <div class="quiz-opt" onclick="pickModQ(${mod.num-1},${qi},${oi},${q.answer})">
-                <div class="quiz-ol">${['A','B','C','D'][oi]}</div>
-                <span>${opt}</span>
-              </div>`).join('')}
-          </div>
-          <div class="quiz-fb" id="mqfb-${mod.num-1}-${qi}"></div>
-        </div>`).join('')}
-    </div>`).join('');
+  // ── Pre-render slide HTML into data ───────────────────────────────────────
+  const modulesWithHTML = course.modules.map(mod => ({
+    ...mod,
+    slides: mod.slides.map(sl => ({
+      ...sl,
+      renderedHTML: renderContent(sl.content)
+    }))
+  }));
+
+  const modulesJ = JSON.stringify(modulesWithHTML)
+    .replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$');
+  const examJ = JSON.stringify(course.exam)
+    .replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$');
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -1096,12 +1239,12 @@ function buildPlatformHTML(courseKey, course) {
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>${course.title} | MACCESS INC. / PSLAW</title>
 <style>
-/* ── Design tokens ── */
-:root {
+/* ── Tokens ── */
+:root{
   --navy:#1B2B5E; --gold:#C9A84C; --red:#8B1A1A; --green:#1A5C3A;
   --light:#F4F6FB; --gray:#4A5568; --white:#fff; --dark:#12193A;
-  --border:#dde4f0; --r:10px;
-  --gold-lt:#FFF8E1; --red-lt:#FFECEC; --green-lt:#EAF3DE;
+  --border:#dde4f0; --r:10px; --gold-lt:#FFF8E1;
+  --red-lt:#FFECEC; --green-lt:#EAF3DE;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Segoe UI',Arial,sans-serif;background:var(--light);color:#1A1A2E;line-height:1.6;}
@@ -1109,286 +1252,348 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--light);color:#1A1A
 /* ── Screens ── */
 .screen{display:none;} .screen.active{display:block;}
 
-/* ═══════════════════════════════════════
+/* ══════════════════════════════════════
    SALES PAGE
-════════════════════════════════════════ */
+══════════════════════════════════════ */
 .site-header{background:var(--navy);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;}
 .site-logo{color:var(--gold);font-size:18px;font-weight:700;letter-spacing:.05em;}
 .site-meta{color:#CADCFC;font-size:11px;text-align:right;line-height:1.5;}
 .gold-stripe{height:5px;background:var(--gold);}
-
-/* Hero */
 .hero{background:var(--dark);color:var(--white);padding:60px 24px 48px;}
-.hero-inner{max-width:900px;margin:0 auto;}
+.hero-inner{max-width:920px;margin:0 auto;}
 .hero-badge{display:inline-block;background:var(--red);color:var(--white);font-size:11px;font-weight:700;letter-spacing:.1em;padding:5px 14px;border-radius:4px;margin-bottom:18px;text-transform:uppercase;}
-.hero-title{font-size:42px;font-weight:800;line-height:1.1;margin-bottom:12px;}
+.hero-title{font-size:44px;font-weight:800;line-height:1.1;margin-bottom:12px;}
 .hero-sub{font-size:18px;color:#CADCFC;margin-bottom:28px;}
-.hero-meta{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:36px;}
+.hero-meta{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:36px;}
 .hero-chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:8px 16px;font-size:13px;color:var(--white);}
 .hero-chip strong{color:var(--gold);display:block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px;}
-.hero-cta{display:inline-block;background:var(--gold);color:var(--navy);font-size:17px;font-weight:700;padding:16px 36px;border-radius:8px;cursor:pointer;border:none;text-decoration:none;}
+.hero-cta{display:inline-block;background:var(--gold);color:var(--navy);font-size:17px;font-weight:700;padding:16px 40px;border-radius:8px;cursor:pointer;border:none;}
 .hero-cta:hover{background:#b8962a;}
 .hero-trust{margin-top:14px;font-size:12px;color:#8899BB;}
-
-/* Outcomes */
-.outcomes-section{background:var(--white);padding:56px 24px;}
-.outcomes-inner{max-width:900px;margin:0 auto;}
 .section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin-bottom:8px;}
-.section-title{font-size:28px;font-weight:700;color:var(--navy);margin-bottom:32px;}
-.outcomes-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.section-title{font-size:28px;font-weight:700;color:var(--navy);margin-bottom:28px;}
+.outcomes-section{background:var(--white);padding:56px 24px;}
+.outcomes-inner{max-width:920px;margin:0 auto;}
+.outcomes-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .outcome-item{display:flex;align-items:flex-start;gap:12px;padding:14px;background:var(--light);border-radius:8px;}
 .outcome-check{width:24px;height:24px;border-radius:50%;background:var(--green);color:var(--white);font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
-.outcome-text{font-size:14px;color:#1A1A2E;}
-
-/* Curriculum */
+.outcome-text{font-size:14px;}
 .curriculum-section{background:var(--light);padding:56px 24px;}
-.curriculum-inner{max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr 320px;gap:40px;align-items:start;}
+.curriculum-inner{max-width:920px;margin:0 auto;display:grid;grid-template-columns:1fr 320px;gap:40px;align-items:start;}
 .curriculum-list{display:flex;flex-direction:column;gap:10px;}
-.curr-item{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:16px 20px;display:flex;align-items:center;gap:16px;cursor:default;}
-.curr-item.active-curr{border-color:var(--navy);background:#F0F4FB;}
+.curr-item{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:16px 20px;display:flex;align-items:center;gap:16px;}
 .curr-icon{font-size:22px;width:42px;height:42px;background:var(--light);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .curr-body{flex:1;}
 .curr-num{font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.06em;}
 .curr-name{font-size:15px;font-weight:600;color:var(--navy);margin:2px 0;}
 .curr-dur{font-size:12px;color:var(--gray);}
-.curr-lock{color:var(--gray);font-size:16px;}
-
-/* Pricing card */
 .price-card{background:var(--white);border-radius:var(--r);border:2px solid var(--navy);padding:28px;position:sticky;top:24px;}
-.price-card-title{font-size:14px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
-.price-amount{font-size:40px;font-weight:800;color:var(--navy);}
+.price-card-title{font-size:13px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
+.price-amount{font-size:42px;font-weight:800;color:var(--navy);}
 .price-period{font-size:14px;color:var(--gray);margin-bottom:20px;}
 .price-btn{display:block;width:100%;background:var(--gold);color:var(--navy);font-size:16px;font-weight:700;padding:15px;border-radius:8px;border:none;cursor:pointer;text-align:center;margin-bottom:12px;}
 .price-btn:hover{background:#b8962a;}
-.price-btn.outline{background:var(--white);color:var(--navy);border:2px solid var(--navy);}
-.price-includes{margin-top:20px;font-size:13px;}
+.price-includes{margin-top:16px;font-size:13px;}
 .price-includes li{padding:7px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;list-style:none;}
 .price-includes li:last-child{border-bottom:none;}
 .price-check{color:var(--green);font-weight:700;}
 .pay-logos{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
 .pay-logo{background:var(--light);border:1px solid var(--border);border-radius:4px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--gray);}
-.guarantee{margin-top:14px;padding:10px;background:var(--green-lt);border-radius:6px;font-size:12px;color:var(--green);text-align:center;}
-
-/* Instructor */
+.guarantee{margin-top:12px;padding:10px;background:var(--green-lt);border-radius:6px;font-size:12px;color:var(--green);text-align:center;}
+/* Policy notice on sales page */
+.policy-notice{background:var(--gold-lt);border:1px solid #F9C757;border-radius:8px;padding:14px 18px;font-size:13px;color:#7B4F00;margin-top:16px;line-height:1.7;}
+.policy-notice strong{color:var(--red);}
 .instructor-section{background:var(--navy);color:var(--white);padding:56px 24px;}
-.instructor-inner{max-width:900px;margin:0 auto;display:grid;grid-template-columns:120px 1fr;gap:32px;align-items:start;}
-.instructor-avatar{width:100px;height:100px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:36px;border:3px solid var(--gold);}
+.instructor-inner{max-width:920px;margin:0 auto;display:grid;grid-template-columns:100px 1fr;gap:32px;align-items:start;}
+.instructor-avatar{width:96px;height:96px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:36px;border:3px solid var(--gold);}
 .instructor-name{font-size:22px;font-weight:700;color:var(--gold);margin-bottom:4px;}
-.instructor-title{font-size:13px;color:#CADCFC;margin-bottom:16px;}
-.instructor-bio{font-size:14px;color:#CADCFC;line-height:1.7;margin-bottom:16px;}
+.instructor-title{font-size:13px;color:#CADCFC;margin-bottom:14px;}
+.instructor-bio{font-size:14px;color:#CADCFC;line-height:1.7;margin-bottom:14px;}
 .instructor-creds{display:flex;flex-wrap:wrap;gap:8px;}
 .cred-chip{background:rgba(255,255,255,.1);border-radius:4px;padding:4px 10px;font-size:11px;color:var(--white);}
-
-/* Testimonials */
 .testimonials-section{background:var(--white);padding:56px 24px;}
-.testimonials-inner{max-width:900px;margin:0 auto;}
-.testimonials-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-top:28px;}
+.testimonials-inner{max-width:920px;margin:0 auto;}
+.testimonials-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-top:24px;}
 .testimonial{background:var(--light);border-radius:var(--r);padding:20px;border-left:4px solid var(--gold);}
 .t-stars{color:var(--gold);font-size:14px;margin-bottom:8px;}
-.t-text{font-size:13px;color:var(--gray);line-height:1.6;margin-bottom:12px;font-style:italic;}
+.t-text{font-size:13px;color:var(--gray);line-height:1.6;margin-bottom:10px;font-style:italic;}
 .t-name{font-size:12px;font-weight:700;color:var(--navy);}
-
-/* Bottom CTA */
 .bottom-cta{background:var(--gold);padding:48px 24px;text-align:center;}
 .bottom-cta h2{font-size:28px;font-weight:800;color:var(--navy);margin-bottom:8px;}
 .bottom-cta p{font-size:15px;color:var(--dark);margin-bottom:24px;}
 .bottom-cta-btn{display:inline-block;background:var(--navy);color:var(--white);font-size:17px;font-weight:700;padding:16px 40px;border-radius:8px;border:none;cursor:pointer;}
-
-/* Footer */
 .site-footer{background:var(--dark);color:#8899BB;padding:20px 24px;text-align:center;font-size:12px;}
 
-/* ═══════════════════════════════════════
+/* ══════════════════════════════════════
    ENROLLMENT GATE
-════════════════════════════════════════ */
+══════════════════════════════════════ */
 .gate-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--light);padding:24px;}
 .gate-card{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:40px;max-width:480px;width:100%;}
 .gate-logo{color:var(--navy);font-size:13px;font-weight:700;letter-spacing:.05em;margin-bottom:6px;}
 .gate-title{font-size:24px;font-weight:700;color:var(--navy);margin-bottom:4px;}
 .gate-sub{font-size:13px;color:var(--gray);margin-bottom:24px;}
-.gate-label{display:block;font-size:12px;font-weight:600;color:var(--gray);margin:14px 0 5px;}
-.gate-input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:15px;outline:none;}
+.gate-label{display:block;font-size:12px;font-weight:600;color:var(--gray);margin:12px 0 4px;}
+.gate-input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:15px;outline:none;transition:border .2s;}
 .gate-input:focus{border-color:var(--navy);}
-.gate-btn{display:block;width:100%;background:var(--gold);color:var(--navy);font-size:16px;font-weight:700;padding:14px;border-radius:8px;border:none;cursor:pointer;margin-top:20px;text-align:center;}
-.gate-notice{font-size:12px;color:var(--gray);margin-top:14px;text-align:center;line-height:1.6;}
+.gate-btn{display:block;width:100%;background:var(--gold);color:var(--navy);font-size:16px;font-weight:700;padding:14px;border-radius:8px;border:none;cursor:pointer;margin-top:20px;}
+.gate-notice{font-size:12px;color:var(--gray);margin-top:12px;text-align:center;line-height:1.6;}
 
-/* ═══════════════════════════════════════
+/* ══════════════════════════════════════
    COURSE PLAYER
-════════════════════════════════════════ */
-.player-wrap{display:grid;grid-template-columns:280px 1fr;min-height:100vh;}
+══════════════════════════════════════ */
+.player-wrap{display:grid;grid-template-columns:268px 1fr;min-height:100vh;}
+
+/* Timer bar — fixed top strip inside player */
+.timer-bar{background:var(--navy);padding:6px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--gold);}
+.timer-label{font-size:11px;color:#CADCFC;letter-spacing:.04em;}
+.timer-display{font-size:14px;font-weight:700;color:var(--gold);font-variant-numeric:tabular-nums;min-width:72px;text-align:right;}
+.timer-display.warn{color:#FFA500;}
+.timer-display.critical{color:var(--red);animation:pulse .8s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
+.timer-progress{height:4px;background:rgba(255,255,255,.1);flex:1;margin:0 14px;border-radius:2px;overflow:hidden;}
+.timer-progress-fill{height:100%;background:var(--gold);border-radius:2px;transition:width 1s linear;}
+.timer-progress-fill.warn{background:#FFA500;}
+.timer-progress-fill.critical{background:var(--red);}
 
 /* Sidebar */
-.sidebar{background:var(--navy);color:var(--white);padding:0;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;}
+.sidebar{background:var(--navy);color:var(--white);position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;}
 .sidebar-header{padding:20px;border-bottom:1px solid rgba(255,255,255,.1);}
-.sidebar-logo{font-size:13px;font-weight:700;color:var(--gold);letter-spacing:.05em;}
-.sidebar-course{font-size:14px;color:#CADCFC;margin-top:4px;line-height:1.4;}
-.sidebar-progress-bar{height:4px;background:rgba(255,255,255,.15);margin:14px 20px 0;}
-.sidebar-progress-fill{height:100%;background:var(--gold);transition:width .4s;}
-.sidebar-progress-label{font-size:11px;color:#8899BB;padding:4px 20px 14px;border-bottom:1px solid rgba(255,255,255,.1);}
-.sidebar-modules{flex:1;padding:14px 0;}
-.sidebar-mod{padding:12px 20px;cursor:pointer;border-left:3px solid transparent;transition:all .15s;}
-.sidebar-mod:hover{background:rgba(255,255,255,.05);}
-.sidebar-mod.active{border-left-color:var(--gold);background:rgba(201,168,76,.1);}
-.sidebar-mod.done{border-left-color:var(--green);}
-.sidebar-mod.locked{opacity:.45;cursor:default;}
-.sidebar-mod-header{display:flex;align-items:center;gap:10px;}
-.sidebar-mod-icon{font-size:16px;width:28px;text-align:center;}
-.sidebar-mod-num{font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.06em;}
-.sidebar-mod-name{font-size:13px;color:var(--white);margin:2px 0;}
-.sidebar-mod-dur{font-size:11px;color:#8899BB;}
-.sidebar-mod-status{margin-left:auto;font-size:14px;}
-.sidebar-exam{padding:14px 20px;border-top:1px solid rgba(255,255,255,.1);margin-top:auto;}
-.sidebar-exam-item{padding:10px 0;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:13px;color:#CADCFC;}
-.sidebar-exam-item.locked-exam{opacity:.4;cursor:default;}
+.sidebar-logo{font-size:12px;font-weight:700;color:var(--gold);letter-spacing:.05em;}
+.sidebar-course{font-size:13px;color:#CADCFC;margin-top:4px;line-height:1.4;}
+.sidebar-prog{height:4px;background:rgba(255,255,255,.15);margin:12px 0 4px;}
+.sidebar-prog-fill{height:100%;background:var(--gold);transition:width .4s;}
+.sidebar-prog-label{font-size:11px;color:#8899BB;margin-bottom:12px;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:12px;}
+.sidebar-modules{flex:1;padding:10px 0;}
+.sbm{padding:11px 20px;cursor:pointer;border-left:3px solid transparent;transition:all .15s;}
+.sbm:hover{background:rgba(255,255,255,.05);}
+.sbm.s-active{border-left-color:var(--gold);background:rgba(201,168,76,.1);}
+.sbm.s-done{border-left-color:var(--green);}
+.sbm.s-locked{opacity:.4;cursor:not-allowed;}
+.sbm-header{display:flex;align-items:center;gap:10px;}
+.sbm-icon{font-size:15px;width:26px;text-align:center;}
+.sbm-num{font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.06em;}
+.sbm-name{font-size:13px;color:var(--white);margin:1px 0;}
+.sbm-dur{font-size:11px;color:#8899BB;}
+.sbm-status{margin-left:auto;font-size:13px;}
+.sidebar-exam{padding:12px 20px;border-top:1px solid rgba(255,255,255,.1);margin-top:auto;}
+.sbm-exam{padding:10px 0;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:13px;color:#CADCFC;}
+.sbm-exam.s-locked{opacity:.38;cursor:not-allowed;}
 
-/* Main player area */
+/* Main player */
 .player-main{display:flex;flex-direction:column;}
-.player-topbar{background:var(--white);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;}
-.player-breadcrumb{font-size:13px;color:var(--gray);}
-.player-breadcrumb strong{color:var(--navy);}
-.player-slide-counter{font-size:12px;color:var(--gray);background:var(--light);padding:4px 12px;border-radius:20px;}
-.player-content{flex:1;padding:36px 40px;max-width:820px;}
+.player-topbar{background:var(--white);border-bottom:1px solid var(--border);padding:12px 28px;display:flex;align-items:center;justify-content:space-between;}
+.player-bc{font-size:13px;color:var(--gray);}
+.player-sc{font-size:12px;color:var(--gray);background:var(--light);padding:4px 12px;border-radius:20px;}
+.player-content{flex:1;padding:32px 38px;max-width:800px;}
 
 /* Slide */
-.slide-content{animation:fadeIn .25s ease;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
-.slide-heading{font-size:26px;font-weight:700;color:var(--navy);margin-bottom:6px;line-height:1.25;}
-.slide-subheading{font-size:13px;color:var(--gray);margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid var(--gold);}
+.slide-wrap{animation:fadeIn .22s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:none;}}
+.slide-heading{font-size:25px;font-weight:700;color:var(--navy);margin-bottom:6px;line-height:1.25;}
+.slide-subheading{font-size:13px;color:var(--gray);margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid var(--gold);}
 .slide-body{font-size:15px;}
-.sect-h3{font-size:16px;font-weight:700;color:var(--navy);margin:20px 0 10px;}
-.content-alert{background:#FFF3CD;border:1px solid #F9C757;border-radius:8px;padding:14px 16px;margin:16px 0;display:flex;gap:12px;align-items:flex-start;font-size:14px;color:#7B4F00;}
-.alert-icon{font-size:18px;flex-shrink:0;}
-.content-callout{background:var(--green-lt);border-left:4px solid var(--green);border-radius:0 8px 8px 0;padding:12px 16px;margin:16px 0;font-size:14px;color:#1A4A2A;}
-.content-rule{background:#F0F4FB;border-left:4px solid var(--navy);border-radius:0 8px 8px 0;padding:12px 16px;margin:16px 0;font-size:14px;font-weight:600;color:var(--navy);}
-.content-bullets{padding-left:4px;margin:12px 0;}
-.content-bullets li{padding:6px 0 6px 20px;position:relative;font-size:14px;border-bottom:1px solid #f0f0f0;}
-.content-bullets li:last-child{border:none;}
-.content-bullets li::before{content:"▸";position:absolute;left:0;color:var(--gold);font-size:12px;top:9px;}
-.type-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0;}
-.type-card{background:var(--white);border-radius:8px;padding:14px;border:1px solid var(--border);}
-.type-card-label{font-size:12px;font-weight:700;margin-bottom:6px;}
+
+/* Content blocks */
+.sect-h3{font-size:16px;font-weight:700;color:var(--navy);margin:18px 0 9px;}
+.c-alert{background:#FFF3CD;border:1px solid #F9C757;border-radius:8px;padding:12px 15px;margin:14px 0;display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#7B4F00;}
+.alert-icon{font-size:17px;flex-shrink:0;}
+.c-callout{background:var(--green-lt);border-left:4px solid var(--green);border-radius:0 8px 8px 0;padding:11px 15px;margin:14px 0;font-size:14px;color:#1A4A2A;}
+.c-rule{background:#F0F4FB;border-left:4px solid var(--navy);border-radius:0 8px 8px 0;padding:11px 15px;margin:14px 0;font-size:14px;font-weight:600;color:var(--navy);}
+.c-bullets{padding-left:4px;margin:10px 0;}
+.c-bullets li{padding:5px 0 5px 18px;position:relative;font-size:14px;border-bottom:1px solid #f0f0f0;}
+.c-bullets li:last-child{border:none;}
+.c-bullets li::before{content:"▸";position:absolute;left:0;color:var(--gold);font-size:11px;top:8px;}
+.type-cards{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:14px 0;}
+.type-card{background:var(--white);border-radius:8px;padding:13px;border:1px solid var(--border);}
+.type-card-label{font-size:12px;font-weight:700;margin-bottom:5px;}
 .type-card-text{font-size:13px;color:var(--gray);}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0;}
-.col-block{background:var(--light);border-radius:8px;padding:14px;}
-.col-heading{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px;}
-.stage-list{display:flex;flex-direction:column;gap:8px;margin:14px 0;}
-.stage-row{display:flex;align-items:center;gap:14px;background:var(--white);border-radius:8px;padding:12px 16px;border:1px solid var(--border);}
-.stage-num{width:32px;height:32px;border-radius:50%;color:var(--white);font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.stage-label{font-weight:700;font-size:14px;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0;}
+.col-block{background:var(--light);border-radius:8px;padding:13px;}
+.col-heading{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:9px;}
+.stage-list{display:flex;flex-direction:column;gap:7px;margin:12px 0;}
+.stage-row{display:flex;align-items:center;gap:12px;background:var(--white);border-radius:8px;padding:11px 14px;border:1px solid var(--border);}
+.stage-num{width:30px;height:30px;border-radius:50%;color:var(--white);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.stage-label{font-weight:700;font-size:13px;}
 .stage-text{font-size:13px;color:var(--gray);}
-.rhf-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:16px 0;}
-.rhf-card{background:var(--white);border-radius:8px;padding:14px;border:1px solid var(--border);}
-.rhf-label{font-size:18px;font-weight:800;margin-bottom:8px;}
+.rhf-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;margin:14px 0;}
+.rhf-card{background:var(--white);border-radius:8px;padding:13px;border:1px solid var(--border);}
+.rhf-label{font-size:17px;font-weight:800;margin-bottom:7px;}
 .rhf-text{font-size:13px;color:var(--gray);}
 
-/* Player nav */
-.player-nav{background:var(--white);border-top:1px solid var(--border);padding:16px 40px;display:flex;justify-content:space-between;align-items:center;}
-.nav-btn{padding:11px 28px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;}
+/* ── Inline section check-in quiz ─────────────────────────────────────── */
+.check-in{margin:24px 0;background:var(--white);border-radius:var(--r);border:2px solid var(--gold);overflow:hidden;}
+.check-in-header{background:var(--gold);padding:12px 18px;display:flex;align-items:center;gap:10px;}
+.check-in-icon{font-size:17px;}
+.check-in-title{font-size:14px;font-weight:700;color:var(--navy);}
+.check-in-body{padding:18px;}
+.ci-q{margin-bottom:18px;}
+.ci-q:last-child{margin-bottom:0;}
+.ci-qtext{font-size:14px;font-weight:600;color:var(--navy);margin-bottom:10px;line-height:1.5;}
+.ci-opts{display:flex;flex-direction:column;gap:7px;}
+.ci-opt{display:flex;align-items:center;gap:9px;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;cursor:pointer;font-size:13px;transition:all .15s;}
+.ci-opt:hover:not(.ci-done){border-color:var(--navy);background:#F0F4FB;}
+.ci-opt.ci-sel{border-color:var(--navy);background:#EBF0FB;}
+.ci-opt.ci-ok{border-color:var(--green)!important;background:var(--green-lt)!important;color:var(--green);}
+.ci-opt.ci-no{border-color:var(--red)!important;background:var(--red-lt)!important;color:var(--red);}
+.ci-opt.ci-done{pointer-events:none;}
+.ci-ol{width:24px;height:24px;border-radius:50%;background:var(--light);font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--navy);border:1.5px solid var(--border);}
+.ci-opt.ci-sel .ci-ol{background:var(--navy);color:#fff;border-color:var(--navy);}
+.ci-opt.ci-ok .ci-ol{background:var(--green);color:#fff;border-color:var(--green);}
+.ci-opt.ci-no .ci-ol{background:var(--red);color:#fff;border-color:var(--red);}
+.ci-fb{font-size:12px;margin-top:7px;padding:7px 11px;border-radius:6px;display:none;line-height:1.5;}
+.ci-fb.ci-fb-ok{display:block;background:var(--green-lt);color:var(--green);}
+.ci-fb.ci-fb-no{display:block;background:var(--red-lt);color:var(--red);}
+.check-in-pending{padding:10px 18px 14px;font-size:12px;color:var(--gray);font-style:italic;}
+
+/* ── Final module quiz ─────────────────────────────────────────────────── */
+.final-quiz{background:var(--white);border-radius:var(--r);border:2px solid var(--navy);overflow:hidden;margin-bottom:20px;}
+.fq-header{background:var(--navy);padding:14px 20px;}
+.fq-title{font-size:15px;font-weight:700;color:var(--white);}
+.fq-sub{font-size:12px;color:#CADCFC;margin-top:3px;}
+.fq-body{padding:22px;}
+.fq-q{margin-bottom:20px;}
+.fq-q:last-child{margin-bottom:0;}
+.fq-qtext{font-size:14px;font-weight:600;color:var(--navy);margin-bottom:11px;line-height:1.5;}
+.fq-opts{display:flex;flex-direction:column;gap:7px;}
+.fq-opt{display:flex;align-items:center;gap:9px;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;cursor:pointer;font-size:13px;transition:all .15s;}
+.fq-opt:hover:not(.fq-done){border-color:var(--navy);background:#F0F4FB;}
+.fq-opt.fq-sel{border-color:var(--navy);background:#EBF0FB;}
+.fq-opt.fq-ok{border-color:var(--green)!important;background:var(--green-lt)!important;color:var(--green);}
+.fq-opt.fq-no{border-color:var(--red)!important;background:var(--red-lt)!important;color:var(--red);}
+.fq-opt.fq-done{pointer-events:none;}
+.fq-ol{width:24px;height:24px;border-radius:50%;background:var(--light);font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--navy);border:1.5px solid var(--border);}
+.fq-opt.fq-sel .fq-ol{background:var(--navy);color:#fff;border-color:var(--navy);}
+.fq-opt.fq-ok .fq-ol{background:var(--green);color:#fff;border-color:var(--green);}
+.fq-opt.fq-no .fq-ol{background:var(--red);color:#fff;border-color:var(--red);}
+.fq-fb{font-size:12px;margin-top:7px;padding:7px 11px;border-radius:6px;display:none;line-height:1.5;}
+.fq-fb.fq-fb-ok{display:block;background:var(--green-lt);color:var(--green);}
+.fq-fb.fq-fb-no{display:block;background:var(--red-lt);color:var(--red);}
+.fq-complete{padding:14px 18px;background:var(--green-lt);font-size:13px;color:var(--green);font-weight:600;border-top:1px solid #c3e6cb;}
+
+/* ── Slide progress dots & nav ─────────────────────────────────────────── */
+.player-nav{background:var(--white);border-top:1px solid var(--border);padding:14px 38px;display:flex;justify-content:space-between;align-items:center;}
+.nav-btn{padding:10px 26px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;}
 .nav-back{background:var(--white);color:var(--navy);border:1.5px solid var(--navy);}
 .nav-next{background:var(--navy);color:var(--white);}
 .nav-next:hover{background:#243a7a;}
 .nav-next:disabled{background:#A0AEC0;cursor:not-allowed;}
-.slide-dots{display:flex;gap:6px;}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--border);}
-.dot.active{background:var(--navy);}
-.dot.done{background:var(--gold);}
+.slide-dots{display:flex;gap:5px;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--border);}
+.dot.d-active{background:var(--navy);}
+.dot.d-done{background:var(--gold);}
 
-/* Knowledge check */
-.quiz-block{margin:28px 0;background:var(--white);border-radius:var(--r);border:2px solid var(--gold);padding:24px;}
-.quiz-title{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:18px;display:flex;align-items:center;gap:8px;}
-.quiz-q{margin-bottom:20px;}
-.quiz-qtext{font-size:15px;font-weight:600;color:var(--navy);margin-bottom:12px;line-height:1.5;}
-.quiz-opts{display:flex;flex-direction:column;gap:8px;}
-.quiz-opt{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px;transition:all .15s;}
-.quiz-opt:hover{border-color:var(--navy);background:#F0F4FB;}
-.quiz-opt.picked-ok{border-color:var(--green)!important;background:var(--green-lt)!important;color:var(--green);}
-.quiz-opt.picked-no{border-color:var(--red)!important;background:var(--red-lt)!important;color:var(--red);}
-.quiz-opt.disabled{pointer-events:none;}
-.quiz-ol{width:26px;height:26px;border-radius:50%;background:var(--light);font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--navy);border:1.5px solid var(--border);}
-.quiz-opt.picked-ok .quiz-ol{background:var(--green);color:#fff;border-color:var(--green);}
-.quiz-opt.picked-no .quiz-ol{background:var(--red);color:#fff;border-color:var(--red);}
-.quiz-fb{font-size:13px;margin-top:8px;padding:8px 12px;border-radius:6px;display:none;}
-.quiz-fb.show-ok{display:block;background:var(--green-lt);color:var(--green);}
-.quiz-fb.show-no{display:block;background:var(--red-lt);color:var(--red);}
-
-/* ═══════════════════════════════════════
-   FINAL ASSESSMENT
-════════════════════════════════════════ */
-.exam-wrap{max-width:820px;padding:36px 40px;}
-.exam-header{margin-bottom:28px;}
-.exam-title{font-size:26px;font-weight:700;color:var(--navy);margin-bottom:6px;}
-.exam-sub{font-size:14px;color:var(--gray);}
-.exam-warn{background:#FFF3CD;border:1px solid #F9C757;border-radius:8px;padding:13px 16px;font-size:13px;color:#7B4F00;margin:16px 0;line-height:1.6;}
-.exam-pw{background:var(--white);border-radius:8px;padding:12px 16px;margin-bottom:18px;display:flex;align-items:center;gap:12px;border:1px solid var(--border);}
+/* ══════════════════════════════════════
+   FINAL EXAM
+══════════════════════════════════════ */
+.exam-wrap{max-width:800px;padding:32px 38px;}
+.exam-title{font-size:25px;font-weight:700;color:var(--navy);margin-bottom:5px;}
+.exam-sub{font-size:14px;color:var(--gray);margin-bottom:14px;}
+.exam-warn{background:#FFF3CD;border:1px solid #F9C757;border-radius:8px;padding:12px 15px;font-size:13px;color:#7B4F00;margin-bottom:16px;line-height:1.65;}
+/* Attempt indicator */
+.attempt-indicator{display:flex;gap:8px;align-items:center;margin-bottom:16px;padding:10px 14px;background:var(--light);border-radius:8px;}
+.attempt-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--border);background:var(--white);}
+.attempt-dot.used{background:var(--red);border-color:var(--red);}
+.attempt-dot.current{background:var(--gold);border-color:var(--gold);animation:pulse .8s infinite;}
+.attempt-label{font-size:12px;color:var(--gray);margin-left:6px;}
+.exam-pw{background:var(--white);border-radius:8px;padding:11px 14px;margin-bottom:16px;display:flex;align-items:center;gap:11px;border:1px solid var(--border);}
 .exam-pb{flex:1;height:6px;background:#E8EDF6;border-radius:3px;overflow:hidden;}
 .exam-pf{height:100%;background:var(--navy);border-radius:3px;transition:width .3s;}
 .exam-pt{font-size:12px;color:var(--gray);white-space:nowrap;}
-.exam-q-block{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:24px 28px;margin-bottom:18px;}
-.exam-mod-badge{display:inline-block;background:var(--light);border:1px solid var(--border);border-radius:5px;font-size:10px;font-weight:600;color:var(--navy);padding:3px 10px;margin-bottom:10px;}
-.exam-ref{font-size:10px;color:var(--gray);margin-left:8px;font-style:italic;}
-.exam-qnum{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);margin-bottom:6px;}
-.exam-qtext{font-size:15px;font-weight:600;line-height:1.5;margin-bottom:16px;}
-.exam-opts{display:flex;flex-direction:column;gap:8px;}
-.exam-opt{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px;transition:all .15s;}
+.exam-qblock{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:22px 26px;margin-bottom:16px;}
+.exam-mod-badge{display:inline-block;background:var(--light);border:1px solid var(--border);border-radius:5px;font-size:10px;font-weight:600;color:var(--navy);padding:3px 10px;margin-bottom:9px;}
+.exam-ref{font-size:10px;color:var(--gray);margin-left:7px;font-style:italic;}
+.exam-qnum{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);margin-bottom:5px;}
+.exam-qtext{font-size:14px;font-weight:600;line-height:1.5;margin-bottom:14px;}
+.exam-opts{display:flex;flex-direction:column;gap:7px;}
+.exam-opt{display:flex;align-items:center;gap:9px;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;cursor:pointer;font-size:13px;transition:all .15s;}
 .exam-opt:hover{border-color:var(--navy);background:#F0F4FB;}
 .exam-opt.sel{border-color:var(--navy);background:#EBF0FB;}
 .exam-opt.ok{border-color:var(--green)!important;background:var(--green-lt)!important;color:var(--green);}
 .exam-opt.no{border-color:var(--red)!important;background:var(--red-lt)!important;color:var(--red);}
-.exam-ol{width:26px;height:26px;border-radius:50%;background:var(--light);font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--navy);border:1.5px solid var(--border);}
+.exam-ol{width:24px;height:24px;border-radius:50%;background:var(--light);font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--navy);border:1.5px solid var(--border);}
 .exam-opt.sel .exam-ol{background:var(--navy);color:#fff;border-color:var(--navy);}
 .exam-opt.ok .exam-ol{background:var(--green);color:#fff;border-color:var(--green);}
 .exam-opt.no .exam-ol{background:var(--red);color:#fff;border-color:var(--red);}
-.exam-fb{margin-top:10px;padding:9px 13px;border-radius:7px;font-size:13px;line-height:1.6;display:none;}
+.exam-fb{margin-top:9px;padding:8px 12px;border-radius:6px;font-size:12px;line-height:1.55;display:none;}
 .exam-fb.show{display:block;}
 .exam-fb-ok{background:var(--green-lt);color:var(--green);}
 .exam-fb-no{background:var(--red-lt);color:var(--red);}
-.exam-nav{display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding:16px 0;}
-.exam-btn{padding:11px 28px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;}
-.exam-back{background:var(--white);color:var(--navy);border:1.5px solid var(--navy);}
-.exam-fwd{background:var(--navy);color:#fff;}
+.exam-nav{display:flex;justify-content:space-between;align-items:center;margin-top:6px;padding:14px 0;}
+.exam-btn{padding:10px 24px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;}
+.exam-back-btn{background:var(--white);color:var(--navy);border:1.5px solid var(--navy);}
+.exam-fwd-btn{background:var(--navy);color:#fff;}
 
-/* ═══════════════════════════════════════
-   RESULTS + CERTIFICATE
-════════════════════════════════════════ */
-.results-wrap{max-width:760px;padding:40px;margin:0 auto;}
-.results-card{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:40px;text-align:center;}
-.score-ring{width:140px;height:140px;border-radius:50%;margin:0 auto 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:32px;font-weight:800;}
+/* ══════════════════════════════════════
+   RESULTS
+══════════════════════════════════════ */
+.results-wrap{max-width:720px;padding:36px;margin:0 auto;}
+.results-card{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:38px;text-align:center;}
+.score-ring{width:136px;height:136px;border-radius:50%;margin:0 auto 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:30px;font-weight:800;}
 .ring-pass{background:var(--green-lt);color:var(--green);border:5px solid var(--green);}
 .ring-fail{background:var(--red-lt);color:var(--red);border:5px solid var(--red);}
-.ring-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-top:4px;}
-.results-title{font-size:24px;font-weight:700;margin-bottom:8px;}
+.ring-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-top:3px;}
+.res-title{font-size:22px;font-weight:700;margin-bottom:7px;}
 .rt-pass{color:var(--green);} .rt-fail{color:var(--red);}
-.results-sub{font-size:14px;color:var(--gray);margin-bottom:24px;line-height:1.6;}
-.breakdown{background:var(--light);border-radius:8px;padding:18px;margin-bottom:24px;text-align:left;}
-.breakdown h3{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--navy);margin-bottom:12px;}
+.res-sub{font-size:14px;color:var(--gray);margin-bottom:20px;line-height:1.6;}
+.breakdown{background:var(--light);border-radius:8px;padding:15px 18px;margin-bottom:20px;text-align:left;}
+.breakdown h3{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--navy);margin-bottom:10px;}
 .bd-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;}
 .bd-row:last-child{border:none;font-weight:700;}
 .bd-pass{color:var(--green);font-weight:600;} .bd-fail{color:var(--red);font-weight:600;}
-.results-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:18px;}
-.r-btn{padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;}
+.res-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;}
+.r-btn{padding:11px 22px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;}
 .r-primary{background:var(--gold);color:var(--navy);}
 .r-outline{background:var(--white);color:var(--navy);border:1.5px solid var(--navy);}
-.bsis-note{background:#EBF0FB;border-radius:8px;padding:14px 18px;font-size:12px;color:var(--navy);line-height:1.7;text-align:left;}
+.bsis-note{background:#EBF0FB;border-radius:8px;padding:13px 16px;font-size:12px;color:var(--navy);line-height:1.7;text-align:left;}
 
-/* Certificate */
-@media print{.no-print{display:none!important;}.cert-wrap{margin:0;max-width:100%;}}
-.cert-page{padding:32px;}
-.cert-wrap{background:var(--white);border:3px double var(--navy);border-radius:4px;padding:50px 60px;max-width:820px;margin:0 auto;text-align:center;position:relative;}
-.cert-wrap::before{content:'';position:absolute;inset:10px;border:1px solid var(--gold);border-radius:2px;pointer-events:none;}
-.cert-eyebrow{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--navy);margin-bottom:6px;}
-.cert-stripe{height:5px;background:var(--gold);border-radius:3px;margin:12px auto;width:80px;}
-.cert-co{font-size:24px;font-weight:800;color:var(--navy);margin-bottom:2px;}
-.cert-ppo{font-size:12px;color:var(--gray);margin-bottom:24px;}
-.cert-certifies{font-size:13px;color:var(--gray);margin-bottom:8px;}
-.cert-name{font-size:32px;font-weight:800;color:var(--navy);border-bottom:2px solid var(--navy);display:inline-block;min-width:300px;padding-bottom:4px;margin-bottom:20px;}
-.cert-body{font-size:14px;color:var(--gray);line-height:1.8;margin-bottom:8px;}
-.cert-course{font-size:18px;font-weight:700;color:var(--navy);margin-bottom:14px;}
-.cert-badge{display:inline-block;background:var(--green-lt);color:var(--green);border-radius:6px;padding:5px 16px;font-size:13px;font-weight:700;margin-bottom:22px;}
-.cert-sigs{display:flex;justify-content:space-around;margin-top:36px;gap:20px;}
+/* ══════════════════════════════════════
+   REPURCHASE LOCK SCREEN
+══════════════════════════════════════ */
+.lock-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--dark);padding:24px;}
+.lock-card{background:var(--white);border-radius:var(--r);padding:44px;max-width:520px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4);}
+.lock-icon{font-size:56px;margin-bottom:16px;}
+.lock-title{font-size:24px;font-weight:800;color:var(--red);margin-bottom:10px;}
+.lock-sub{font-size:15px;color:var(--gray);margin-bottom:24px;line-height:1.7;}
+.lock-stripe{height:4px;background:var(--gold);border-radius:2px;margin:20px 0;}
+.lock-policy{background:#FFF3CD;border:1px solid #F9C757;border-radius:8px;padding:14px 18px;font-size:13px;color:#7B4F00;margin-bottom:24px;text-align:left;line-height:1.7;}
+.lock-btn{display:block;width:100%;background:var(--gold);color:var(--navy);font-size:17px;font-weight:700;padding:15px;border-radius:8px;border:none;cursor:pointer;margin-bottom:12px;}
+.lock-btn:hover{background:#b8962a;}
+.lock-btn-outline{display:block;width:100%;background:var(--white);color:var(--navy);font-size:15px;font-weight:600;padding:13px;border-radius:8px;border:1.5px solid var(--navy);cursor:pointer;}
+
+/* ══════════════════════════════════════
+   IDLE WARNING OVERLAY
+══════════════════════════════════════ */
+.idle-overlay{position:fixed;inset:0;background:rgba(18,25,58,.92);display:flex;align-items:center;justify-content:center;z-index:999;display:none;}
+.idle-overlay.show{display:flex;}
+.idle-card{background:var(--white);border-radius:var(--r);padding:36px;max-width:400px;width:90%;text-align:center;}
+.idle-icon{font-size:48px;margin-bottom:12px;}
+.idle-title{font-size:20px;font-weight:700;color:var(--navy);margin-bottom:8px;}
+.idle-sub{font-size:14px;color:var(--gray);margin-bottom:20px;line-height:1.6;}
+.idle-countdown{font-size:40px;font-weight:800;color:var(--red);margin-bottom:20px;}
+.idle-btn{background:var(--gold);color:var(--navy);font-size:15px;font-weight:700;padding:13px 32px;border-radius:8px;border:none;cursor:pointer;}
+
+/* ══════════════════════════════════════
+   CERTIFICATE
+══════════════════════════════════════ */
+@media print{.no-print{display:none!important;}.cert-page{padding:0;}}
+.cert-page{padding:28px;}
+.cert-wrap{background:var(--white);border:3px double var(--navy);border-radius:4px;padding:46px 56px;max-width:820px;margin:0 auto;text-align:center;position:relative;}
+.cert-wrap::before{content:'';position:absolute;inset:9px;border:1px solid var(--gold);border-radius:2px;pointer-events:none;}
+.cert-eyebrow{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--navy);margin-bottom:5px;}
+.cert-stripe{height:5px;background:var(--gold);border-radius:3px;margin:10px auto;width:80px;}
+.cert-co{font-size:23px;font-weight:800;color:var(--navy);margin-bottom:2px;}
+.cert-ppo{font-size:12px;color:var(--gray);margin-bottom:22px;}
+.cert-certifies{font-size:13px;color:var(--gray);margin-bottom:7px;}
+.cert-name{font-size:30px;font-weight:800;color:var(--navy);border-bottom:2px solid var(--navy);display:inline-block;min-width:290px;padding-bottom:4px;margin-bottom:18px;}
+.cert-body{font-size:13px;color:var(--gray);line-height:1.8;margin-bottom:5px;}
+.cert-course{font-size:17px;font-weight:700;color:var(--navy);margin-bottom:12px;}
+.cert-badge{display:inline-block;background:var(--green-lt);color:var(--green);border-radius:6px;padding:4px 14px;font-size:12px;font-weight:700;margin-bottom:20px;}
+.cert-sigs{display:flex;justify-content:space-around;margin-top:32px;gap:18px;}
 .cert-sig{flex:1;text-align:center;}
-.cert-sig-line{border-top:1.5px solid var(--navy);margin-bottom:6px;}
-.cert-sig-label{font-size:12px;color:var(--gray);}
+.cert-sig-line{border-top:1.5px solid var(--navy);margin-bottom:5px;}
+.cert-sig-label{font-size:11px;color:var(--gray);}
 
-/* Responsive */
+/* ── Responsive ── */
 @media(max-width:768px){
   .outcomes-grid,.type-cards,.two-col,.rhf-grid,.testimonials-grid{grid-template-columns:1fr;}
   .curriculum-inner{grid-template-columns:1fr;}
@@ -1396,21 +1601,30 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--light);color:#1A1A
   .player-wrap{grid-template-columns:1fr;}
   .sidebar{height:auto;position:relative;}
   .instructor-inner{grid-template-columns:1fr;}
-  .hero-title{font-size:28px;}
+  .hero-title{font-size:30px;}
 }
 </style>
 </head>
 <body>
 
-<!-- ═══════════════ SCREEN 1: SALES PAGE ═══════════════ -->
+<!-- ══════════════ IDLE WARNING OVERLAY ══════════════ -->
+<div class="idle-overlay" id="idle-overlay">
+  <div class="idle-card">
+    <div class="idle-icon">⏰</div>
+    <h2 class="idle-title">Are you still there?</h2>
+    <p class="idle-sub">Your session will pause due to inactivity. Click below to continue your course.</p>
+    <div class="idle-countdown" id="idle-countdown">60</div>
+    <button class="idle-btn" onclick="dismissIdle()">Continue Course</button>
+  </div>
+</div>
+
+<!-- ══════════════ SCREEN 1: SALES PAGE ══════════════ -->
 <div class="screen active" id="sc-sales">
   <header class="site-header">
     <div class="site-logo">MACCESS INC. / PSLAW</div>
     <div class="site-meta">PPO License #122729 | BSIS-Authorized Training Provider<br/>gopslaw.com</div>
   </header>
   <div class="gold-stripe"></div>
-
-  <!-- Hero -->
   <section class="hero">
     <div class="hero-inner">
       <div class="hero-badge">${course.badge}</div>
@@ -1420,14 +1634,13 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--light);color:#1A1A
         <div class="hero-chip"><strong>Credit Hours</strong>${course.hours} Hours</div>
         <div class="hero-chip"><strong>Authority</strong>${course.bpcRef}</div>
         <div class="hero-chip"><strong>Category</strong>BSIS ${course.category}</div>
+        <div class="hero-chip"><strong>Time Limit</strong>${TOTAL_MINUTES} Minutes</div>
         <div class="hero-chip"><strong>Certificate</strong>BSIS Compliant</div>
       </div>
-      <button class="hero-cta" onclick="goEnroll()">Enroll Now — $${course.price}</button>
-      <div class="hero-trust">🔒 BSIS-Authorized Training &nbsp;|&nbsp; Certificate of Completion Included &nbsp;|&nbsp; PPO License #122729</div>
+      <button class="hero-cta" onclick="goEnroll()">Enroll Now — \$${course.price}</button>
+      <div class="hero-trust">🔒 BSIS-Authorized Training &nbsp;|&nbsp; Certificate Included &nbsp;|&nbsp; PPO License #122729</div>
     </div>
   </section>
-
-  <!-- Outcomes -->
   <section class="outcomes-section">
     <div class="outcomes-inner">
       <div class="section-label">What You'll Learn</div>
@@ -1437,49 +1650,46 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--light);color:#1A1A
       </div>
     </div>
   </section>
-
-  <!-- Curriculum + Pricing -->
   <section class="curriculum-section">
     <div class="curriculum-inner">
       <div>
         <div class="section-label">Course Curriculum</div>
-        <h2 class="section-title" style="margin-bottom:20px;">What's Inside</h2>
+        <h2 class="section-title" style="margin-bottom:18px;">What's Inside</h2>
         <div class="curriculum-list">
           ${course.modules.map((mod,i)=>`
-            <div class="curr-item ${i===0?'active-curr':''}">
+            <div class="curr-item">
               <div class="curr-icon">${mod.icon}</div>
               <div class="curr-body">
                 <div class="curr-num">Module ${mod.num}</div>
                 <div class="curr-name">${mod.title}</div>
-                <div class="curr-dur">${mod.duration} · ${mod.slides.length} lessons · ${mod.quiz.length} knowledge checks</div>
+                <div class="curr-dur">${mod.duration} · ${mod.slides.length} sections · Check-in questions + module quiz</div>
               </div>
-              <div class="curr-lock">${i===0?'▶':'🔒'}</div>
+              <div style="color:var(--gray);font-size:16px;">${i===0?'▶':'🔒'}</div>
             </div>`).join('')}
           <div class="curr-item">
             <div class="curr-icon">📝</div>
             <div class="curr-body">
               <div class="curr-num">Final Assessment</div>
               <div class="curr-name">BSIS Written Examination</div>
-              <div class="curr-dur">${course.exam.length} questions · 100% required · Certificate on pass</div>
+              <div class="curr-dur">${course.exam.length} questions · 100% required · 3 attempts · Certificate on pass</div>
             </div>
-            <div class="curr-lock">🔒</div>
+            <div style="color:var(--gray);font-size:16px;">🔒</div>
           </div>
         </div>
       </div>
-
-      <!-- Pricing -->
       <div>
         <div class="price-card">
           <div class="price-card-title">Full Course Access</div>
-          <div class="price-amount">$${course.price}</div>
+          <div class="price-amount">\$${course.price}</div>
           <div class="price-period">one-time · lifetime access</div>
           <button class="price-btn" onclick="goEnroll()">Get Started Now</button>
           <ul class="price-includes">
             <li><span class="price-check">✓</span> All ${course.modules.length} course modules</li>
-            <li><span class="price-check">✓</span> ${course.exam.length}-question BSIS assessment</li>
+            <li><span class="price-check">✓</span> Inline section check-in questions</li>
+            <li><span class="price-check">✓</span> Module quizzes before advancing</li>
+            <li><span class="price-check">✓</span> ${course.exam.length}-question BSIS final exam</li>
             <li><span class="price-check">✓</span> BSIS Certificate of Completion</li>
-            <li><span class="price-check">✓</span> Instant access — start today</li>
-            <li><span class="price-check">✓</span> Counts toward 32-hr BSIS requirement</li>
+            <li><span class="price-check">✓</span> ${TOTAL_MINUTES}-minute timed session</li>
           </ul>
           <div class="pay-logos">
             <div class="pay-logo">Klarna</div>
@@ -1487,131 +1697,113 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--light);color:#1A1A
             <div class="pay-logo">Affirm</div>
             <div class="pay-logo">PayPal</div>
           </div>
-          <div class="guarantee">✓ BSIS Certificate on completion</div>
+          <div class="guarantee">✓ BSIS Certificate on successful completion</div>
+          <div class="policy-notice">
+            <strong>Assessment Policy:</strong> You have <strong>3 attempts</strong> to pass the final exam. After 3 failed attempts, re-enrollment is required. Sessions expire after <strong>${IDLE_LOCK} minutes of inactivity</strong>.
+          </div>
         </div>
       </div>
     </div>
   </section>
-
-  <!-- Instructor -->
   <section class="instructor-section">
     <div class="instructor-inner">
       <div class="instructor-avatar">👮</div>
       <div>
         <div class="instructor-name">James K. McMichael</div>
         <div class="instructor-title">CEO, MACCESS INC. | Lead Instructor, PSLAW</div>
-        <p class="instructor-bio">MACCESS INC. is a California-licensed Private Patrol Operator (PPO #122729) with 14+ years of executive protection and private security operational experience in the Los Angeles market. Our instructors bring real-world field experience to every module — not just compliance checkboxes. Every course is built directly from the official BSIS syllabus at bsis.ca.gov and fact-checked against current California law.</p>
+        <p class="instructor-bio">MACCESS INC. is a California-licensed Private Patrol Operator (PPO #122729) with 14+ years of executive protection and private security operational experience in the Los Angeles market. Every course is built directly from the official BSIS syllabus at bsis.ca.gov and fact-checked against current California law.</p>
         <div class="instructor-creds">
           <div class="cred-chip">PPO License #122729</div>
           <div class="cred-chip">BSIS-Authorized</div>
           <div class="cred-chip">14+ Years EP Experience</div>
-          <div class="cred-chip">Philosophy — UC Riverside</div>
           <div class="cred-chip">Los Angeles, CA</div>
         </div>
       </div>
     </div>
   </section>
-
-  <!-- Testimonials -->
   <section class="testimonials-section">
     <div class="testimonials-inner">
       <div class="section-label">Student Reviews</div>
       <h2 class="section-title">What Our Graduates Say</h2>
       <div class="testimonials-grid">
-        <div class="testimonial">
-          <div class="t-stars">★★★★★</div>
-          <p class="t-text">"Clear, thorough, and exactly what I needed to understand California workplace violence law. The SB 553 section alone was worth it — my employer had no idea about the Violent Incident Log requirement."</p>
-          <div class="t-name">PSLAW Graduate · Los Angeles</div>
-        </div>
-        <div class="testimonial">
-          <div class="t-stars">★★★★★</div>
-          <p class="t-text">"Finally a security course that treats you like a professional. The content is built from the actual BSIS syllabus, not watered down. The knowledge checks after each module kept me sharp."</p>
-          <div class="t-name">PSLAW Graduate · Inglewood</div>
-        </div>
-        <div class="testimonial">
-          <div class="t-stars">★★★★★</div>
-          <p class="t-text">"Completed this before my first day on post. Supervisor was impressed I already knew the four Cal/OSHA violence types and the reporting chain. This is real preparation."</p>
-          <div class="t-name">PSLAW Graduate · Compton</div>
-        </div>
+        <div class="testimonial"><div class="t-stars">★★★★★</div><p class="t-text">"The inline questions after every section kept me locked in. By the time I hit the final exam I already knew the material cold."</p><div class="t-name">PSLAW Graduate · Los Angeles</div></div>
+        <div class="testimonial"><div class="t-stars">★★★★★</div><p class="t-text">"Built from the actual BSIS syllabus. Not watered down. The module quizzes before you can advance make sure you actually learned it."</p><div class="t-name">PSLAW Graduate · Inglewood</div></div>
+        <div class="testimonial"><div class="t-stars">★★★★★</div><p class="t-text">"Completed this before my first day on post. Supervisor was impressed I already knew the law cold. Real preparation."</p><div class="t-name">PSLAW Graduate · Compton</div></div>
       </div>
     </div>
   </section>
-
-  <!-- Bottom CTA -->
   <section class="bottom-cta">
     <h2>Start Your Training Today</h2>
     <p>BSIS-compliant certificate. Real-world content. Start immediately.</p>
-    <button class="bottom-cta-btn" onclick="goEnroll()">Enroll Now — $${course.price}</button>
+    <button class="bottom-cta-btn" onclick="goEnroll()">Enroll Now — \$${course.price}</button>
   </section>
-
   <footer class="site-footer">
-    MACCESS INC. / Private Security LA Worldwide (PSLAW) &nbsp;|&nbsp; PPO License #122729 &nbsp;|&nbsp; BSIS-Authorized Training Provider &nbsp;|&nbsp; gopslaw.com
-    <br/>© ${new Date().getFullYear()} MACCESS INC. All rights reserved. &nbsp;|&nbsp; <a href="#" style="color:#8899BB;">Terms</a> &nbsp;|&nbsp; <a href="#" style="color:#8899BB;">Privacy Policy</a>
+    MACCESS INC. / Private Security LA Worldwide (PSLAW) &nbsp;|&nbsp; PPO License #122729 &nbsp;|&nbsp; BSIS-Authorized Training Provider &nbsp;|&nbsp; gopslaw.com<br/>
+    © ${new Date().getFullYear()} MACCESS INC. All rights reserved.
   </footer>
 </div>
 
-<!-- ═══════════════ SCREEN 2: ENROLLMENT GATE ═══════════════ -->
+<!-- ══════════════ SCREEN 2: ENROLLMENT GATE ══════════════ -->
 <div class="screen" id="sc-gate">
   <div class="gate-wrap">
     <div class="gate-card">
       <div class="gate-logo">MACCESS INC. / PSLAW</div>
       <h2 class="gate-title">You're Almost In</h2>
       <p class="gate-sub">Enter your details to access <strong>${course.title}</strong>. Your certificate will be issued to this name.</p>
-      <label class="gate-label">Full Legal Name * <span style="font-size:11px;font-weight:400;">(as it will appear on your certificate)</span></label>
+      <label class="gate-label">Full Legal Name * <span style="font-weight:400;font-size:11px;">(as it appears on your certificate)</span></label>
       <input class="gate-input" type="text" id="g-name" placeholder="First Middle Last"/>
       <label class="gate-label">Email Address *</label>
       <input class="gate-input" type="email" id="g-email" placeholder="your@email.com"/>
       <button class="gate-btn" onclick="startCourse()">Start Course →</button>
-      <p class="gate-notice">🔒 Your information is used only to issue your BSIS Certificate of Completion. MACCESS INC. PPO #122729.</p>
+      <p class="gate-notice">🔒 Your information is used only to issue your BSIS Certificate of Completion. MACCESS INC. PPO #122729.<br/>Session timer starts when you begin. ${TOTAL_MINUTES}-minute limit · ${IDLE_LOCK}-minute idle lock · 3 exam attempts.</p>
       <p style="text-align:center;margin-top:12px;font-size:12px;color:var(--gray);cursor:pointer;" onclick="show('sc-sales')">← Back to course details</p>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════ SCREEN 3: COURSE PLAYER ═══════════════ -->
+<!-- ══════════════ SCREEN 3: COURSE PLAYER ══════════════ -->
 <div class="screen" id="sc-player">
+  <div class="timer-bar">
+    <div class="timer-label">SESSION TIME REMAINING</div>
+    <div class="timer-progress"><div class="timer-progress-fill" id="timer-fill" style="width:100%"></div></div>
+    <div class="timer-display" id="timer-display">--:--</div>
+  </div>
   <div class="player-wrap">
-
-    <!-- Sidebar -->
     <aside class="sidebar">
       <div class="sidebar-header">
         <div class="sidebar-logo">MACCESS INC. / PSLAW</div>
         <div class="sidebar-course">${course.title}</div>
-        <div class="sidebar-progress-bar"><div class="sidebar-progress-fill" id="sb-fill" style="width:0%"></div></div>
-        <div class="sidebar-progress-label" id="sb-label">0% complete</div>
+        <div class="sidebar-prog"><div class="sidebar-prog-fill" id="sb-fill" style="width:0%"></div></div>
+        <div class="sidebar-prog-label" id="sb-label">0% complete</div>
       </div>
       <div class="sidebar-modules" id="sb-modules">
         ${course.modules.map((mod,i)=>`
-          <div class="sidebar-mod ${i===0?'active':'locked'}" id="sbm-${i}" onclick="jumpModule(${i})">
-            <div class="sidebar-mod-header">
-              <div class="sidebar-mod-icon">${mod.icon}</div>
+          <div class="sbm ${i===0?'s-active':'s-locked'}" id="sbm-${i}" onclick="jumpMod(${i})">
+            <div class="sbm-header">
+              <div class="sbm-icon">${mod.icon}</div>
               <div>
-                <div class="sidebar-mod-num">Module ${mod.num}</div>
-                <div class="sidebar-mod-name">${mod.title}</div>
-                <div class="sidebar-mod-dur">${mod.duration}</div>
+                <div class="sbm-num">Module ${mod.num}</div>
+                <div class="sbm-name">${mod.title}</div>
+                <div class="sbm-dur">${mod.duration}</div>
               </div>
-              <div class="sidebar-mod-status" id="sbms-${i}">🔒</div>
+              <div class="sbm-status" id="sbms-${i}">${i===0?'▶':'🔒'}</div>
             </div>
           </div>`).join('')}
       </div>
       <div class="sidebar-exam">
-        <div class="sidebar-exam-item locked-exam" id="sb-exam-link" onclick="jumpExam()">
-          <span>📝</span> <span>Final BSIS Assessment</span>
+        <div class="sbm-exam s-locked" id="sb-exam-link" onclick="jumpExam()">
+          <span>📝</span><span>Final BSIS Assessment</span>
         </div>
       </div>
     </aside>
-
-    <!-- Main content -->
     <div class="player-main">
       <div class="player-topbar">
-        <div class="player-breadcrumb" id="player-bc"><strong>${course.title}</strong></div>
-        <div class="player-slide-counter" id="player-sc">Slide 1</div>
+        <div class="player-bc" id="player-bc"><strong>${course.title}</strong></div>
+        <div class="player-sc" id="player-sc">Section 1</div>
       </div>
-      <div class="player-content" id="player-content">
-        <!-- Injected by JS -->
-      </div>
+      <div class="player-content" id="player-content"></div>
       <div class="player-nav">
-        <button class="nav-btn nav-back" id="nav-back" onclick="navBack()">← Back</button>
+        <button class="nav-btn nav-back" id="nav-back" onclick="navBack()" style="display:none">← Back</button>
         <div class="slide-dots" id="slide-dots"></div>
         <button class="nav-btn nav-next" id="nav-next" onclick="navNext()">Next →</button>
       </div>
@@ -1619,98 +1811,146 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--light);color:#1A1A
   </div>
 </div>
 
-<!-- ═══════════════ SCREEN 4: FINAL EXAM ═══════════════ -->
+<!-- ══════════════ SCREEN 4: FINAL EXAM ══════════════ -->
 <div class="screen" id="sc-exam">
+  <div class="timer-bar">
+    <div class="timer-label">SESSION TIME REMAINING</div>
+    <div class="timer-progress"><div class="timer-progress-fill" id="timer-fill-exam" style="width:100%"></div></div>
+    <div class="timer-display" id="timer-display-exam">--:--</div>
+  </div>
   <div class="player-wrap">
     <aside class="sidebar">
       <div class="sidebar-header">
         <div class="sidebar-logo">MACCESS INC. / PSLAW</div>
         <div class="sidebar-course">Final BSIS Assessment</div>
-        <div class="sidebar-progress-bar"><div class="sidebar-progress-fill" id="ex-sb-fill" style="width:0%"></div></div>
-        <div class="sidebar-progress-label" id="ex-sb-label">0 of ${course.exam.length} answered</div>
+        <div class="sidebar-prog"><div class="sidebar-prog-fill" id="ex-fill" style="width:0%"></div></div>
+        <div class="sidebar-prog-label" id="ex-label">0 of ${course.exam.length} answered</div>
       </div>
-      <div class="sidebar-modules" style="padding:16px;">
-        <div style="font-size:12px;color:#CADCFC;line-height:1.7;">
+      <div class="sidebar-modules" style="padding:18px;">
+        <div class="attempt-indicator" id="attempt-ind">
+          ${Array.from({length:MAX_ATTEMPTS},(_,i)=>`<div class="attempt-dot" id="adot-${i}"></div>`).join('')}
+          <span class="attempt-label" id="attempt-label">Attempt 1 of ${MAX_ATTEMPTS}</span>
+        </div>
+        <div style="font-size:12px;color:#CADCFC;line-height:1.8;">
           <strong style="color:var(--gold);">BSIS Written Examination</strong><br/>
-          ${course.exam.length} questions<br/>
-          100% required to pass<br/>
-          ${course.bpcRef}<br/><br/>
-          Answer every question. Your Certificate of Completion is issued upon passing.
+          ${course.exam.length} questions · 100% required<br/>${course.bpcRef}<br/><br/>
+          Answer every question. Instant feedback after each selection.<br/><br/>
+          <strong style="color:var(--red);">⚠ ${MAX_ATTEMPTS} attempts maximum.</strong><br/>
+          After ${MAX_ATTEMPTS} failed attempts, re-enrollment is required.
         </div>
       </div>
     </aside>
     <div class="player-main">
       <div class="player-topbar">
-        <div class="player-breadcrumb"><strong>${course.title}</strong> — Final Assessment</div>
-        <div class="player-slide-counter" id="exam-sc">Q 1 of ${course.exam.length}</div>
+        <div class="player-bc"><strong>${course.title}</strong> — Final Assessment</div>
+        <div class="player-sc" id="exam-sc">Q 1 of ${course.exam.length}</div>
       </div>
       <div class="exam-wrap">
-        <div class="exam-header">
-          <h2 class="exam-title">BSIS Written Examination</h2>
-          <div class="exam-sub">${course.title} · ${course.exam.length} questions · Pass: 100%</div>
-          <div class="exam-warn">⚠️ A score of 100% is required per ${course.bpcRef}. Each incorrect answer shows the correct response — review it before continuing. Full retake required if you do not pass.</div>
-        </div>
+        <h2 class="exam-title">BSIS Written Examination</h2>
+        <div class="exam-sub">${course.title} · ${course.exam.length} questions · Pass: 100%</div>
+        <div class="exam-warn">⚠️ A score of 100% is required per ${course.bpcRef}. Each incorrect answer shows the correct response with a legal citation. Review it before continuing. Full retake required if you do not pass.</div>
         <div class="exam-pw"><div class="exam-pb"><div class="exam-pf" id="exam-fill" style="width:0%"></div></div><div class="exam-pt" id="exam-pt">Q 1 of ${course.exam.length}</div></div>
         <div id="exam-qa"></div>
         <div class="exam-nav">
-          <button class="exam-btn exam-back" id="exam-back" onclick="examPrev()" style="display:none">← Previous</button>
-          <button class="exam-btn exam-fwd" id="exam-fwd" onclick="examNext()">Next →</button>
+          <button class="exam-btn exam-back-btn" id="exam-back" onclick="examPrev()" style="display:none">← Previous</button>
+          <button class="exam-btn exam-fwd-btn" id="exam-fwd" onclick="examNext()">Next →</button>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════ SCREEN 5: RESULTS ═══════════════ -->
+<!-- ══════════════ SCREEN 5: RESULTS ══════════════ -->
 <div class="screen" id="sc-results">
-  <div style="background:var(--navy);padding:14px 24px;">
+  <div style="background:var(--navy);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;">
     <div style="color:var(--gold);font-size:16px;font-weight:700;">MACCESS INC. / PSLAW</div>
+    <div style="color:#CADCFC;font-size:12px;">Assessment Results</div>
   </div>
   <div class="results-wrap">
     <div class="results-card">
       <div class="score-ring" id="res-ring"><span id="res-pct"></span><span class="ring-label" id="res-label"></span></div>
-      <h2 class="results-title" id="res-title"></h2>
-      <p class="results-sub" id="res-sub"></p>
+      <h2 class="res-title" id="res-title"></h2>
+      <p class="res-sub" id="res-sub"></p>
       <div class="breakdown" id="res-breakdown"></div>
-      <div class="results-btns" id="res-btns"></div>
+      <div class="res-btns" id="res-btns"></div>
       <div class="bsis-note" id="res-note"></div>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════ SCREEN 6: CERTIFICATE ═══════════════ -->
+<!-- ══════════════ SCREEN 6: CERTIFICATE ══════════════ -->
 <div class="screen" id="sc-cert">
   <div class="no-print" style="background:var(--navy);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;">
-    <div style="color:var(--gold);font-size:16px;font-weight:700;">MACCESS INC. / PSLAW — Certificate</div>
-    <div style="display:flex;gap:12px;">
+    <div style="color:var(--gold);font-size:16px;font-weight:700;">MACCESS INC. / PSLAW — Certificate of Completion</div>
+    <div style="display:flex;gap:10px;">
       <button onclick="window.print()" style="background:var(--gold);color:var(--navy);border:none;padding:9px 20px;border-radius:7px;font-weight:700;cursor:pointer;">🖨️ Print Certificate</button>
       <button onclick="show('sc-results')" style="background:transparent;color:var(--white);border:1.5px solid var(--white);padding:9px 20px;border-radius:7px;font-weight:600;cursor:pointer;">← Results</button>
     </div>
   </div>
-  <div class="cert-page">
-    <div class="cert-wrap" id="cert-area"></div>
+  <div class="cert-page"><div class="cert-wrap" id="cert-area"></div></div>
+</div>
+
+<!-- ══════════════ SCREEN 7: REPURCHASE LOCK ══════════════ -->
+<div class="screen" id="sc-lock">
+  <div class="lock-wrap">
+    <div class="lock-card">
+      <div class="lock-icon">🔒</div>
+      <h2 class="lock-title">Maximum Attempts Reached</h2>
+      <p class="lock-sub">You have used all <strong>${MAX_ATTEMPTS} attempts</strong> for the <strong>${course.title}</strong> final exam without achieving a passing score of 100%.</p>
+      <div class="lock-stripe"></div>
+      <div class="lock-policy">
+        <strong>MACCESS INC. Assessment Policy:</strong><br/>
+        Per BSIS training standards, the Powers to Arrest and all skills courses require demonstrated proficiency. After ${MAX_ATTEMPTS} failed attempts, re-enrollment is required to ensure adequate review of course material before retesting.<br/><br/>
+        Re-enrollment includes full access to all course content and a fresh set of ${MAX_ATTEMPTS} exam attempts.
+      </div>
+      <button class="lock-btn" onclick="window.location.reload()">Re-Enroll — \$${course.price}</button>
+      <button class="lock-btn-outline" onclick="show('sc-sales')">Return to Course Information</button>
+    </div>
   </div>
 </div>
 
 <script>
 // ── Course data ────────────────────────────────────────────────────────
-const MODULES = JSON.parse(\`${modulesJ}\`);
-const EXAM    = JSON.parse(\`${examJ}\`);
-const LT      = ['A','B','C','D'];
+const MODULES  = JSON.parse(\`${modulesJ}\`);
+const EXAM_QS  = JSON.parse(\`${examJ}\`);
+const LT       = ['A','B','C','D'];
 
-// ── State ──────────────────────────────────────────────────────────────
+// ── Config ─────────────────────────────────────────────────────────────
+const TOTAL_SECS  = ${TOTAL_MINUTES} * 60;
+const IDLE_WARN   = ${IDLE_MINUTES} * 60;   // seconds before warning
+const IDLE_LOCK_S = ${IDLE_LOCK}  * 60;   // seconds before hard lock
+const MAX_ATT     = ${MAX_ATTEMPTS};
+
+// ── Session state ──────────────────────────────────────────────────────
 let studentName  = '';
 let studentEmail = '';
-let curMod       = 0;   // current module index
-let curSlide     = 0;   // slide within module (before quiz)
-let modDone      = new Array(MODULES.length).fill(false);
-let modQuizDone  = new Array(MODULES.length).fill(false);
-let modQuizScore = new Array(MODULES.length).fill(0);
+
+// Timer
+let sessionSecsLeft = TOTAL_SECS;
+let timerInterval   = null;
+let idleSeconds     = 0;
+let idleInterval    = null;
+let idleCountdown   = 60;
+let idleWarned      = false;
+
+// Player state
+let curMod   = 0;
+let curSlide = 0;                            // -1 = showing module final quiz
+let modDone  = new Array(MODULES.length).fill(false);
+
+// Section check-in state: [modIdx][slideIdx][questionIdx] = picked answer | null
+let ciPicks  = MODULES.map(m => m.slides.map(s => s.quiz ? s.quiz.map(()=>null) : []));
+let ciDone   = MODULES.map(m => m.slides.map(()=>false));
+
+// Module final quiz state: [modIdx][questionIdx] = picked | null
+let fqPicks  = MODULES.map(m => m.quiz ? m.quiz.map(()=>null) : []);
+let fqDone   = new Array(MODULES.length).fill(false);
 
 // Exam state
-let examCur    = 0;
-let examAns    = new Array(EXAM.length).fill(null);
-let examDone   = new Array(EXAM.length).fill(false);
+let examCur      = 0;
+let examAns      = new Array(EXAM_QS.length).fill(null);
+let examAnswered = new Array(EXAM_QS.length).fill(false);
+let examAttempts = 0;
 
 // ── Screen switching ───────────────────────────────────────────────────
 function show(id){
@@ -1728,44 +1968,115 @@ function startCourse(){
   if(!em||!em.includes('@')){ alert('Please enter a valid email address.'); return; }
   studentName  = nm;
   studentEmail = em;
-  // Unlock first module sidebar entry
-  const el0 = document.getElementById('sbm-0');
-  if(el0){ el0.classList.remove('locked'); el0.classList.add('active'); }
-  document.getElementById('sbms-0').textContent = '▶';
   show('sc-player');
+  startTimer();
+  startIdleWatch();
   renderPlayer();
 }
 
-// ── Sidebar helpers ────────────────────────────────────────────────────
+// ── TIMER ──────────────────────────────────────────────────────────────
+function startTimer(){
+  updateTimerDisplay();
+  timerInterval = setInterval(()=>{
+    sessionSecsLeft--;
+    updateTimerDisplay();
+    if(sessionSecsLeft <= 0) onTimeExpired();
+  }, 1000);
+}
+
+function updateTimerDisplay(){
+  const m  = Math.floor(sessionSecsLeft/60);
+  const s  = sessionSecsLeft % 60;
+  const txt = \`\${String(m).padStart(2,'0')}:\${String(s).padStart(2,'0')}\`;
+  const pct = (sessionSecsLeft / TOTAL_SECS) * 100;
+  ['timer-display','timer-display-exam'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.textContent = txt;
+    el.className   = 'timer-display' + (sessionSecsLeft < 300 ? ' critical' : sessionSecsLeft < 600 ? ' warn' : '');
+  });
+  ['timer-fill','timer-fill-exam'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.style.width   = pct + '%';
+    el.className     = 'timer-progress-fill' + (sessionSecsLeft < 300 ? ' critical' : sessionSecsLeft < 600 ? ' warn' : '');
+  });
+}
+
+function onTimeExpired(){
+  clearInterval(timerInterval);
+  clearInterval(idleInterval);
+  alert('⏰ Your session time has expired. Your progress has been saved. Please re-enroll to continue.');
+  show('sc-sales');
+}
+
+// ── IDLE DETECTION ──────────────────────────────────────────────────────
+function startIdleWatch(){
+  idleInterval = setInterval(()=>{
+    idleSeconds++;
+    if(idleSeconds >= IDLE_LOCK_S){
+      clearInterval(idleInterval);
+      clearInterval(timerInterval);
+      document.getElementById('idle-overlay').classList.remove('show');
+      alert('Your session has been locked due to inactivity. Please re-enroll to continue.');
+      show('sc-sales');
+      return;
+    }
+    if(idleSeconds >= IDLE_WARN && !idleWarned){
+      idleWarned = true;
+      showIdleWarning();
+    }
+    if(idleWarned){
+      idleCountdown = Math.max(0, IDLE_LOCK_S - idleSeconds);
+      const cd = document.getElementById('idle-countdown');
+      if(cd) cd.textContent = idleCountdown;
+    }
+  }, 1000);
+}
+
+function resetIdle(){
+  idleSeconds = 0;
+  idleWarned  = false;
+  document.getElementById('idle-overlay').classList.remove('show');
+}
+
+function showIdleWarning(){
+  idleCountdown = IDLE_LOCK_S - idleSeconds;
+  document.getElementById('idle-overlay').classList.add('show');
+}
+
+function dismissIdle(){
+  resetIdle();
+}
+
+// Reset idle on any user interaction
+['click','keydown','mousemove','touchstart'].forEach(evt=>{
+  document.addEventListener(evt, resetIdle, {passive:true});
+});
+
+// ── SIDEBAR ────────────────────────────────────────────────────────────
 function updateSidebar(){
-  const total  = MODULES.length + 1; // +1 for exam
-  const done   = modDone.filter(Boolean).length;
-  const pct    = Math.round((done / total) * 100);
+  const done  = modDone.filter(Boolean).length;
+  const total = MODULES.length + 1;
+  const pct   = Math.round(done/total*100);
   document.getElementById('sb-fill').style.width  = pct + '%';
   document.getElementById('sb-label').textContent = pct + '% complete';
 
   MODULES.forEach((_,i)=>{
     const el = document.getElementById('sbm-'+i);
     const st = document.getElementById('sbms-'+i);
-    if(!el||!st)return;
-    el.className = 'sidebar-mod';
-    if(i===curMod) el.classList.add('active');
-    else if(modDone[i]) el.classList.add('done');
-    else if(i>0 && !modDone[i-1]) el.classList.add('locked');
+    if(!el||!st) return;
+    el.className = 'sbm' + (i===curMod?' s-active':modDone[i]?' s-done':(i>0&&!modDone[i-1])?' s-locked':'');
     st.textContent = modDone[i]?'✓':(i===curMod?'▶':(i===0||modDone[i-1])?'▶':'🔒');
   });
 
-  const examLink = document.getElementById('sb-exam-link');
-  if(examLink){
-    const allModsDone = modDone.every(Boolean);
-    examLink.className = 'sidebar-exam-item' + (allModsDone?'':' locked-exam');
-  }
+  const examEl = document.getElementById('sb-exam-link');
+  if(examEl) examEl.className = 'sbm-exam' + (modDone.every(Boolean)?'':' s-locked');
 }
 
-function jumpModule(i){
-  if(i>0 && !modDone[i-1]) return; // locked
-  curMod   = i;
-  curSlide = 0;
+function jumpMod(i){
+  if(i>0 && !modDone[i-1]) return;
+  curMod=i; curSlide=0;
   show('sc-player');
   renderPlayer();
 }
@@ -1776,142 +2087,211 @@ function jumpExam(){
   renderExamQ();
 }
 
-// ── Player ─────────────────────────────────────────────────────────────
+// ── PLAYER ─────────────────────────────────────────────────────────────
 function renderPlayer(){
   updateSidebar();
   const mod    = MODULES[curMod];
   const slides = mod.slides;
-  const inQuiz = curSlide >= slides.length;
+  const inFQ   = curSlide === slides.length;   // showing module final quiz
 
-  // Breadcrumb + counter
   document.getElementById('player-bc').innerHTML =
     \`<strong>\${mod.icon} Module \${mod.num}: \${mod.title}</strong>\`;
 
-  if(inQuiz){
-    document.getElementById('player-sc').textContent = 'Knowledge Check';
-    document.getElementById('nav-next').textContent  = modQuizDone[curMod] ? 'Continue →' : 'Submit';
+  if(inFQ){
+    document.getElementById('player-sc').textContent = 'Module Quiz';
+    document.getElementById('nav-next').textContent  = fqDone[curMod] ? 'Continue →' : 'Submit Quiz';
     document.getElementById('nav-back').style.display = 'inline-block';
     document.getElementById('slide-dots').innerHTML  = '';
-    renderQuiz();
+    renderFinalQuiz();
   } else {
-    document.getElementById('player-sc').textContent =
-      \`Slide \${curSlide+1} of \${slides.length}\`;
     const isLast = curSlide === slides.length - 1;
-    document.getElementById('nav-next').textContent =
-      isLast ? 'Knowledge Check →' : 'Next →';
-    document.getElementById('nav-back').style.display =
-      curSlide === 0 && curMod === 0 ? 'none' : 'inline-block';
+    document.getElementById('player-sc').textContent = \`Section \${curSlide+1} of \${slides.length}\`;
+    document.getElementById('nav-next').textContent  = isLast ? 'Module Quiz →' : 'Next Section →';
+    document.getElementById('nav-back').style.display = (curSlide===0 && curMod===0) ? 'none' : 'inline-block';
     renderDots(slides.length, curSlide);
-    renderSlide(slides[curSlide]);
+    renderSlideWithCheckIn(slides[curSlide], curMod, curSlide);
   }
 }
 
-function renderSlide(slide){
-  document.getElementById('player-content').innerHTML = \`
-    <div class="slide-content">
-      <div class="slide-heading">\${slide.heading}</div>
-      <div class="slide-subheading">\${slide.subheading}</div>
-      <div class="slide-body">\${slide.renderedHTML||''}</div>
-    </div>\`;
-}
-
-function renderDots(total, current){
+function renderDots(total, cur){
   document.getElementById('slide-dots').innerHTML =
     Array.from({length:total},(_,i)=>
-      \`<div class="dot \${i<current?'done':i===current?'active':''}"></div>\`
+      \`<div class="dot \${i<cur?'d-done':i===cur?'d-active':''}"></div>\`
     ).join('');
 }
 
-// Quiz within module
-function renderQuiz(){
-  const mod = MODULES[curMod];
-  let html = \`<div class="quiz-block">
-    <div class="quiz-title">✓ Module \${mod.num} Knowledge Check</div>\`;
-  mod.quiz.forEach((q,qi)=>{
-    html += \`<div class="quiz-q">
-      <div class="quiz-qtext">\${q.q}</div>
-      <div class="quiz-opts">\`;
-    q.options.forEach((opt,oi)=>{
-      html += \`<div class="quiz-opt \${modQuizDone[curMod]?(oi===q.answer?'picked-ok':(modQuizPicks[curMod]&&modQuizPicks[curMod][qi]===oi?'picked-no':'')):''}
-        \${modQuizDone[curMod]?'disabled':''}"
-        onclick="pickMQ(\${curMod},\${qi},\${oi},\${q.answer})">
-        <div class="quiz-ol">\${LT[oi]}</div><span>\${opt}</span>
-      </div>\`;
-    });
-    const fb = modQuizDone[curMod] && modQuizPicks[curMod] ?
-      (modQuizPicks[curMod][qi]===q.answer
-        ? \`<div class="quiz-fb show-ok">✓ Correct — \${q.ref||''}</div>\`
-        : \`<div class="quiz-fb show-no">✗ Correct answer: \${LT[q.answer]}. \${q.options[q.answer]}</div>\`)
-      : \`<div class="quiz-fb"></div>\`;
-    html += \`</div>\${fb}</div>\`;
-  });
-  html += '</div>';
+// ── SLIDE + INLINE CHECK-IN ─────────────────────────────────────────────
+function renderSlideWithCheckIn(slide, mi, si){
+  const hasCI   = slide.quiz && slide.quiz.length > 0;
+  const isDone  = ciDone[mi][si];
 
-  if(modQuizDone[curMod]){
-    html += \`<div style="margin-top:16px;padding:14px;background:var(--green-lt);border-radius:8px;font-size:14px;color:var(--green);font-weight:600;">
-      ✓ Knowledge check complete. Click "Continue →" to proceed.\`;
-    if(curMod === MODULES.length-1){
-      html += \` All modules complete — proceed to the Final BSIS Assessment.\`;
+  let html = \`<div class="slide-wrap">
+    <div class="slide-heading">\${slide.heading}</div>
+    <div class="slide-subheading">\${slide.subheading}</div>
+    <div class="slide-body">\${slide.renderedHTML||''}</div>\`;
+
+  if(hasCI){
+    html += \`<div class="check-in">
+      <div class="check-in-header">
+        <div class="check-in-icon">✏️</div>
+        <div class="check-in-title">Section Check-In — Answer to continue</div>
+      </div>
+      <div class="check-in-body">\`;
+
+    slide.quiz.forEach((q,qi)=>{
+      const picked = ciPicks[mi][si][qi];
+      const done   = picked !== null;
+      html += \`<div class="ci-q">
+        <div class="ci-qtext">\${qi+1}. \${q.q}</div>
+        <div class="ci-opts">\`;
+      q.options.forEach((opt,oi)=>{
+        let cls = 'ci-opt';
+        if(done){ cls += oi===q.answer?' ci-ok':(oi===picked?' ci-no':''); cls += ' ci-done'; }
+        else if(oi===picked) cls += ' ci-sel';
+        const clk = done ? '' : \`onclick="pickCI(\${mi},\${si},\${qi},\${oi},\${q.answer})"\`;
+        html += \`<div class="\${cls}" \${clk}><div class="ci-ol">\${LT[oi]}</div><span>\${opt}</span></div>\`;
+      });
+      html += \`</div>\`; // ci-opts
+      if(done){
+        const ok = picked===q.answer;
+        html += \`<div class="ci-fb \${ok?'ci-fb-ok':'ci-fb-no'}">\${ok?'✓ Correct':'✗ Incorrect — Correct answer: '+LT[q.answer]+'. '+q.options[q.answer]}\${q.ref?' — '+q.ref:''}</div>\`;
+      }
+      html += \`</div>\`; // ci-q
+    });
+
+    if(!isDone){
+      html += \`<div class="check-in-pending">Answer all questions above to proceed to the next section.</div>\`;
     }
-    html += '</div>';
+
+    html += \`</div></div>\`; // check-in-body, check-in
   }
 
+  html += \`</div>\`; // slide-wrap
   document.getElementById('player-content').innerHTML = html;
-  // Re-attach scroll position
-  document.getElementById('player-content').scrollTop = 0;
+
+  // Lock Next button until check-in is complete
+  document.getElementById('nav-next').disabled = hasCI && !isDone;
 }
 
-// Track quiz picks
-let modQuizPicks = new Array(MODULES.length).fill(null).map(()=>({}));
+function pickCI(mi, si, qi, picked, correct){
+  if(ciPicks[mi][si][qi] !== null) return; // already answered
+  ciPicks[mi][si][qi] = picked;
 
-function pickMQ(modIdx, qi, picked, correct){
-  if(modQuizDone[modIdx]) return;
-  modQuizPicks[modIdx][qi] = picked;
-  const mod = MODULES[modIdx];
-  const allPicked = mod.quiz.every((_,i)=>modQuizPicks[modIdx][i]!==undefined);
-  if(!allPicked) return renderQuizPartial(modIdx, qi, picked, correct);
-  // All answered — mark done
-  const score = mod.quiz.filter((_,i)=>modQuizPicks[modIdx][i]===mod.quiz[i].answer).length;
-  modQuizScore[modIdx] = score;
-  modQuizDone[modIdx]  = true;
-  modDone[modIdx]      = true;
-  renderPlayer();
+  // Check if all questions in this slide answered
+  const allDone = ciPicks[mi][si].every(p => p !== null);
+  if(allDone) ciDone[mi][si] = true;
+
+  renderSlideWithCheckIn(MODULES[mi].slides[si], mi, si);
 }
 
-function renderQuizPartial(modIdx, qi, picked, correct){
-  // Just re-render to show current state without marking complete
-  const mod = MODULES[modIdx];
-  const opts = document.querySelectorAll(\`.quiz-opt\`);
-  // Simpler: just re-render the quiz
-  renderQuiz();
+// ── MODULE FINAL QUIZ ──────────────────────────────────────────────────
+function renderFinalQuiz(){
+  const mod    = MODULES[curMod];
+  const done   = fqDone[curMod];
+
+  let html = \`<div class="final-quiz">
+    <div class="fq-header">
+      <div class="fq-title">Module \${mod.num} — Final Quiz</div>
+      <div class="fq-sub">Answer all \${mod.quiz.length} questions correctly to unlock the next module.</div>
+    </div>
+    <div class="fq-body">\`;
+
+  mod.quiz.forEach((q,qi)=>{
+    const picked = fqPicks[curMod][qi];
+    const answered = picked !== null;
+    html += \`<div class="fq-q">
+      <div class="fq-qtext">\${qi+1}. \${q.q}</div>
+      <div class="fq-opts">\`;
+    q.options.forEach((opt,oi)=>{
+      let cls = 'fq-opt';
+      if(answered){ cls += oi===q.answer?' fq-ok':(oi===picked?' fq-no':''); cls += ' fq-done'; }
+      else if(oi===picked) cls += ' fq-sel';
+      const clk = answered ? '' : \`onclick="pickFQ(\${curMod},\${qi},\${oi},\${q.answer})"\`;
+      html += \`<div class="\${cls}" \${clk}><div class="fq-ol">\${LT[oi]}</div><span>\${opt}</span></div>\`;
+    });
+    html += \`</div>\`;
+    if(answered){
+      const ok = picked===q.answer;
+      html += \`<div class="fq-fb \${ok?'fq-fb-ok':'fq-fb-no'}">\${ok?'✓ Correct':'✗ Incorrect — Correct answer: '+LT[q.answer]+'. '+q.options[q.answer]}\${q.ref?' — '+q.ref:''}</div>\`;
+    }
+    html += \`</div>\`;
+  });
+
+  html += \`</div>\`; // fq-body
+
+  const allAnswered = fqPicks[curMod].every(p=>p!==null);
+  const allCorrect  = allAnswered && mod.quiz.every((q,i)=>fqPicks[curMod][i]===q.answer);
+
+  if(done){
+    html += \`<div class="fq-complete">✓ Module quiz complete — click "Continue →" to proceed.</div>\`;
+  } else if(allAnswered && !allCorrect){
+    const wrong = mod.quiz.filter((q,i)=>fqPicks[curMod][i]!==q.answer).length;
+    html += \`<div style="padding:14px 18px;background:var(--red-lt);font-size:13px;color:var(--red);font-weight:600;border-top:1px solid #f5c6cb;">
+      \${wrong} incorrect answer\${wrong>1?'s':''}. Review the feedback above and click "Submit Quiz" to record your attempt. You must review the module slides and retake the quiz to proceed.
+    </div>\`;
+  }
+
+  html += \`</div>\`; // final-quiz
+  document.getElementById('player-content').innerHTML = html;
+
+  // Lock Next unless quiz is done
+  document.getElementById('nav-next').disabled = !fqDone[curMod];
 }
 
+function pickFQ(mi, qi, picked, correct){
+  if(fqPicks[mi][qi] !== null) return;
+  fqPicks[mi][qi] = picked;
+  renderFinalQuiz();
+}
+
+// ── NAVIGATION ─────────────────────────────────────────────────────────
 function navNext(){
   const mod    = MODULES[curMod];
-  const inQuiz = curSlide >= mod.slides.length;
+  const slides = mod.slides;
+  const inFQ   = curSlide === slides.length;
 
-  if(inQuiz){
-    if(!modQuizDone[curMod]){
-      // Force complete — mark remaining answers as wrong
-      mod.quiz.forEach((_,i)=>{ if(modQuizPicks[curMod][i]===undefined) modQuizPicks[curMod][i]=-1; });
-      const score = mod.quiz.filter((_,i)=>modQuizPicks[curMod][i]===mod.quiz[i].answer).length;
-      modQuizScore[curMod]=score; modQuizDone[curMod]=true; modDone[curMod]=true;
-      renderPlayer(); return;
+  if(inFQ){
+    // Check if all final quiz questions answered
+    const allAnswered = fqPicks[curMod].every(p=>p!==null);
+    if(!allAnswered){ alert('Please answer all quiz questions.'); return; }
+
+    const allCorrect = mod.quiz.every((q,i)=>fqPicks[curMod][i]===q.answer);
+    if(!fqDone[curMod]){
+      if(allCorrect){
+        fqDone[curMod] = true;
+        modDone[curMod] = true;
+        renderFinalQuiz();
+        return;
+      } else {
+        // Incorrect answers shown — user must review
+        fqDone[curMod] = false;
+        renderFinalQuiz();
+        return;
+      }
     }
-    // Advance to next module or exam
+
+    // Quiz passed — advance
     if(curMod < MODULES.length - 1){
-      curMod++; curSlide=0;
+      curMod++;
+      curSlide = 0;
+      // Unlock next module in sidebar
       const nxt = document.getElementById('sbm-'+curMod);
-      if(nxt){ nxt.classList.remove('locked'); }
+      if(nxt) nxt.classList.remove('s-locked');
       renderPlayer();
     } else {
       // All modules done — go to exam
-      const examLink = document.getElementById('sb-exam-link');
-      if(examLink) examLink.className='sidebar-exam-item';
+      const examEl = document.getElementById('sb-exam-link');
+      if(examEl) examEl.className = 'sbm-exam';
       show('sc-exam');
       renderExamQ();
     }
   } else {
+    // Check slide check-in complete
+    const slide = slides[curSlide];
+    if(slide.quiz && slide.quiz.length > 0 && !ciDone[curMod][curSlide]){
+      alert('Please answer the check-in questions before continuing.');
+      return;
+    }
     curSlide++;
     renderPlayer();
   }
@@ -1919,128 +2299,161 @@ function navNext(){
 
 function navBack(){
   if(curSlide > 0){ curSlide--; renderPlayer(); }
-  else if(curMod > 0){ curMod--; curSlide=MODULES[curMod].slides.length; renderPlayer(); }
+  else if(curMod > 0){
+    curMod--;
+    curSlide = MODULES[curMod].slides.length; // go to FQ of previous module
+    renderPlayer();
+  }
 }
 
-// ── Exam ────────────────────────────────────────────────────────────────
+// ── FINAL EXAM ─────────────────────────────────────────────────────────
 function renderExamQ(){
-  const q   = EXAM[examCur];
-  const pct = Math.round((examCur / EXAM.length)*100);
+  const q   = EXAM_QS[examCur];
+  const pct = Math.round(examCur/EXAM_QS.length*100);
   document.getElementById('exam-fill').style.width = pct + '%';
-  document.getElementById('exam-pt').textContent   = \`Q \${examCur+1} of \${EXAM.length}\`;
-  document.getElementById('exam-sc').textContent   = \`Q \${examCur+1} of \${EXAM.length}\`;
+  document.getElementById('exam-pt').textContent   = \`Q \${examCur+1} of \${EXAM_QS.length}\`;
+  document.getElementById('exam-sc').textContent   = \`Q \${examCur+1} of \${EXAM_QS.length}\`;
   document.getElementById('exam-back').style.display = examCur>0?'inline-block':'none';
-  document.getElementById('exam-fwd').textContent =
-    examCur===EXAM.length-1 ? 'Submit Assessment' : 'Next →';
-  const ex  = examDone[examCur];
+  document.getElementById('exam-fwd').textContent  =
+    examCur===EXAM_QS.length-1 ? 'Submit Assessment' : 'Next →';
+
+  // Update attempt dots
+  updateAttemptDots();
+  // Sidebar progress
+  const ans = examAnswered.filter(Boolean).length;
+  document.getElementById('ex-fill').style.width = Math.round(ans/EXAM_QS.length*100)+'%';
+  document.getElementById('ex-label').textContent = ans+' of '+EXAM_QS.length+' answered';
+
   const sel = examAns[examCur];
-  const oh  = q.options.map((opt,oi)=>{
-    let cl='exam-opt';
-    if(ex){ if(oi===q.answer)cl+=' ok'; else if(oi===sel&&oi!==q.answer)cl+=' no'; }
-    else if(oi===sel) cl+=' sel';
-    const clk = ex?'':('onclick="pickExam('+oi+')"');
-    return \`<div class="\${cl}" \${clk}><div class="exam-ol">\${LT[oi]}</div><span>\${opt}</span></div>\`;
+  const answered = examAnswered[examCur];
+  const oh = q.options.map((opt,oi)=>{
+    let cls='exam-opt';
+    if(answered){ if(oi===q.answer)cls+=' ok'; else if(oi===sel&&oi!==q.answer)cls+=' no'; }
+    else if(oi===sel) cls+=' sel';
+    const clk = answered?'':(\`onclick="pickExam(\${oi})"\`);
+    return \`<div class="\${cls}" \${clk}><div class="exam-ol">\${LT[oi]}</div><span>\${opt}</span></div>\`;
   }).join('');
   let fb='';
-  if(ex){ if(sel===q.answer) fb=\`<div class="exam-fb show exam-fb-ok">✓ Correct — \${q.ref}</div>\`;
-    else fb=\`<div class="exam-fb show exam-fb-no">✗ Correct: <strong>\${LT[q.answer]}. \${q.options[q.answer]}</strong> — \${q.ref}</div>\`; }
-  document.getElementById('exam-qa').innerHTML =\`
-    <div class="exam-q-block">
+  if(answered){
+    if(sel===q.answer) fb=\`<div class="exam-fb show exam-fb-ok">✓ Correct — \${q.ref}</div>\`;
+    else fb=\`<div class="exam-fb show exam-fb-no">✗ Incorrect. Correct: <strong>\${LT[q.answer]}. \${q.options[q.answer]}</strong> — \${q.ref}</div>\`;
+  }
+  document.getElementById('exam-qa').innerHTML=\`
+    <div class="exam-qblock">
       <span class="exam-mod-badge">\${q.module}<span class="exam-ref">\${q.ref}</span></span>
-      <div class="exam-qnum">Question \${examCur+1} of \${EXAM.length}</div>
+      <div class="exam-qnum">Question \${examCur+1} of \${EXAM_QS.length}</div>
       <div class="exam-qtext">\${q.q}</div>
       <div class="exam-opts">\${oh}</div>
       \${fb}
     </div>\`;
-  // Update sidebar progress
-  const answered = examDone.filter(Boolean).length;
-  document.getElementById('ex-sb-fill').style.width = Math.round((answered/EXAM.length)*100)+'%';
-  document.getElementById('ex-sb-label').textContent = answered+' of '+EXAM.length+' answered';
+}
+
+function updateAttemptDots(){
+  document.getElementById('attempt-label').textContent =
+    \`Attempt \${examAttempts+1} of \${MAX_ATT}\`;
+  for(let i=0;i<MAX_ATT;i++){
+    const dot = document.getElementById('adot-'+i);
+    if(!dot) continue;
+    dot.className = 'attempt-dot' + (i<examAttempts?' used':i===examAttempts?' current':'');
+  }
 }
 
 function pickExam(oi){
-  if(examDone[examCur]) return;
-  examAns[examCur]=oi; examDone[examCur]=true;
+  if(examAnswered[examCur]) return;
+  examAns[examCur]      = oi;
+  examAnswered[examCur] = true;
   renderExamQ();
 }
 
 function examNext(){
-  if(!examDone[examCur]){ alert('Please select an answer before continuing.'); return; }
-  if(examCur<EXAM.length-1){ examCur++; renderExamQ(); }
+  if(!examAnswered[examCur]){ alert('Please select an answer before continuing.'); return; }
+  if(examCur < EXAM_QS.length-1){ examCur++; renderExamQ(); }
   else showResults();
 }
 
 function examPrev(){
-  if(examCur>0){ examCur--; renderExamQ(); }
+  if(examCur > 0){ examCur--; renderExamQ(); }
 }
 
-// ── Results ─────────────────────────────────────────────────────────────
+// ── RESULTS ─────────────────────────────────────────────────────────────
 function showResults(){
   show('sc-results');
   let correct=0;
   const mm={};
-  EXAM.forEach((q,i)=>{
+  EXAM_QS.forEach((q,i)=>{
     if(examAns[i]===q.answer) correct++;
     if(!mm[q.module]) mm[q.module]={c:0,t:0};
     mm[q.module].t++;
     if(examAns[i]===q.answer) mm[q.module].c++;
   });
-  const pct  = Math.round((correct/EXAM.length)*100);
+  const pct  = Math.round(correct/EXAM_QS.length*100);
   const pass = pct===100;
+
+  examAttempts++;
 
   const ring = document.getElementById('res-ring');
   ring.className = 'score-ring '+(pass?'ring-pass':'ring-fail');
-  document.getElementById('res-pct').textContent   = correct+'/'+EXAM.length;
+  document.getElementById('res-pct').textContent   = correct+'/'+EXAM_QS.length;
   document.getElementById('res-label').textContent = pass?'PASSED':'NOT PASSED';
 
   const rt = document.getElementById('res-title');
-  rt.className = 'results-title '+(pass?'rt-pass':'rt-fail');
+  rt.className = 'res-title '+(pass?'rt-pass':'rt-fail');
   rt.textContent = pass ? '✓ Assessment Passed' : '✗ Assessment Not Passed';
 
+  const attLeft = MAX_ATT - examAttempts;
   document.getElementById('res-sub').innerHTML = pass
-    ? \`Congratulations, <strong>\${studentName}</strong>. You scored \${correct}/\${EXAM.length} (100%) and have satisfied the BSIS assessment requirement per ${course.bpcRef}.\`
-    : \`You scored \${correct}/\${EXAM.length} (\${pct}%). A score of 100% is required per ${course.bpcRef}. Review incorrect answers and retake the full assessment.\`;
+    ? \`Congratulations, <strong>\${studentName}</strong>. You scored \${correct}/\${EXAM_QS.length} (100%) and have satisfied the BSIS assessment requirement per ${course.bpcRef}.\`
+    : \`You scored \${correct}/\${EXAM_QS.length} (\${pct}%). A score of 100% is required per ${course.bpcRef}.\${attLeft>0?' You have <strong>'+attLeft+' attempt'+( attLeft>1?'s':'')+' remaining</strong>.':' <strong>This was your final attempt.</strong> Re-enrollment is required.'}\`;
 
   let bh='<h3>Score by Module</h3>';
   for(const[m,d] of Object.entries(mm)){
-    const mp=Math.round((d.c/d.t)*100);
+    const mp=Math.round(d.c/d.t*100);
     bh+=\`<div class="bd-row"><span style="color:var(--gray)">\${m}</span><span class="\${d.c===d.t?'bd-pass':'bd-fail'}">\${d.c}/\${d.t} (\${mp}%)</span></div>\`;
   }
-  bh+=\`<div class="bd-row"><span>Overall</span><span class="\${pass?'bd-pass':'bd-fail'}">\${correct}/\${EXAM.length} (\${pct}%)</span></div>\`;
+  bh+=\`<div class="bd-row"><span>Overall</span><span class="\${pass?'bd-pass':'bd-fail'}">\${correct}/\${EXAM_QS.length} (\${pct}%)</span></div>\`;
   document.getElementById('res-breakdown').innerHTML=bh;
 
-  let btns = pass
-    ? \`<button class="r-btn r-primary" onclick="showCert()">View Certificate →</button>\` : '';
-  btns += \`<button class="r-btn r-outline" onclick="retakeExam()">\${pass?'Retake':'↺ Retake Assessment'}</button>\`;
+  let btns = '';
+  if(pass){
+    btns += \`<button class="r-btn r-primary" onclick="showCert()">View Certificate →</button>\`;
+  } else if(examAttempts >= MAX_ATT){
+    // Lock out — no more retake button
+    btns += \`<button class="r-btn" style="background:var(--red);color:#fff;cursor:pointer;" onclick="show('sc-lock')">Re-Enrollment Required →</button>\`;
+  } else {
+    btns += \`<button class="r-btn r-outline" onclick="retakeExam()">↺ Retake Assessment (Attempt \${examAttempts+1}/\${MAX_ATT})</button>\`;
+  }
   document.getElementById('res-btns').innerHTML=btns;
 
   document.getElementById('res-note').innerHTML = pass
-    ? \`<strong>BSIS Compliance:</strong> This certificate satisfies the ${course.hours}-hour training requirement under ${course.bpcRef} and CA Labor Code §6401.9 (SB 553). Print and retain until your guard card expires — Title 16 CCR §643(b). MACCESS INC. PPO #122729 maintains your training record.\`
-    : \`<strong>BSIS Requirement:</strong> 100% is required per ${course.bpcRef}. Full retake required. Review the feedback on incorrect answers in the assessment.\`;
+    ? \`<strong>BSIS Compliance:</strong> This certificate satisfies the ${course.hours}-hour training requirement under ${course.bpcRef}. Print and retain until your guard card expires — Title 16 CCR §643(b). MACCESS INC. PPO #122729 maintains your training record.\`
+    : examAttempts >= MAX_ATT
+    ? \`<strong>Maximum Attempts Reached:</strong> You have used all \${MAX_ATT} attempts. Re-enrollment is required per MACCESS INC. assessment policy. Click above to re-enroll.\`
+    : \`<strong>BSIS Requirement:</strong> 100% is required per ${course.bpcRef}. Review the incorrect answers above before retaking. You have \${MAX_ATT - examAttempts} attempt\${MAX_ATT-examAttempts>1?'s':''} remaining.\`;
 }
 
 function retakeExam(){
-  examCur=0;
-  examAns=new Array(EXAM.length).fill(null);
-  examDone=new Array(EXAM.length).fill(false);
+  if(examAttempts >= MAX_ATT){ show('sc-lock'); return; }
+  examCur      = 0;
+  examAns      = new Array(EXAM_QS.length).fill(null);
+  examAnswered = new Array(EXAM_QS.length).fill(false);
   show('sc-exam');
   renderExamQ();
 }
 
-// ── Certificate ──────────────────────────────────────────────────────────
+// ── CERTIFICATE ──────────────────────────────────────────────────────────
 function showCert(){
   const d = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
   document.getElementById('cert-area').innerHTML=\`
     <div class="cert-eyebrow">Certificate of Completion</div>
     <div class="cert-stripe"></div>
     <div class="cert-co">MACCESS INC.</div>
-    <div class="cert-ppo">Private Patrol Operator &nbsp;|&nbsp; PPO License #122729 &nbsp;|&nbsp; BSIS-Authorized Training Provider</div>
+    <div class="cert-ppo">Private Patrol Operator | PPO License #122729 | BSIS-Authorized Training Provider</div>
     <div class="cert-certifies">This certifies that</div>
     <div class="cert-name">\${studentName}</div>
     <div class="cert-body">has successfully completed the BSIS-compliant training course:</div>
     <div class="cert-course">${course.title}</div>
     <div class="cert-badge">Score: 100% ✓ Passing</div>
-    <div class="cert-body">This completion satisfies the ${course.hours}-hour elective training requirement under ${course.bpcRef} and California BSIS training standards. This course also satisfies the annual employee training requirement of California Labor Code §6401.9 (SB 553, eff. July 1, 2024).<br/>Retain until guard card expires or is canceled — Title 16 CCR §643(b).</div>
+    <div class="cert-body">This completion satisfies the ${course.hours}-hour training requirement under ${course.bpcRef} and California BSIS training standards. Retain until guard card expires or is canceled — Title 16 CCR §643(b).</div>
     <div class="cert-stripe"></div>
     <div class="cert-sigs">
       <div class="cert-sig"><div class="cert-sig-line"></div><div class="cert-sig-label">Student Signature</div></div>
@@ -2049,28 +2462,11 @@ function showCert(){
     </div>\`;
   show('sc-cert');
 }
-
-// ── Init: pre-render slide HTML ────────────────────────────────────────
-// Inject server-side rendered HTML into module slides so the JS renderer
-// doesn't need to duplicate the content rendering logic.
-${course.modules.map((mod,mi) =>
-  mod.slides.map((sl,si) => {
-    const rendered = renderContent(sl.content)
-      .replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$')
-      .replace(/\n/g,' ');
-    return `MODULES[${mi}].slides[${si}].renderedHTML = \`${rendered}\`;`;
-  }).join('\n')
-).join('\n')}
-
-// Initialize first module sidebar
-document.getElementById('sbms-0').textContent = '▶';
-document.getElementById('sbm-0').classList.remove('locked');
 </script>
 </body>
 </html>`;
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
 // BUILD + EXPORT
 // ═══════════════════════════════════════════════════════════════════════════════
 const fs   = require('fs');
