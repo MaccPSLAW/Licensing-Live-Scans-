@@ -753,7 +753,7 @@ function startCourse(){
 
 function saveProfile(){
   try{
-    var key='pslaw_students_v1';
+    var key='maccess_students_v1';
     var records=JSON.parse(localStorage.getItem(key)||'[]');
     var rec=records.find(function(r){return r.email.toLowerCase()===sEmail.toLowerCase();});
     if(!rec){ rec={id:Date.now().toString(),name:sName,email:sEmail,phone:sPhone,guardCard:sGC,createdAt:new Date().toISOString(),certificates:[],status:'progress',attempts:0}; records.unshift(rec); }
@@ -764,7 +764,7 @@ function saveProfile(){
 
 function saveCompletion(courseName,score){
   try{
-    var key='pslaw_students_v1';
+    var key='maccess_students_v1';
     var records=JSON.parse(localStorage.getItem(key)||'[]');
     var rec=records.find(function(r){return r.email.toLowerCase()===sEmail.toLowerCase();});
     if(!rec){ rec={id:Date.now().toString(),name:sName,email:sEmail,phone:sPhone,guardCard:sGC,createdAt:new Date().toISOString(),certificates:[],status:'pass',attempts:examTries}; records.unshift(rec); }
@@ -773,7 +773,7 @@ function saveCompletion(courseName,score){
     rec.certificates=rec.certificates||[];
     rec.certificates.push({course:courseName,date:d,score:score,issuedAt:new Date().toISOString()});
     localStorage.setItem(key,JSON.stringify(records));
-    try{ window.parent.postMessage({type:'PSLAW_COMPLETION',name:sName,email:sEmail,course:courseName,score:score,date:d},'*'); }catch(e){}
+    try{ window.parent.postMessage({type:'MACCESS_COMPLETION',name:sName,email:sEmail,course:courseName,score:score,date:d},'*'); }catch(e){}
   }catch(e){}
 }
 
