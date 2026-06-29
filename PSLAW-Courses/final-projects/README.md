@@ -257,7 +257,41 @@ The README updates itself automatically every time a new module is built and pus
 
 ---
 
-### Module 07 — Baton Certification
+### Module 07 — admin-dashboard
+
+| | |
+|---|---|
+| **Status** | ⚠️ Incomplete |
+| **Hours** | 4 |
+| **Authority** | `BPC §7583.6(b)` |
+
+#### 07a — Course Module
+
+| File | |
+|------|:---:|
+| `admin-dashboard.pptx` | ❌ |
+| `admin-dashboard.pdf` | ❌ |
+
+#### 07b — Assessment
+
+| File | |
+|------|:---:|
+| `admin-dashboard-Test.html` | ❌ |
+
+> Interactive browser assessment — one question at a time, instant feedback with legal citation, live score by module, 100% to pass, printable Certificate of Completion, BSIS Live Scan stub.
+
+#### 07c — Answer Key *(Instructor Copy — Confidential)*
+
+| File | |
+|------|:---:|
+| `admin-dashboard-AnswerKey.pptx` | ❌ |
+| `admin-dashboard-AnswerKey.pdf` | ❌ |
+
+> Internal instructor use only. Quick-reference answer grid, full Q&A, scoring guide. Do not distribute to students.
+
+---
+
+### Module 08 — Baton Certification
 
 | | |
 |---|---|
@@ -266,14 +300,14 @@ The README updates itself automatically every time a new module is built and pus
 | **Authority** | `BPC §§7583.33 | 7585.9 | 7585.13` |
 | **Note** | 4-hr elective deliverable by PPO. Full 8-hr baton PERMIT course and permit issuance requires BSIS-certified Baton Training Facility (TFB) and certified instructor. |
 
-#### 07a — Course Module
+#### 08a — Course Module
 
 | File | |
 |------|:---:|
 | `Baton_Certification_BSIS_MACCESS_INC.pptx` | ✅ |
 | `Baton_Certification_BSIS_MACCESS_INC.pdf` | ✅ |
 
-#### 07b — Assessment
+#### 08b — Assessment
 
 | File | |
 |------|:---:|
@@ -281,7 +315,7 @@ The README updates itself automatically every time a new module is built and pus
 
 > Interactive browser assessment — one question at a time, instant feedback with legal citation, live score by module, 100% to pass, printable Certificate of Completion, BSIS Live Scan stub.
 
-#### 07c — Answer Key *(Instructor Copy — Confidential)*
+#### 08c — Answer Key *(Instructor Copy — Confidential)*
 
 | File | |
 |------|:---:|
@@ -292,7 +326,7 @@ The README updates itself automatically every time a new module is built and pus
 
 ---
 
-### Module 08 — Handling Difficult People
+### Module 09 — Handling Difficult People
 
 | | |
 |---|---|
@@ -301,14 +335,14 @@ The README updates itself automatically every time a new module is built and pus
 | **Authority** | `BPC §7583.6(b)` |
 | **Note** | Covers communication strategies, conflict management, negotiation, and verbal diffusion. |
 
-#### 08a — Course Module
+#### 09a — Course Module
 
 | File | |
 |------|:---:|
 | `Handling_Difficult_People_BSIS_Skills_MACCESS_INC.pptx` | ✅ |
 | `Handling_Difficult_People_BSIS_Skills_MACCESS_INC.pdf` | ✅ |
 
-#### 08b — Assessment
+#### 09b — Assessment
 
 | File | |
 |------|:---:|
@@ -316,7 +350,7 @@ The README updates itself automatically every time a new module is built and pus
 
 > Interactive browser assessment — one question at a time, instant feedback with legal citation, live score by module, 100% to pass, printable Certificate of Completion, BSIS Live Scan stub.
 
-#### 08c — Answer Key *(Instructor Copy — Confidential)*
+#### 09c — Answer Key *(Instructor Copy — Confidential)*
 
 | File | |
 |------|:---:|
@@ -327,7 +361,41 @@ The README updates itself automatically every time a new module is built and pus
 
 ---
 
-### Module 09 — Officer Safety
+### Module 10 — index
+
+| | |
+|---|---|
+| **Status** | ⚠️ Incomplete |
+| **Hours** | 4 |
+| **Authority** | `BPC §7583.6(b)` |
+
+#### 10a — Course Module
+
+| File | |
+|------|:---:|
+| `index.pptx` | ❌ |
+| `index.pdf` | ❌ |
+
+#### 10b — Assessment
+
+| File | |
+|------|:---:|
+| `index-Test.html` | ❌ |
+
+> Interactive browser assessment — one question at a time, instant feedback with legal citation, live score by module, 100% to pass, printable Certificate of Completion, BSIS Live Scan stub.
+
+#### 10c — Answer Key *(Instructor Copy — Confidential)*
+
+| File | |
+|------|:---:|
+| `index-AnswerKey.pptx` | ❌ |
+| `index-AnswerKey.pdf` | ❌ |
+
+> Internal instructor use only. Quick-reference answer grid, full Q&A, scoring guide. Do not distribute to students.
+
+---
+
+### Module 11 — Officer Safety
 
 | | |
 |---|---|
@@ -336,14 +404,14 @@ The README updates itself automatically every time a new module is built and pus
 | **Authority** | `BPC §7583.6(b)` |
 | **Note** | Covers threat assessment (Cooper Color Code), subject contact, blood-borne pathogens (OSHA 29 CFR 1910.1030), and environmental hazards. |
 
-#### 09a — Course Module
+#### 11a — Course Module
 
 | File | |
 |------|:---:|
 | `Officer_Safety_BSIS_Skills_MACCESS_INC.pptx` | ✅ |
 | `Officer_Safety_BSIS_Skills_MACCESS_INC.pdf` | ✅ |
 
-#### 09b — Assessment
+#### 11b — Assessment
 
 | File | |
 |------|:---:|
@@ -351,7 +419,7 @@ The README updates itself automatically every time a new module is built and pus
 
 > Interactive browser assessment — one question at a time, instant feedback with legal citation, live score by module, 100% to pass, printable Certificate of Completion, BSIS Live Scan stub.
 
-#### 09c — Answer Key *(Instructor Copy — Confidential)*
+#### 11c — Answer Key *(Instructor Copy — Confidential)*
 
 | File | |
 |------|:---:|
@@ -362,7 +430,7 @@ The README updates itself automatically every time a new module is built and pus
 
 ---
 
-### Module 10 — Workplace Violence
+### Module 12 — Workplace Violence
 
 | | |
 |---|---|
@@ -371,14 +439,14 @@ The README updates itself automatically every time a new module is built and pus
 | **Authority** | `BPC §7583.6(b)` |
 | **Note** | Covers warning signs, anger management, diversity, personal security, and reporting. |
 
-#### 10a — Course Module
+#### 12a — Course Module
 
 | File | |
 |------|:---:|
 | `Workplace_Violence_BSIS_Skills_MACCESS_INC.pptx` | ✅ |
 | `Workplace_Violence_BSIS_Skills_MACCESS_INC.pdf` | ✅ |
 
-#### 10b — Assessment
+#### 12b — Assessment
 
 | File | |
 |------|:---:|
@@ -386,7 +454,7 @@ The README updates itself automatically every time a new module is built and pus
 
 > Interactive browser assessment — one question at a time, instant feedback with legal citation, live score by module, 100% to pass, printable Certificate of Completion, BSIS Live Scan stub.
 
-#### 10c — Answer Key *(Instructor Copy — Confidential)*
+#### 12c — Answer Key *(Instructor Copy — Confidential)*
 
 | File | |
 |------|:---:|
