@@ -1,7 +1,7 @@
-# PSLAW-Courses / final-projects
+# MACCESS INC. — Course Suite / final-projects
 ## MACCESS INC. — BSIS Security Guard Licensing Course Suite
 
-**PPO License:** `#122729` &nbsp;|&nbsp; **Provider:** Private Security LA Worldwide (PSLAW)
+**PPO License:** `#122729` &nbsp;|&nbsp; **Provider:** MACCESS INC.
 **Authority:** BPC §7583.6 | §7583.7 | §7585.9 | Title 16 CCR §643(b)
 **Source:** [bsis.ca.gov/industries/g_train.shtml](https://www.bsis.ca.gov/industries/g_train.shtml)
 **Last updated:** 2026-06-29 *(auto-generated — do not edit manually)*
