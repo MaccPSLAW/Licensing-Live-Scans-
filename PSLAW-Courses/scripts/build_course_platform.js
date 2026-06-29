@@ -1157,7 +1157,6 @@ const CATALOG = {
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════
-
 // ═══════════════════════════════════════════════════════════════════════════════
 // CONTENT RENDERER — converts content block objects to HTML strings
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -1167,7 +1166,7 @@ function renderContent(items) {
       case 'h3':
         return `<h3 class="sect-h3">${item.text}</h3>`;
       case 'alert':
-        return `<div class="c-alert"><span class="alert-icon">⚠️</span><span>${item.text}</span></div>`;
+        return `<div class="c-alert"><span class="c-alert-icon">⚠️</span><span>${item.text}</span></div>`;
       case 'callout':
         return `<div class="c-callout"><strong>${item.label}:</strong> ${item.text}</div>`;
       case 'rule':
@@ -1205,20 +1204,10 @@ function renderContent(items) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// MAIN HTML BUILDER
+// MAIN HTML BUILDER — one complete self-contained file per course
 // ═══════════════════════════════════════════════════════════════════════════════
 function buildPlatformHTML(courseKey, course) {
-  const today = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
-
-  // ── Timing config ──────────────────────────────────────────────────────────
-  // Session timer: total minutes to complete module content
-  // Idle timeout: minutes of no interaction before warning
-  const TOTAL_MINUTES = parseInt(course.hours) * 60;  // 1 hr per credit hour
-  const IDLE_MINUTES  = 10;                            // 10 min idle = warning
-  const IDLE_LOCK     = 15;                            // 15 min idle = lock
-  const MAX_ATTEMPTS  = 3;                             // failed final exam attempts before repurchase
-
-  // ── Pre-render slide HTML into data ───────────────────────────────────────
+  // Pre-render all slide content to HTML strings
   const modulesWithHTML = course.modules.map(mod => ({
     ...mod,
     slides: mod.slides.map(sl => ({
@@ -1226,6 +1215,11 @@ function buildPlatformHTML(courseKey, course) {
       renderedHTML: renderContent(sl.content)
     }))
   }));
+
+  const TOTAL_MINS  = parseInt(course.hours) * 60;
+  const IDLE_WARN   = 10;   // minutes before idle warning
+  const IDLE_LOCK   = 15;   // minutes before session lock
+  const MAX_TRIES   = 3;    // final exam attempts before repurchase gate
 
   const modulesJ = JSON.stringify(modulesWithHTML)
     .replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$');
@@ -1237,841 +1231,848 @@ function buildPlatformHTML(courseKey, course) {
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>${course.title} | MACCESS INC. / PSLAW</title>
+<title>${course.title} | PSLAW Academy — MACCESS INC.</title>
 <style>
-/* ── Tokens ── */
-:root{
+/* ─── Tokens ─────────────────────────────────────────────────── */
+:root {
   --navy:#1B2B5E; --gold:#C9A84C; --red:#8B1A1A; --green:#1A5C3A;
-  --light:#F4F6FB; --gray:#4A5568; --white:#fff; --dark:#12193A;
-  --border:#dde4f0; --r:10px; --gold-lt:#FFF8E1;
-  --red-lt:#FFECEC; --green-lt:#EAF3DE;
+  --light:#F4F6FB; --gray:#4A5568; --white:#FFFFFF; --dark:#12193A;
+  --border:#DDE4F0; --radius:10px;
+  --gold-lt:#FFF8E1; --red-lt:#FFECEC; --green-lt:#EAF3DE;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
 body{font-family:'Segoe UI',Arial,sans-serif;background:var(--light);color:#1A1A2E;line-height:1.6;}
 
-/* ── Screens ── */
-.screen{display:none;} .screen.active{display:block;}
+/* ─── Screen system ──────────────────────────────────────────── */
+.screen{display:none;min-height:100vh;}
+.screen.active{display:block;}
 
-/* ══════════════════════════════════════
+/* ─── Global header ──────────────────────────────────────────── */
+.g-header{background:var(--navy);padding:13px 24px;display:flex;align-items:center;justify-content:space-between;}
+.g-logo{color:var(--gold);font-size:17px;font-weight:800;letter-spacing:.04em;}
+.g-meta{color:#CADCFC;font-size:11px;text-align:right;line-height:1.5;}
+.gold-bar{height:5px;background:var(--gold);}
+
+/* ─── Timer strip ────────────────────────────────────────────── */
+.timer-strip{background:var(--dark);display:flex;align-items:center;gap:14px;padding:7px 24px;}
+.timer-label{font-size:11px;color:#8899BB;letter-spacing:.05em;white-space:nowrap;}
+.timer-track{flex:1;height:5px;background:rgba(255,255,255,.12);border-radius:3px;overflow:hidden;}
+.timer-fill{height:100%;background:var(--gold);border-radius:3px;transition:width 1s linear;}
+.timer-fill.warn{background:#FFA500;}
+.timer-fill.crit{background:var(--red);}
+.timer-clock{font-size:14px;font-weight:700;color:var(--gold);font-variant-numeric:tabular-nums;min-width:52px;text-align:right;}
+.timer-clock.warn{color:#FFA500;}
+.timer-clock.crit{color:var(--red);animation:blink .9s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.4;}}
+
+/* ═══════════════════════════════════════════════════
    SALES PAGE
-══════════════════════════════════════ */
-.site-header{background:var(--navy);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;}
-.site-logo{color:var(--gold);font-size:18px;font-weight:700;letter-spacing:.05em;}
-.site-meta{color:#CADCFC;font-size:11px;text-align:right;line-height:1.5;}
-.gold-stripe{height:5px;background:var(--gold);}
-.hero{background:var(--dark);color:var(--white);padding:60px 24px 48px;}
-.hero-inner{max-width:920px;margin:0 auto;}
-.hero-badge{display:inline-block;background:var(--red);color:var(--white);font-size:11px;font-weight:700;letter-spacing:.1em;padding:5px 14px;border-radius:4px;margin-bottom:18px;text-transform:uppercase;}
-.hero-title{font-size:44px;font-weight:800;line-height:1.1;margin-bottom:12px;}
-.hero-sub{font-size:18px;color:#CADCFC;margin-bottom:28px;}
-.hero-meta{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:36px;}
-.hero-chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:8px 16px;font-size:13px;color:var(--white);}
-.hero-chip strong{color:var(--gold);display:block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px;}
-.hero-cta{display:inline-block;background:var(--gold);color:var(--navy);font-size:17px;font-weight:700;padding:16px 40px;border-radius:8px;cursor:pointer;border:none;}
-.hero-cta:hover{background:#b8962a;}
-.hero-trust{margin-top:14px;font-size:12px;color:#8899BB;}
-.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin-bottom:8px;}
-.section-title{font-size:28px;font-weight:700;color:var(--navy);margin-bottom:28px;}
-.outcomes-section{background:var(--white);padding:56px 24px;}
-.outcomes-inner{max-width:920px;margin:0 auto;}
-.outcomes-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.outcome-item{display:flex;align-items:flex-start;gap:12px;padding:14px;background:var(--light);border-radius:8px;}
-.outcome-check{width:24px;height:24px;border-radius:50%;background:var(--green);color:var(--white);font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
-.outcome-text{font-size:14px;}
-.curriculum-section{background:var(--light);padding:56px 24px;}
-.curriculum-inner{max-width:920px;margin:0 auto;display:grid;grid-template-columns:1fr 320px;gap:40px;align-items:start;}
-.curriculum-list{display:flex;flex-direction:column;gap:10px;}
-.curr-item{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:16px 20px;display:flex;align-items:center;gap:16px;}
-.curr-icon{font-size:22px;width:42px;height:42px;background:var(--light);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.curr-body{flex:1;}
-.curr-num{font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.06em;}
-.curr-name{font-size:15px;font-weight:600;color:var(--navy);margin:2px 0;}
-.curr-dur{font-size:12px;color:var(--gray);}
-.price-card{background:var(--white);border-radius:var(--r);border:2px solid var(--navy);padding:28px;position:sticky;top:24px;}
-.price-card-title{font-size:13px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
-.price-amount{font-size:42px;font-weight:800;color:var(--navy);}
-.price-period{font-size:14px;color:var(--gray);margin-bottom:20px;}
-.price-btn{display:block;width:100%;background:var(--gold);color:var(--navy);font-size:16px;font-weight:700;padding:15px;border-radius:8px;border:none;cursor:pointer;text-align:center;margin-bottom:12px;}
-.price-btn:hover{background:#b8962a;}
-.price-includes{margin-top:16px;font-size:13px;}
-.price-includes li{padding:7px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;list-style:none;}
-.price-includes li:last-child{border-bottom:none;}
-.price-check{color:var(--green);font-weight:700;}
-.pay-logos{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
-.pay-logo{background:var(--light);border:1px solid var(--border);border-radius:4px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--gray);}
-.guarantee{margin-top:12px;padding:10px;background:var(--green-lt);border-radius:6px;font-size:12px;color:var(--green);text-align:center;}
-/* Policy notice on sales page */
-.policy-notice{background:var(--gold-lt);border:1px solid #F9C757;border-radius:8px;padding:14px 18px;font-size:13px;color:#7B4F00;margin-top:16px;line-height:1.7;}
-.policy-notice strong{color:var(--red);}
-.instructor-section{background:var(--navy);color:var(--white);padding:56px 24px;}
-.instructor-inner{max-width:920px;margin:0 auto;display:grid;grid-template-columns:100px 1fr;gap:32px;align-items:start;}
-.instructor-avatar{width:96px;height:96px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:36px;border:3px solid var(--gold);}
-.instructor-name{font-size:22px;font-weight:700;color:var(--gold);margin-bottom:4px;}
-.instructor-title{font-size:13px;color:#CADCFC;margin-bottom:14px;}
-.instructor-bio{font-size:14px;color:#CADCFC;line-height:1.7;margin-bottom:14px;}
-.instructor-creds{display:flex;flex-wrap:wrap;gap:8px;}
-.cred-chip{background:rgba(255,255,255,.1);border-radius:4px;padding:4px 10px;font-size:11px;color:var(--white);}
-.testimonials-section{background:var(--white);padding:56px 24px;}
-.testimonials-inner{max-width:920px;margin:0 auto;}
-.testimonials-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-top:24px;}
-.testimonial{background:var(--light);border-radius:var(--r);padding:20px;border-left:4px solid var(--gold);}
-.t-stars{color:var(--gold);font-size:14px;margin-bottom:8px;}
-.t-text{font-size:13px;color:var(--gray);line-height:1.6;margin-bottom:10px;font-style:italic;}
-.t-name{font-size:12px;font-weight:700;color:var(--navy);}
-.bottom-cta{background:var(--gold);padding:48px 24px;text-align:center;}
-.bottom-cta h2{font-size:28px;font-weight:800;color:var(--navy);margin-bottom:8px;}
-.bottom-cta p{font-size:15px;color:var(--dark);margin-bottom:24px;}
-.bottom-cta-btn{display:inline-block;background:var(--navy);color:var(--white);font-size:17px;font-weight:700;padding:16px 40px;border-radius:8px;border:none;cursor:pointer;}
-.site-footer{background:var(--dark);color:#8899BB;padding:20px 24px;text-align:center;font-size:12px;}
+═══════════════════════════════════════════════════ */
+.hero{background:var(--dark);color:var(--white);padding:56px 24px 44px;}
+.hero-inner{max-width:940px;margin:0 auto;}
+.hero-badge{display:inline-block;background:var(--red);color:var(--white);font-size:11px;font-weight:700;letter-spacing:.1em;padding:5px 14px;border-radius:4px;margin-bottom:16px;text-transform:uppercase;}
+.hero-title{font-size:42px;font-weight:800;line-height:1.1;margin-bottom:10px;}
+.hero-sub{font-size:17px;color:#CADCFC;margin-bottom:26px;}
+.hero-chips{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:32px;}
+.chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:7px 15px;font-size:12px;color:var(--white);}
+.chip strong{color:var(--gold);display:block;font-size:9px;text-transform:uppercase;letter-spacing:.07em;margin-bottom:1px;}
+.cta-primary{display:inline-block;background:var(--gold);color:var(--navy);font-size:17px;font-weight:700;padding:15px 38px;border-radius:8px;border:none;cursor:pointer;}
+.cta-primary:hover{background:#b8962a;}
+.hero-trust{margin-top:12px;font-size:12px;color:#8899BB;}
 
-/* ══════════════════════════════════════
+.sec{padding:52px 24px;}
+.sec-inner{max-width:940px;margin:0 auto;}
+.sec-eye{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin-bottom:7px;}
+.sec-title{font-size:28px;font-weight:700;color:var(--navy);margin-bottom:24px;}
+
+/* Outcomes */
+.outcomes-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.outcome{display:flex;align-items:flex-start;gap:11px;padding:13px;background:var(--white);border-radius:8px;border:1px solid var(--border);}
+.outcome-check{width:22px;height:22px;border-radius:50%;background:var(--green);color:var(--white);font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.outcome-text{font-size:13px;}
+
+/* Curriculum + price */
+.curric-wrap{display:grid;grid-template-columns:1fr 300px;gap:36px;align-items:start;}
+.curric-list{display:flex;flex-direction:column;gap:8px;}
+.curric-item{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:14px 18px;display:flex;align-items:center;gap:14px;}
+.curric-icon{font-size:20px;width:38px;height:38px;background:var(--light);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.curric-body{flex:1;}
+.curric-num{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gray);}
+.curric-name{font-size:14px;font-weight:600;color:var(--navy);margin:2px 0;}
+.curric-dur{font-size:11px;color:var(--gray);}
+.curric-lock{font-size:15px;color:var(--gray);}
+
+/* Price card */
+.price-card{background:var(--white);border-radius:var(--radius);border:2px solid var(--navy);padding:26px;position:sticky;top:20px;}
+.price-card-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gray);margin-bottom:5px;}
+.price-amt{font-size:40px;font-weight:800;color:var(--navy);}
+.price-period{font-size:13px;color:var(--gray);margin-bottom:18px;}
+.price-enroll-btn{display:block;width:100%;background:var(--gold);color:var(--navy);font-size:15px;font-weight:700;padding:14px;border-radius:8px;border:none;cursor:pointer;text-align:center;margin-bottom:10px;}
+.price-enroll-btn:hover{background:#b8962a;}
+.price-includes{margin-top:14px;font-size:13px;}
+.price-includes li{padding:6px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:7px;list-style:none;}
+.price-includes li:last-child{border:none;}
+.pi-check{color:var(--green);font-weight:700;}
+.pay-logos{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap;}
+.pay-logo{background:var(--light);border:1px solid var(--border);border-radius:4px;padding:4px 9px;font-size:10px;font-weight:600;color:var(--gray);}
+.policy-box{background:var(--gold-lt);border:1px solid #F9C757;border-radius:7px;padding:12px 14px;font-size:12px;color:#7B4F00;margin-top:12px;line-height:1.65;}
+
+/* Instructor */
+.instructor-sec{background:var(--navy);color:var(--white);padding:52px 24px;}
+.instructor-inner{max-width:940px;margin:0 auto;display:grid;grid-template-columns:88px 1fr;gap:28px;align-items:start;}
+.instructor-avatar{width:84px;height:84px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:32px;border:3px solid var(--gold);}
+.instructor-name{font-size:20px;font-weight:700;color:var(--gold);margin-bottom:3px;}
+.instructor-title{font-size:12px;color:#CADCFC;margin-bottom:12px;}
+.instructor-bio{font-size:13px;color:#CADCFC;line-height:1.7;margin-bottom:12px;}
+.creds{display:flex;flex-wrap:wrap;gap:7px;}
+.cred{background:rgba(255,255,255,.1);border-radius:4px;padding:3px 9px;font-size:11px;color:var(--white);}
+
+/* Testimonials */
+.t-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:22px;}
+.t-card{background:var(--light);border-radius:var(--radius);padding:18px;border-left:4px solid var(--gold);}
+.t-stars{color:var(--gold);font-size:13px;margin-bottom:7px;}
+.t-text{font-size:13px;color:var(--gray);line-height:1.6;margin-bottom:9px;font-style:italic;}
+.t-name{font-size:11px;font-weight:700;color:var(--navy);}
+
+/* Bottom CTA */
+.bottom-cta{background:var(--gold);padding:44px 24px;text-align:center;}
+.bottom-cta h2{font-size:26px;font-weight:800;color:var(--navy);margin-bottom:7px;}
+.bottom-cta p{font-size:14px;color:var(--dark);margin-bottom:22px;}
+.bottom-cta-btn{background:var(--navy);color:var(--white);font-size:16px;font-weight:700;padding:14px 38px;border-radius:8px;border:none;cursor:pointer;}
+.site-footer{background:var(--dark);color:#8899BB;padding:18px 24px;text-align:center;font-size:11px;}
+
+/* ═══════════════════════════════════════════════════
    ENROLLMENT GATE
-══════════════════════════════════════ */
-.gate-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--light);padding:24px;}
-.gate-card{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:40px;max-width:480px;width:100%;}
-.gate-logo{color:var(--navy);font-size:13px;font-weight:700;letter-spacing:.05em;margin-bottom:6px;}
-.gate-title{font-size:24px;font-weight:700;color:var(--navy);margin-bottom:4px;}
-.gate-sub{font-size:13px;color:var(--gray);margin-bottom:24px;}
-.gate-label{display:block;font-size:12px;font-weight:600;color:var(--gray);margin:12px 0 4px;}
-.gate-input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:15px;outline:none;transition:border .2s;}
+═══════════════════════════════════════════════════ */
+.gate-outer{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--light);padding:24px;}
+.gate-card{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:38px;max-width:460px;width:100%;}
+.gate-logo{font-size:12px;font-weight:700;color:var(--navy);letter-spacing:.05em;margin-bottom:5px;}
+.gate-title{font-size:22px;font-weight:700;color:var(--navy);margin-bottom:4px;}
+.gate-sub{font-size:13px;color:var(--gray);margin-bottom:22px;}
+.gate-label{display:block;font-size:12px;font-weight:600;color:var(--gray);margin:11px 0 4px;}
+.gate-input{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;outline:none;transition:border .2s;}
 .gate-input:focus{border-color:var(--navy);}
-.gate-btn{display:block;width:100%;background:var(--gold);color:var(--navy);font-size:16px;font-weight:700;padding:14px;border-radius:8px;border:none;cursor:pointer;margin-top:20px;}
-.gate-notice{font-size:12px;color:var(--gray);margin-top:12px;text-align:center;line-height:1.6;}
+.gate-go{display:block;width:100%;background:var(--gold);color:var(--navy);font-size:15px;font-weight:700;padding:13px;border-radius:8px;border:none;cursor:pointer;margin-top:18px;}
+.gate-notice{font-size:11px;color:var(--gray);margin-top:12px;text-align:center;line-height:1.6;}
+.gate-back{text-align:center;margin-top:10px;font-size:12px;color:var(--gray);cursor:pointer;}
 
-/* ══════════════════════════════════════
-   COURSE PLAYER
-══════════════════════════════════════ */
-.player-wrap{display:grid;grid-template-columns:268px 1fr;min-height:100vh;}
-
-/* Timer bar — fixed top strip inside player */
-.timer-bar{background:var(--navy);padding:6px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--gold);}
-.timer-label{font-size:11px;color:#CADCFC;letter-spacing:.04em;}
-.timer-display{font-size:14px;font-weight:700;color:var(--gold);font-variant-numeric:tabular-nums;min-width:72px;text-align:right;}
-.timer-display.warn{color:#FFA500;}
-.timer-display.critical{color:var(--red);animation:pulse .8s infinite;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
-.timer-progress{height:4px;background:rgba(255,255,255,.1);flex:1;margin:0 14px;border-radius:2px;overflow:hidden;}
-.timer-progress-fill{height:100%;background:var(--gold);border-radius:2px;transition:width 1s linear;}
-.timer-progress-fill.warn{background:#FFA500;}
-.timer-progress-fill.critical{background:var(--red);}
+/* ═══════════════════════════════════════════════════
+   COURSE PLAYER  (sidebar + content area)
+═══════════════════════════════════════════════════ */
+.player-layout{display:grid;grid-template-columns:256px 1fr;min-height:calc(100vh - 94px);}
 
 /* Sidebar */
-.sidebar{background:var(--navy);color:var(--white);position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;}
-.sidebar-header{padding:20px;border-bottom:1px solid rgba(255,255,255,.1);}
-.sidebar-logo{font-size:12px;font-weight:700;color:var(--gold);letter-spacing:.05em;}
-.sidebar-course{font-size:13px;color:#CADCFC;margin-top:4px;line-height:1.4;}
-.sidebar-prog{height:4px;background:rgba(255,255,255,.15);margin:12px 0 4px;}
-.sidebar-prog-fill{height:100%;background:var(--gold);transition:width .4s;}
-.sidebar-prog-label{font-size:11px;color:#8899BB;margin-bottom:12px;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:12px;}
-.sidebar-modules{flex:1;padding:10px 0;}
-.sbm{padding:11px 20px;cursor:pointer;border-left:3px solid transparent;transition:all .15s;}
-.sbm:hover{background:rgba(255,255,255,.05);}
-.sbm.s-active{border-left-color:var(--gold);background:rgba(201,168,76,.1);}
-.sbm.s-done{border-left-color:var(--green);}
-.sbm.s-locked{opacity:.4;cursor:not-allowed;}
-.sbm-header{display:flex;align-items:center;gap:10px;}
-.sbm-icon{font-size:15px;width:26px;text-align:center;}
-.sbm-num{font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.06em;}
-.sbm-name{font-size:13px;color:var(--white);margin:1px 0;}
-.sbm-dur{font-size:11px;color:#8899BB;}
-.sbm-status{margin-left:auto;font-size:13px;}
-.sidebar-exam{padding:12px 20px;border-top:1px solid rgba(255,255,255,.1);margin-top:auto;}
-.sbm-exam{padding:10px 0;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:13px;color:#CADCFC;}
-.sbm-exam.s-locked{opacity:.38;cursor:not-allowed;}
+.sidebar{background:var(--navy);display:flex;flex-direction:column;position:sticky;top:0;height:calc(100vh - 94px);overflow-y:auto;}
+.sb-head{padding:18px 18px 0;}
+.sb-logo{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.04em;}
+.sb-course{font-size:12px;color:#CADCFC;margin-top:3px;line-height:1.4;}
+.sb-prog-track{height:4px;background:rgba(255,255,255,.12);margin:11px 0 3px;border-radius:2px;}
+.sb-prog-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .4s;}
+.sb-prog-label{font-size:10px;color:#8899BB;padding-bottom:11px;border-bottom:1px solid rgba(255,255,255,.09);}
+.sb-mods{flex:1;padding:10px 0;}
+.sbm{padding:10px 18px;cursor:pointer;border-left:3px solid transparent;transition:all .15s;}
+.sbm:hover{background:rgba(255,255,255,.04);}
+.sbm.sbm-active{border-left-color:var(--gold);background:rgba(201,168,76,.1);}
+.sbm.sbm-done{border-left-color:var(--green);}
+.sbm.sbm-locked{opacity:.38;cursor:not-allowed;}
+.sbm-row{display:flex;align-items:center;gap:9px;}
+.sbm-icon{font-size:14px;width:24px;text-align:center;}
+.sbm-info{flex:1;}
+.sbm-num{font-size:9px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.06em;}
+.sbm-name{font-size:12px;color:var(--white);margin:1px 0;}
+.sbm-dur{font-size:10px;color:#8899BB;}
+.sbm-status{font-size:12px;margin-left:auto;}
+.sb-exam-row{padding:12px 18px;border-top:1px solid rgba(255,255,255,.09);margin-top:auto;cursor:pointer;display:flex;align-items:center;gap:9px;font-size:12px;color:#CADCFC;}
+.sb-exam-row.sb-locked{opacity:.35;cursor:not-allowed;}
 
-/* Main player */
-.player-main{display:flex;flex-direction:column;}
-.player-topbar{background:var(--white);border-bottom:1px solid var(--border);padding:12px 28px;display:flex;align-items:center;justify-content:space-between;}
-.player-bc{font-size:13px;color:var(--gray);}
-.player-sc{font-size:12px;color:var(--gray);background:var(--light);padding:4px 12px;border-radius:20px;}
-.player-content{flex:1;padding:32px 38px;max-width:800px;}
-
-/* Slide */
-.slide-wrap{animation:fadeIn .22s ease;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:none;}}
-.slide-heading{font-size:25px;font-weight:700;color:var(--navy);margin-bottom:6px;line-height:1.25;}
-.slide-subheading{font-size:13px;color:var(--gray);margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid var(--gold);}
-.slide-body{font-size:15px;}
-
-/* Content blocks */
-.sect-h3{font-size:16px;font-weight:700;color:var(--navy);margin:18px 0 9px;}
-.c-alert{background:#FFF3CD;border:1px solid #F9C757;border-radius:8px;padding:12px 15px;margin:14px 0;display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#7B4F00;}
-.alert-icon{font-size:17px;flex-shrink:0;}
-.c-callout{background:var(--green-lt);border-left:4px solid var(--green);border-radius:0 8px 8px 0;padding:11px 15px;margin:14px 0;font-size:14px;color:#1A4A2A;}
-.c-rule{background:#F0F4FB;border-left:4px solid var(--navy);border-radius:0 8px 8px 0;padding:11px 15px;margin:14px 0;font-size:14px;font-weight:600;color:var(--navy);}
-.c-bullets{padding-left:4px;margin:10px 0;}
-.c-bullets li{padding:5px 0 5px 18px;position:relative;font-size:14px;border-bottom:1px solid #f0f0f0;}
-.c-bullets li:last-child{border:none;}
-.c-bullets li::before{content:"▸";position:absolute;left:0;color:var(--gold);font-size:11px;top:8px;}
-.type-cards{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:14px 0;}
-.type-card{background:var(--white);border-radius:8px;padding:13px;border:1px solid var(--border);}
-.type-card-label{font-size:12px;font-weight:700;margin-bottom:5px;}
-.type-card-text{font-size:13px;color:var(--gray);}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0;}
-.col-block{background:var(--light);border-radius:8px;padding:13px;}
-.col-heading{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:9px;}
-.stage-list{display:flex;flex-direction:column;gap:7px;margin:12px 0;}
-.stage-row{display:flex;align-items:center;gap:12px;background:var(--white);border-radius:8px;padding:11px 14px;border:1px solid var(--border);}
-.stage-num{width:30px;height:30px;border-radius:50%;color:var(--white);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.stage-label{font-weight:700;font-size:13px;}
-.stage-text{font-size:13px;color:var(--gray);}
-.rhf-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;margin:14px 0;}
-.rhf-card{background:var(--white);border-radius:8px;padding:13px;border:1px solid var(--border);}
-.rhf-label{font-size:17px;font-weight:800;margin-bottom:7px;}
-.rhf-text{font-size:13px;color:var(--gray);}
-
-/* ── Inline section check-in quiz ─────────────────────────────────────── */
-.check-in{margin:24px 0;background:var(--white);border-radius:var(--r);border:2px solid var(--gold);overflow:hidden;}
-.check-in-header{background:var(--gold);padding:12px 18px;display:flex;align-items:center;gap:10px;}
-.check-in-icon{font-size:17px;}
-.check-in-title{font-size:14px;font-weight:700;color:var(--navy);}
-.check-in-body{padding:18px;}
-.ci-q{margin-bottom:18px;}
-.ci-q:last-child{margin-bottom:0;}
-.ci-qtext{font-size:14px;font-weight:600;color:var(--navy);margin-bottom:10px;line-height:1.5;}
-.ci-opts{display:flex;flex-direction:column;gap:7px;}
-.ci-opt{display:flex;align-items:center;gap:9px;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;cursor:pointer;font-size:13px;transition:all .15s;}
-.ci-opt:hover:not(.ci-done){border-color:var(--navy);background:#F0F4FB;}
-.ci-opt.ci-sel{border-color:var(--navy);background:#EBF0FB;}
-.ci-opt.ci-ok{border-color:var(--green)!important;background:var(--green-lt)!important;color:var(--green);}
-.ci-opt.ci-no{border-color:var(--red)!important;background:var(--red-lt)!important;color:var(--red);}
-.ci-opt.ci-done{pointer-events:none;}
-.ci-ol{width:24px;height:24px;border-radius:50%;background:var(--light);font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--navy);border:1.5px solid var(--border);}
-.ci-opt.ci-sel .ci-ol{background:var(--navy);color:#fff;border-color:var(--navy);}
-.ci-opt.ci-ok .ci-ol{background:var(--green);color:#fff;border-color:var(--green);}
-.ci-opt.ci-no .ci-ol{background:var(--red);color:#fff;border-color:var(--red);}
-.ci-fb{font-size:12px;margin-top:7px;padding:7px 11px;border-radius:6px;display:none;line-height:1.5;}
-.ci-fb.ci-fb-ok{display:block;background:var(--green-lt);color:var(--green);}
-.ci-fb.ci-fb-no{display:block;background:var(--red-lt);color:var(--red);}
-.check-in-pending{padding:10px 18px 14px;font-size:12px;color:var(--gray);font-style:italic;}
-
-/* ── Final module quiz ─────────────────────────────────────────────────── */
-.final-quiz{background:var(--white);border-radius:var(--r);border:2px solid var(--navy);overflow:hidden;margin-bottom:20px;}
-.fq-header{background:var(--navy);padding:14px 20px;}
-.fq-title{font-size:15px;font-weight:700;color:var(--white);}
-.fq-sub{font-size:12px;color:#CADCFC;margin-top:3px;}
-.fq-body{padding:22px;}
-.fq-q{margin-bottom:20px;}
-.fq-q:last-child{margin-bottom:0;}
-.fq-qtext{font-size:14px;font-weight:600;color:var(--navy);margin-bottom:11px;line-height:1.5;}
-.fq-opts{display:flex;flex-direction:column;gap:7px;}
-.fq-opt{display:flex;align-items:center;gap:9px;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;cursor:pointer;font-size:13px;transition:all .15s;}
-.fq-opt:hover:not(.fq-done){border-color:var(--navy);background:#F0F4FB;}
-.fq-opt.fq-sel{border-color:var(--navy);background:#EBF0FB;}
-.fq-opt.fq-ok{border-color:var(--green)!important;background:var(--green-lt)!important;color:var(--green);}
-.fq-opt.fq-no{border-color:var(--red)!important;background:var(--red-lt)!important;color:var(--red);}
-.fq-opt.fq-done{pointer-events:none;}
-.fq-ol{width:24px;height:24px;border-radius:50%;background:var(--light);font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--navy);border:1.5px solid var(--border);}
-.fq-opt.fq-sel .fq-ol{background:var(--navy);color:#fff;border-color:var(--navy);}
-.fq-opt.fq-ok .fq-ol{background:var(--green);color:#fff;border-color:var(--green);}
-.fq-opt.fq-no .fq-ol{background:var(--red);color:#fff;border-color:var(--red);}
-.fq-fb{font-size:12px;margin-top:7px;padding:7px 11px;border-radius:6px;display:none;line-height:1.5;}
-.fq-fb.fq-fb-ok{display:block;background:var(--green-lt);color:var(--green);}
-.fq-fb.fq-fb-no{display:block;background:var(--red-lt);color:var(--red);}
-.fq-complete{padding:14px 18px;background:var(--green-lt);font-size:13px;color:var(--green);font-weight:600;border-top:1px solid #c3e6cb;}
-
-/* ── Slide progress dots & nav ─────────────────────────────────────────── */
-.player-nav{background:var(--white);border-top:1px solid var(--border);padding:14px 38px;display:flex;justify-content:space-between;align-items:center;}
-.nav-btn{padding:10px 26px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;}
-.nav-back{background:var(--white);color:var(--navy);border:1.5px solid var(--navy);}
-.nav-next{background:var(--navy);color:var(--white);}
+/* Main area */
+.player-main{display:flex;flex-direction:column;min-height:calc(100vh - 94px);}
+.player-topbar{background:var(--white);border-bottom:1px solid var(--border);padding:11px 28px;display:flex;align-items:center;justify-content:space-between;}
+.player-bc{font-size:12px;color:var(--gray);}
+.player-sc{font-size:11px;color:var(--gray);background:var(--light);padding:3px 11px;border-radius:18px;}
+.player-body{flex:1;padding:28px 36px;max-width:780px;overflow-y:auto;}
+.player-nav{background:var(--white);border-top:1px solid var(--border);padding:13px 36px;display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.nav-back{padding:9px 22px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;background:var(--white);color:var(--navy);border:1.5px solid var(--navy);}
+.slide-dots{display:flex;gap:5px;}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--border);}
+.dot.d-done{background:var(--gold);}
+.dot.d-active{background:var(--navy);}
+.nav-next{padding:9px 22px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;background:var(--navy);color:var(--white);border:none;}
 .nav-next:hover{background:#243a7a;}
 .nav-next:disabled{background:#A0AEC0;cursor:not-allowed;}
-.slide-dots{display:flex;gap:5px;}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--border);}
-.dot.d-active{background:var(--navy);}
-.dot.d-done{background:var(--gold);}
 
-/* ══════════════════════════════════════
-   FINAL EXAM
-══════════════════════════════════════ */
-.exam-wrap{max-width:800px;padding:32px 38px;}
-.exam-title{font-size:25px;font-weight:700;color:var(--navy);margin-bottom:5px;}
-.exam-sub{font-size:14px;color:var(--gray);margin-bottom:14px;}
-.exam-warn{background:#FFF3CD;border:1px solid #F9C757;border-radius:8px;padding:12px 15px;font-size:13px;color:#7B4F00;margin-bottom:16px;line-height:1.65;}
-/* Attempt indicator */
-.attempt-indicator{display:flex;gap:8px;align-items:center;margin-bottom:16px;padding:10px 14px;background:var(--light);border-radius:8px;}
-.attempt-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--border);background:var(--white);}
-.attempt-dot.used{background:var(--red);border-color:var(--red);}
-.attempt-dot.current{background:var(--gold);border-color:var(--gold);animation:pulse .8s infinite;}
-.attempt-label{font-size:12px;color:var(--gray);margin-left:6px;}
-.exam-pw{background:var(--white);border-radius:8px;padding:11px 14px;margin-bottom:16px;display:flex;align-items:center;gap:11px;border:1px solid var(--border);}
-.exam-pb{flex:1;height:6px;background:#E8EDF6;border-radius:3px;overflow:hidden;}
-.exam-pf{height:100%;background:var(--navy);border-radius:3px;transition:width .3s;}
-.exam-pt{font-size:12px;color:var(--gray);white-space:nowrap;}
-.exam-qblock{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:22px 26px;margin-bottom:16px;}
-.exam-mod-badge{display:inline-block;background:var(--light);border:1px solid var(--border);border-radius:5px;font-size:10px;font-weight:600;color:var(--navy);padding:3px 10px;margin-bottom:9px;}
-.exam-ref{font-size:10px;color:var(--gray);margin-left:7px;font-style:italic;}
-.exam-qnum{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);margin-bottom:5px;}
-.exam-qtext{font-size:14px;font-weight:600;line-height:1.5;margin-bottom:14px;}
-.exam-opts{display:flex;flex-direction:column;gap:7px;}
-.exam-opt{display:flex;align-items:center;gap:9px;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;cursor:pointer;font-size:13px;transition:all .15s;}
-.exam-opt:hover{border-color:var(--navy);background:#F0F4FB;}
-.exam-opt.sel{border-color:var(--navy);background:#EBF0FB;}
-.exam-opt.ok{border-color:var(--green)!important;background:var(--green-lt)!important;color:var(--green);}
-.exam-opt.no{border-color:var(--red)!important;background:var(--red-lt)!important;color:var(--red);}
-.exam-ol{width:24px;height:24px;border-radius:50%;background:var(--light);font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--navy);border:1.5px solid var(--border);}
-.exam-opt.sel .exam-ol{background:var(--navy);color:#fff;border-color:var(--navy);}
-.exam-opt.ok .exam-ol{background:var(--green);color:#fff;border-color:var(--green);}
-.exam-opt.no .exam-ol{background:var(--red);color:#fff;border-color:var(--red);}
-.exam-fb{margin-top:9px;padding:8px 12px;border-radius:6px;font-size:12px;line-height:1.55;display:none;}
-.exam-fb.show{display:block;}
-.exam-fb-ok{background:var(--green-lt);color:var(--green);}
-.exam-fb-no{background:var(--red-lt);color:var(--red);}
-.exam-nav{display:flex;justify-content:space-between;align-items:center;margin-top:6px;padding:14px 0;}
-.exam-btn{padding:10px 24px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;}
-.exam-back-btn{background:var(--white);color:var(--navy);border:1.5px solid var(--navy);}
-.exam-fwd-btn{background:var(--navy);color:#fff;}
+/* Slide content */
+.slide-wrap{animation:fadeUp .2s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:none;}}
+.slide-heading{font-size:24px;font-weight:700;color:var(--navy);margin-bottom:6px;line-height:1.25;}
+.slide-sub{font-size:12px;color:var(--gray);margin-bottom:18px;padding-bottom:14px;border-bottom:2px solid var(--gold);}
+.sect-h3{font-size:15px;font-weight:700;color:var(--navy);margin:16px 0 8px;}
+.c-alert{background:#FFF3CD;border:1px solid #F9C757;border-radius:7px;padding:11px 14px;margin:13px 0;display:flex;gap:9px;align-items:flex-start;font-size:13px;color:#7B4F00;}
+.c-alert-icon{font-size:16px;flex-shrink:0;}
+.c-callout{background:var(--green-lt);border-left:4px solid var(--green);border-radius:0 7px 7px 0;padding:10px 14px;margin:13px 0;font-size:13px;color:#1A4A2A;}
+.c-rule{background:#F0F4FB;border-left:4px solid var(--navy);border-radius:0 7px 7px 0;padding:10px 14px;margin:13px 0;font-size:13px;font-weight:600;color:var(--navy);}
+.c-bullets{padding-left:2px;margin:10px 0;}
+.c-bullets li{padding:5px 0 5px 16px;position:relative;font-size:13px;border-bottom:1px solid #f0f0f0;}
+.c-bullets li:last-child{border:none;}
+.c-bullets li::before{content:"▸";position:absolute;left:0;color:var(--gold);font-size:10px;top:8px;}
+.type-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0;}
+.type-card{background:var(--white);border-radius:7px;padding:12px;border:1px solid var(--border);}
+.type-card-label{font-size:11px;font-weight:700;margin-bottom:5px;}
+.type-card-text{font-size:12px;color:var(--gray);}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin:12px 0;}
+.col-block{background:var(--light);border-radius:7px;padding:12px;}
+.col-heading{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:8px;}
+.stage-list{display:flex;flex-direction:column;gap:6px;margin:11px 0;}
+.stage-row{display:flex;align-items:center;gap:11px;background:var(--white);border-radius:7px;padding:10px 13px;border:1px solid var(--border);}
+.stage-num{width:28px;height:28px;border-radius:50%;color:var(--white);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.stage-label{font-weight:700;font-size:12px;}
+.stage-text{font-size:12px;color:var(--gray);}
+.rhf-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:12px 0;}
+.rhf-card{background:var(--white);border-radius:7px;padding:12px;border:1px solid var(--border);}
+.rhf-label{font-size:16px;font-weight:800;margin-bottom:6px;}
+.rhf-text{font-size:12px;color:var(--gray);}
 
-/* ══════════════════════════════════════
+/* ═══════════════════════════════════════════════════
+   QUESTION SCREENS  (check-in + module quiz + final exam)
+   Each question set is a DEDICATED full screen.
+═══════════════════════════════════════════════════ */
+.q-screen-wrap{max-width:680px;padding:32px 36px;}
+.q-screen-header{margin-bottom:24px;}
+.q-screen-badge{display:inline-flex;align-items:center;gap:7px;background:var(--navy);color:var(--gold);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:5px 14px;border-radius:4px;margin-bottom:12px;}
+.q-screen-title{font-size:22px;font-weight:700;color:var(--navy);margin-bottom:4px;}
+.q-screen-sub{font-size:13px;color:var(--gray);line-height:1.6;}
+
+/* Progress dots across top of question screen */
+.q-progress{display:flex;gap:5px;margin-bottom:20px;}
+.qp-dot{height:5px;flex:1;border-radius:3px;background:var(--border);}
+.qp-dot.qp-done{background:var(--gold);}
+.qp-dot.qp-active{background:var(--navy);}
+
+/* Single question card */
+.q-card{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:24px 26px;}
+.q-num{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gold);margin-bottom:7px;}
+.q-ref{font-size:9px;color:var(--gray);margin-left:8px;font-style:italic;}
+.q-text{font-size:15px;font-weight:600;line-height:1.5;color:var(--navy);margin-bottom:16px;}
+.q-opts{display:flex;flex-direction:column;gap:8px;}
+.q-opt{display:flex;align-items:center;gap:10px;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;transition:all .15s;}
+.q-opt:hover:not(.q-picked){border-color:var(--navy);background:#F0F4FB;}
+.q-opt.q-selected{border-color:var(--navy);background:#EBF0FB;}
+.q-opt.q-ok{border-color:var(--green)!important;background:var(--green-lt)!important;color:var(--green);}
+.q-opt.q-no{border-color:var(--red)!important;background:var(--red-lt)!important;color:var(--red);}
+.q-opt.q-picked{pointer-events:none;}
+.q-letter{width:26px;height:26px;border-radius:50%;background:var(--light);font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--navy);border:1.5px solid var(--border);}
+.q-opt.q-selected .q-letter{background:var(--navy);color:#fff;border-color:var(--navy);}
+.q-opt.q-ok .q-letter{background:var(--green);color:#fff;border-color:var(--green);}
+.q-opt.q-no .q-letter{background:var(--red);color:#fff;border-color:var(--red);}
+.q-feedback{margin-top:12px;padding:10px 14px;border-radius:7px;font-size:13px;line-height:1.6;}
+.q-fb-ok{background:var(--green-lt);color:var(--green);}
+.q-fb-no{background:var(--red-lt);color:var(--red);}
+.q-hint{margin-top:10px;font-size:12px;color:var(--gray);font-style:italic;}
+
+/* Quiz screen nav */
+.q-nav{display:flex;justify-content:space-between;align-items:center;margin-top:16px;}
+.q-nav-info{font-size:12px;color:var(--gray);}
+
+/* Module quiz result banner */
+.quiz-result-banner{margin-top:16px;padding:14px 18px;border-radius:8px;font-size:14px;font-weight:600;text-align:center;}
+.qrb-pass{background:var(--green-lt);color:var(--green);border:1px solid #c3e6cb;}
+.qrb-fail{background:var(--red-lt);color:var(--red);border:1px solid #f5c6cb;}
+
+/* Final exam attempt tracker */
+.attempt-tracker{display:flex;align-items:center;gap:8px;margin-bottom:16px;padding:10px 14px;background:var(--white);border-radius:8px;border:1px solid var(--border);}
+.att-dot{width:13px;height:13px;border-radius:50%;border:2px solid var(--border);background:var(--white);}
+.att-dot.att-used{background:var(--red);border-color:var(--red);}
+.att-dot.att-current{background:var(--gold);border-color:var(--gold);animation:blink .9s infinite;}
+.att-label{font-size:12px;color:var(--gray);margin-left:4px;}
+
+/* ═══════════════════════════════════════════════════
    RESULTS
-══════════════════════════════════════ */
-.results-wrap{max-width:720px;padding:36px;margin:0 auto;}
-.results-card{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:38px;text-align:center;}
-.score-ring{width:136px;height:136px;border-radius:50%;margin:0 auto 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:30px;font-weight:800;}
+═══════════════════════════════════════════════════ */
+.results-outer{max-width:680px;padding:32px 36px;margin:0 auto;}
+.results-card{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:36px;text-align:center;}
+.score-ring{width:130px;height:130px;border-radius:50%;margin:0 auto 18px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:28px;font-weight:800;}
 .ring-pass{background:var(--green-lt);color:var(--green);border:5px solid var(--green);}
 .ring-fail{background:var(--red-lt);color:var(--red);border:5px solid var(--red);}
-.ring-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-top:3px;}
+.ring-sub{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-top:3px;}
 .res-title{font-size:22px;font-weight:700;margin-bottom:7px;}
-.rt-pass{color:var(--green);} .rt-fail{color:var(--red);}
-.res-sub{font-size:14px;color:var(--gray);margin-bottom:20px;line-height:1.6;}
-.breakdown{background:var(--light);border-radius:8px;padding:15px 18px;margin-bottom:20px;text-align:left;}
-.breakdown h3{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--navy);margin-bottom:10px;}
-.bd-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.res-pass{color:var(--green);}
+.res-fail{color:var(--red);}
+.res-sub{font-size:13px;color:var(--gray);margin-bottom:20px;line-height:1.65;}
+.res-breakdown{background:var(--light);border-radius:8px;padding:15px 17px;margin-bottom:18px;text-align:left;}
+.res-breakdown h3{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--navy);margin-bottom:10px;}
+.bd-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:13px;}
 .bd-row:last-child{border:none;font-weight:700;}
-.bd-pass{color:var(--green);font-weight:600;} .bd-fail{color:var(--red);font-weight:600;}
-.res-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;}
-.r-btn{padding:11px 22px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;}
-.r-primary{background:var(--gold);color:var(--navy);}
-.r-outline{background:var(--white);color:var(--navy);border:1.5px solid var(--navy);}
-.bsis-note{background:#EBF0FB;border-radius:8px;padding:13px 16px;font-size:12px;color:var(--navy);line-height:1.7;text-align:left;}
+.bd-p{color:var(--green);font-weight:600;}
+.bd-f{color:var(--red);font-weight:600;}
+.res-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:14px;}
+.r-btn{padding:10px 22px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;}
+.r-gold{background:var(--gold);color:var(--navy);}
+.r-navy{background:var(--white);color:var(--navy);border:1.5px solid var(--navy);}
+.r-red{background:var(--red);color:var(--white);}
+.bsis-note{background:#EBF0FB;border-radius:8px;padding:12px 16px;font-size:12px;color:var(--navy);line-height:1.7;text-align:left;}
 
-/* ══════════════════════════════════════
+/* ═══════════════════════════════════════════════════
    REPURCHASE LOCK SCREEN
-══════════════════════════════════════ */
-.lock-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--dark);padding:24px;}
-.lock-card{background:var(--white);border-radius:var(--r);padding:44px;max-width:520px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4);}
-.lock-icon{font-size:56px;margin-bottom:16px;}
-.lock-title{font-size:24px;font-weight:800;color:var(--red);margin-bottom:10px;}
-.lock-sub{font-size:15px;color:var(--gray);margin-bottom:24px;line-height:1.7;}
-.lock-stripe{height:4px;background:var(--gold);border-radius:2px;margin:20px 0;}
-.lock-policy{background:#FFF3CD;border:1px solid #F9C757;border-radius:8px;padding:14px 18px;font-size:13px;color:#7B4F00;margin-bottom:24px;text-align:left;line-height:1.7;}
-.lock-btn{display:block;width:100%;background:var(--gold);color:var(--navy);font-size:17px;font-weight:700;padding:15px;border-radius:8px;border:none;cursor:pointer;margin-bottom:12px;}
+═══════════════════════════════════════════════════ */
+.lock-outer{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--dark);padding:24px;}
+.lock-card{background:var(--white);border-radius:var(--radius);padding:42px;max-width:500px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4);}
+.lock-icon{font-size:52px;margin-bottom:14px;}
+.lock-title{font-size:22px;font-weight:800;color:var(--red);margin-bottom:9px;}
+.lock-sub{font-size:14px;color:var(--gray);margin-bottom:20px;line-height:1.7;}
+.lock-stripe{height:4px;background:var(--gold);border-radius:2px;margin:18px 0;}
+.lock-policy{background:var(--gold-lt);border:1px solid #F9C757;border-radius:7px;padding:13px 16px;font-size:12px;color:#7B4F00;margin-bottom:20px;text-align:left;line-height:1.7;}
+.lock-btn{display:block;width:100%;background:var(--gold);color:var(--navy);font-size:16px;font-weight:700;padding:14px;border-radius:8px;border:none;cursor:pointer;margin-bottom:10px;}
 .lock-btn:hover{background:#b8962a;}
-.lock-btn-outline{display:block;width:100%;background:var(--white);color:var(--navy);font-size:15px;font-weight:600;padding:13px;border-radius:8px;border:1.5px solid var(--navy);cursor:pointer;}
+.lock-outline{display:block;width:100%;background:var(--white);color:var(--navy);font-size:14px;font-weight:600;padding:12px;border-radius:8px;border:1.5px solid var(--navy);cursor:pointer;}
 
-/* ══════════════════════════════════════
-   IDLE WARNING OVERLAY
-══════════════════════════════════════ */
-.idle-overlay{position:fixed;inset:0;background:rgba(18,25,58,.92);display:flex;align-items:center;justify-content:center;z-index:999;display:none;}
-.idle-overlay.show{display:flex;}
-.idle-card{background:var(--white);border-radius:var(--r);padding:36px;max-width:400px;width:90%;text-align:center;}
-.idle-icon{font-size:48px;margin-bottom:12px;}
-.idle-title{font-size:20px;font-weight:700;color:var(--navy);margin-bottom:8px;}
-.idle-sub{font-size:14px;color:var(--gray);margin-bottom:20px;line-height:1.6;}
-.idle-countdown{font-size:40px;font-weight:800;color:var(--red);margin-bottom:20px;}
-.idle-btn{background:var(--gold);color:var(--navy);font-size:15px;font-weight:700;padding:13px 32px;border-radius:8px;border:none;cursor:pointer;}
-
-/* ══════════════════════════════════════
+/* ═══════════════════════════════════════════════════
    CERTIFICATE
-══════════════════════════════════════ */
+═══════════════════════════════════════════════════ */
 @media print{.no-print{display:none!important;}.cert-page{padding:0;}}
 .cert-page{padding:28px;}
-.cert-wrap{background:var(--white);border:3px double var(--navy);border-radius:4px;padding:46px 56px;max-width:820px;margin:0 auto;text-align:center;position:relative;}
+.cert-wrap{background:var(--white);border:3px double var(--navy);border-radius:4px;padding:46px 56px;max-width:800px;margin:0 auto;text-align:center;position:relative;}
 .cert-wrap::before{content:'';position:absolute;inset:9px;border:1px solid var(--gold);border-radius:2px;pointer-events:none;}
-.cert-eyebrow{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--navy);margin-bottom:5px;}
-.cert-stripe{height:5px;background:var(--gold);border-radius:3px;margin:10px auto;width:80px;}
-.cert-co{font-size:23px;font-weight:800;color:var(--navy);margin-bottom:2px;}
-.cert-ppo{font-size:12px;color:var(--gray);margin-bottom:22px;}
-.cert-certifies{font-size:13px;color:var(--gray);margin-bottom:7px;}
-.cert-name{font-size:30px;font-weight:800;color:var(--navy);border-bottom:2px solid var(--navy);display:inline-block;min-width:290px;padding-bottom:4px;margin-bottom:18px;}
-.cert-body{font-size:13px;color:var(--gray);line-height:1.8;margin-bottom:5px;}
-.cert-course{font-size:17px;font-weight:700;color:var(--navy);margin-bottom:12px;}
-.cert-badge{display:inline-block;background:var(--green-lt);color:var(--green);border-radius:6px;padding:4px 14px;font-size:12px;font-weight:700;margin-bottom:20px;}
-.cert-sigs{display:flex;justify-content:space-around;margin-top:32px;gap:18px;}
+.cert-eyebrow{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--navy);margin-bottom:5px;}
+.cert-stripe{height:5px;background:var(--gold);border-radius:3px;margin:10px auto;width:72px;}
+.cert-co{font-size:22px;font-weight:800;color:var(--navy);margin-bottom:2px;}
+.cert-ppo{font-size:11px;color:var(--gray);margin-bottom:20px;}
+.cert-certifies{font-size:12px;color:var(--gray);margin-bottom:7px;}
+.cert-name{font-size:28px;font-weight:800;color:var(--navy);border-bottom:2px solid var(--navy);display:inline-block;min-width:270px;padding-bottom:3px;margin-bottom:16px;}
+.cert-body{font-size:12px;color:var(--gray);line-height:1.8;margin-bottom:5px;}
+.cert-course{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:10px;}
+.cert-badge-pass{display:inline-block;background:var(--green-lt);color:var(--green);border-radius:5px;padding:4px 13px;font-size:12px;font-weight:700;margin-bottom:18px;}
+.cert-sigs{display:flex;justify-content:space-around;margin-top:28px;gap:16px;}
 .cert-sig{flex:1;text-align:center;}
 .cert-sig-line{border-top:1.5px solid var(--navy);margin-bottom:5px;}
-.cert-sig-label{font-size:11px;color:var(--gray);}
+.cert-sig-label{font-size:10px;color:var(--gray);}
 
-/* ── Responsive ── */
+/* ═══════════════════════════════════════════════════
+   IDLE OVERLAY
+═══════════════════════════════════════════════════ */
+.idle-overlay{position:fixed;inset:0;background:rgba(18,25,58,.93);display:none;align-items:center;justify-content:center;z-index:999;}
+.idle-overlay.idle-show{display:flex;}
+.idle-card{background:var(--white);border-radius:var(--radius);padding:34px;max-width:380px;width:90%;text-align:center;}
+.idle-icon{font-size:44px;margin-bottom:11px;}
+.idle-title{font-size:19px;font-weight:700;color:var(--navy);margin-bottom:7px;}
+.idle-sub{font-size:13px;color:var(--gray);margin-bottom:16px;line-height:1.6;}
+.idle-count{font-size:38px;font-weight:800;color:var(--red);margin-bottom:18px;}
+.idle-btn{background:var(--gold);color:var(--navy);font-size:14px;font-weight:700;padding:12px 30px;border-radius:8px;border:none;cursor:pointer;}
+
+/* ─── Responsive ─────────────────────────────────── */
 @media(max-width:768px){
-  .outcomes-grid,.type-cards,.two-col,.rhf-grid,.testimonials-grid{grid-template-columns:1fr;}
-  .curriculum-inner{grid-template-columns:1fr;}
+  .outcomes-grid,.type-cards,.two-col,.rhf-grid,.t-grid{grid-template-columns:1fr;}
+  .curric-wrap{grid-template-columns:1fr;}
   .price-card{position:static;}
-  .player-wrap{grid-template-columns:1fr;}
+  .player-layout{grid-template-columns:1fr;}
   .sidebar{height:auto;position:relative;}
   .instructor-inner{grid-template-columns:1fr;}
-  .hero-title{font-size:30px;}
+  .hero-title{font-size:28px;}
 }
 </style>
 </head>
 <body>
 
-<!-- ══════════════ IDLE WARNING OVERLAY ══════════════ -->
+<!-- ═══ IDLE OVERLAY ═══════════════════════════════════════════ -->
 <div class="idle-overlay" id="idle-overlay">
   <div class="idle-card">
     <div class="idle-icon">⏰</div>
-    <h2 class="idle-title">Are you still there?</h2>
-    <p class="idle-sub">Your session will pause due to inactivity. Click below to continue your course.</p>
-    <div class="idle-countdown" id="idle-countdown">60</div>
-    <button class="idle-btn" onclick="dismissIdle()">Continue Course</button>
+    <h2 class="idle-title">Still there?</h2>
+    <p class="idle-sub">Your session will lock due to inactivity. Click below to continue.</p>
+    <div class="idle-count" id="idle-count">60</div>
+    <button class="idle-btn" onclick="resetIdle()">Continue Course</button>
   </div>
 </div>
 
-<!-- ══════════════ SCREEN 1: SALES PAGE ══════════════ -->
+<!-- ═══ SCREEN: SALES PAGE ══════════════════════════════════════ -->
 <div class="screen active" id="sc-sales">
-  <header class="site-header">
-    <div class="site-logo">MACCESS INC. / PSLAW</div>
-    <div class="site-meta">PPO License #122729 | BSIS-Authorized Training Provider<br/>gopslaw.com</div>
-  </header>
-  <div class="gold-stripe"></div>
+  <div class="g-header">
+    <div class="g-logo">MACCESS INC. / PSLAW</div>
+    <div class="g-meta">PPO License #122729 | BSIS-Authorized<br/>gopslaw.com</div>
+  </div>
+  <div class="gold-bar"></div>
+
   <section class="hero">
     <div class="hero-inner">
       <div class="hero-badge">${course.badge}</div>
       <h1 class="hero-title">${course.title}</h1>
-      <p class="hero-sub">${course.subtitle} — California Guard Card Training</p>
-      <div class="hero-meta">
-        <div class="hero-chip"><strong>Credit Hours</strong>${course.hours} Hours</div>
-        <div class="hero-chip"><strong>Authority</strong>${course.bpcRef}</div>
-        <div class="hero-chip"><strong>Category</strong>BSIS ${course.category}</div>
-        <div class="hero-chip"><strong>Time Limit</strong>${TOTAL_MINUTES} Minutes</div>
-        <div class="hero-chip"><strong>Certificate</strong>BSIS Compliant</div>
+      <p class="hero-sub">${course.subtitle}</p>
+      <div class="hero-chips">
+        <div class="chip"><strong>Credit Hours</strong>${course.hours} Hrs</div>
+        <div class="chip"><strong>Authority</strong>${course.bpcRef}</div>
+        <div class="chip"><strong>Category</strong>BSIS ${course.category}</div>
+        <div class="chip"><strong>Timer</strong>${TOTAL_MINS} Min Session</div>
+        <div class="chip"><strong>Attempts</strong>${MAX_TRIES} Exam Tries</div>
       </div>
-      <button class="hero-cta" onclick="goEnroll()">Enroll Now — \$${course.price}</button>
-      <div class="hero-trust">🔒 BSIS-Authorized Training &nbsp;|&nbsp; Certificate Included &nbsp;|&nbsp; PPO License #122729</div>
+      <button class="cta-primary" onclick="goGate()">Enroll Now — \$${course.price}</button>
+      <div class="hero-trust">🔒 BSIS-Authorized · Certificate Included · PPO #122729</div>
     </div>
   </section>
-  <section class="outcomes-section">
-    <div class="outcomes-inner">
-      <div class="section-label">What You'll Learn</div>
-      <h2 class="section-title">Course Learning Outcomes</h2>
+
+  <section class="sec" style="background:var(--white);">
+    <div class="sec-inner">
+      <div class="sec-eye">What You'll Learn</div>
+      <h2 class="sec-title">Course Outcomes</h2>
       <div class="outcomes-grid">
-        ${course.outcomes.map(o=>`<div class="outcome-item"><div class="outcome-check">✓</div><div class="outcome-text">${o}</div></div>`).join('')}
+        ${course.outcomes.map(o=>`<div class="outcome"><div class="outcome-check">✓</div><div class="outcome-text">${o}</div></div>`).join('')}
       </div>
     </div>
   </section>
-  <section class="curriculum-section">
-    <div class="curriculum-inner">
-      <div>
-        <div class="section-label">Course Curriculum</div>
-        <h2 class="section-title" style="margin-bottom:18px;">What's Inside</h2>
-        <div class="curriculum-list">
-          ${course.modules.map((mod,i)=>`
-            <div class="curr-item">
-              <div class="curr-icon">${mod.icon}</div>
-              <div class="curr-body">
-                <div class="curr-num">Module ${mod.num}</div>
-                <div class="curr-name">${mod.title}</div>
-                <div class="curr-dur">${mod.duration} · ${mod.slides.length} sections · Check-in questions + module quiz</div>
-              </div>
-              <div style="color:var(--gray);font-size:16px;">${i===0?'▶':'🔒'}</div>
-            </div>`).join('')}
-          <div class="curr-item">
-            <div class="curr-icon">📝</div>
-            <div class="curr-body">
-              <div class="curr-num">Final Assessment</div>
-              <div class="curr-name">BSIS Written Examination</div>
-              <div class="curr-dur">${course.exam.length} questions · 100% required · 3 attempts · Certificate on pass</div>
+
+  <section class="sec" style="background:var(--light);">
+    <div class="sec-inner">
+      <div class="sec-eye">Curriculum</div>
+      <h2 class="sec-title" style="margin-bottom:18px;">What's Inside</h2>
+      <div class="curric-wrap">
+        <div class="curric-list">
+          ${course.modules.map((m,i)=>`
+          <div class="curric-item">
+            <div class="curric-icon">${m.icon}</div>
+            <div class="curric-body">
+              <div class="curric-num">Module ${m.num}</div>
+              <div class="curric-name">${m.title}</div>
+              <div class="curric-dur">${m.duration} · ${m.slides.length} sections · ${m.slides.reduce((a,s)=>a+(s.quiz?s.quiz.length:0),0)} check-ins · ${m.quiz?m.quiz.length:0} module quiz Qs</div>
             </div>
-            <div style="color:var(--gray);font-size:16px;">🔒</div>
+            <div class="curric-lock">${i===0?'▶':'🔒'}</div>
+          </div>`).join('')}
+          <div class="curric-item">
+            <div class="curric-icon">📝</div>
+            <div class="curric-body">
+              <div class="curric-num">Final Assessment</div>
+              <div class="curric-name">BSIS Written Examination</div>
+              <div class="curric-dur">${course.exam.length} questions · 100% required · ${MAX_TRIES} attempts · Certificate on pass</div>
+            </div>
+            <div class="curric-lock">🔒</div>
           </div>
         </div>
-      </div>
-      <div>
-        <div class="price-card">
-          <div class="price-card-title">Full Course Access</div>
-          <div class="price-amount">\$${course.price}</div>
-          <div class="price-period">one-time · lifetime access</div>
-          <button class="price-btn" onclick="goEnroll()">Get Started Now</button>
-          <ul class="price-includes">
-            <li><span class="price-check">✓</span> All ${course.modules.length} course modules</li>
-            <li><span class="price-check">✓</span> Inline section check-in questions</li>
-            <li><span class="price-check">✓</span> Module quizzes before advancing</li>
-            <li><span class="price-check">✓</span> ${course.exam.length}-question BSIS final exam</li>
-            <li><span class="price-check">✓</span> BSIS Certificate of Completion</li>
-            <li><span class="price-check">✓</span> ${TOTAL_MINUTES}-minute timed session</li>
-          </ul>
-          <div class="pay-logos">
-            <div class="pay-logo">Klarna</div>
-            <div class="pay-logo">Afterpay</div>
-            <div class="pay-logo">Affirm</div>
-            <div class="pay-logo">PayPal</div>
-          </div>
-          <div class="guarantee">✓ BSIS Certificate on successful completion</div>
-          <div class="policy-notice">
-            <strong>Assessment Policy:</strong> You have <strong>3 attempts</strong> to pass the final exam. After 3 failed attempts, re-enrollment is required. Sessions expire after <strong>${IDLE_LOCK} minutes of inactivity</strong>.
+        <div>
+          <div class="price-card">
+            <div class="price-card-label">Full Course Access</div>
+            <div class="price-amt">\$${course.price}</div>
+            <div class="price-period">one-time · instant access</div>
+            <button class="price-enroll-btn" onclick="goGate()">Get Started Now</button>
+            <ul class="price-includes">
+              <li><span class="pi-check">✓</span> ${course.modules.length} sequential course modules</li>
+              <li><span class="pi-check">✓</span> Section check-in questions (own screen)</li>
+              <li><span class="pi-check">✓</span> Module quiz before each unlock</li>
+              <li><span class="pi-check">✓</span> ${course.exam.length}-question BSIS final exam</li>
+              <li><span class="pi-check">✓</span> Printable BSIS Certificate</li>
+              <li><span class="pi-check">✓</span> ${TOTAL_MINS}-min timed session</li>
+            </ul>
+            <div class="pay-logos">
+              <div class="pay-logo">Stripe</div><div class="pay-logo">PayPal</div>
+              <div class="pay-logo">Venmo</div><div class="pay-logo">Apple Pay</div>
+              <div class="pay-logo">Klarna</div><div class="pay-logo">Afterpay</div>
+            </div>
+            <div class="policy-box">
+              <strong>Assessment Policy:</strong> ${MAX_TRIES} exam attempts included. Re-enrollment required after ${MAX_TRIES} failed attempts. Session locks after ${IDLE_LOCK} min of inactivity.
+            </div>
           </div>
         </div>
       </div>
     </div>
   </section>
-  <section class="instructor-section">
+
+  <section class="instructor-sec">
     <div class="instructor-inner">
       <div class="instructor-avatar">👮</div>
       <div>
         <div class="instructor-name">James K. McMichael</div>
         <div class="instructor-title">CEO, MACCESS INC. | Lead Instructor, PSLAW</div>
-        <p class="instructor-bio">MACCESS INC. is a California-licensed Private Patrol Operator (PPO #122729) with 14+ years of executive protection and private security operational experience in the Los Angeles market. Every course is built directly from the official BSIS syllabus at bsis.ca.gov and fact-checked against current California law.</p>
-        <div class="instructor-creds">
-          <div class="cred-chip">PPO License #122729</div>
-          <div class="cred-chip">BSIS-Authorized</div>
-          <div class="cred-chip">14+ Years EP Experience</div>
-          <div class="cred-chip">Los Angeles, CA</div>
+        <p class="instructor-bio">MACCESS INC. is a California-licensed PPO (License #122729) with 14+ years of executive protection and security operational experience in Los Angeles. Every course is built directly from the official BSIS syllabus and fact-checked against current California law.</p>
+        <div class="creds">
+          <div class="cred">PPO License #122729</div>
+          <div class="cred">BSIS-Authorized</div>
+          <div class="cred">14+ Years EP Experience</div>
+          <div class="cred">Los Angeles, CA</div>
         </div>
       </div>
     </div>
   </section>
-  <section class="testimonials-section">
-    <div class="testimonials-inner">
-      <div class="section-label">Student Reviews</div>
-      <h2 class="section-title">What Our Graduates Say</h2>
-      <div class="testimonials-grid">
-        <div class="testimonial"><div class="t-stars">★★★★★</div><p class="t-text">"The inline questions after every section kept me locked in. By the time I hit the final exam I already knew the material cold."</p><div class="t-name">PSLAW Graduate · Los Angeles</div></div>
-        <div class="testimonial"><div class="t-stars">★★★★★</div><p class="t-text">"Built from the actual BSIS syllabus. Not watered down. The module quizzes before you can advance make sure you actually learned it."</p><div class="t-name">PSLAW Graduate · Inglewood</div></div>
-        <div class="testimonial"><div class="t-stars">★★★★★</div><p class="t-text">"Completed this before my first day on post. Supervisor was impressed I already knew the law cold. Real preparation."</p><div class="t-name">PSLAW Graduate · Compton</div></div>
+
+  <section class="sec" style="background:var(--white);">
+    <div class="sec-inner">
+      <div class="sec-eye">Reviews</div>
+      <h2 class="sec-title">What Graduates Say</h2>
+      <div class="t-grid">
+        <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-text">"The questions after each section on their own screen made me actually think before moving on. By the time I hit the final exam I already knew everything."</p><div class="t-name">PSLAW Graduate · Los Angeles</div></div>
+        <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-text">"Built straight from the BSIS syllabus. The module quiz before you unlock the next section keeps you honest. No skimming."</p><div class="t-name">PSLAW Graduate · Inglewood</div></div>
+        <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-text">"Got my certificate on the first try. The check-in questions after every slide prepared me for the final exam without me realizing it."</p><div class="t-name">PSLAW Graduate · Compton</div></div>
       </div>
     </div>
   </section>
+
   <section class="bottom-cta">
-    <h2>Start Your Training Today</h2>
-    <p>BSIS-compliant certificate. Real-world content. Start immediately.</p>
-    <button class="bottom-cta-btn" onclick="goEnroll()">Enroll Now — \$${course.price}</button>
+    <h2>Start Today</h2>
+    <p>BSIS-compliant certificate. Real-world content. Instant access.</p>
+    <button class="bottom-cta-btn" onclick="goGate()">Enroll Now — \$${course.price}</button>
   </section>
+
   <footer class="site-footer">
-    MACCESS INC. / Private Security LA Worldwide (PSLAW) &nbsp;|&nbsp; PPO License #122729 &nbsp;|&nbsp; BSIS-Authorized Training Provider &nbsp;|&nbsp; gopslaw.com<br/>
+    MACCESS INC. / Private Security LA Worldwide (PSLAW) · PPO License #122729 · BSIS-Authorized Training Provider · gopslaw.com<br/>
     © ${new Date().getFullYear()} MACCESS INC. All rights reserved.
   </footer>
 </div>
 
-<!-- ══════════════ SCREEN 2: ENROLLMENT GATE ══════════════ -->
+<!-- ═══ SCREEN: ENROLLMENT GATE ══════════════════════════════════ -->
 <div class="screen" id="sc-gate">
-  <div class="gate-wrap">
+  <div class="gate-outer">
     <div class="gate-card">
       <div class="gate-logo">MACCESS INC. / PSLAW</div>
       <h2 class="gate-title">You're Almost In</h2>
-      <p class="gate-sub">Enter your details to access <strong>${course.title}</strong>. Your certificate will be issued to this name.</p>
+      <p class="gate-sub">Enter your details to access <strong>${course.title}</strong>. Your certificate will be issued in this exact name.</p>
       <label class="gate-label">Full Legal Name * <span style="font-weight:400;font-size:11px;">(as it appears on your certificate)</span></label>
       <input class="gate-input" type="text" id="g-name" placeholder="First Middle Last"/>
       <label class="gate-label">Email Address *</label>
       <input class="gate-input" type="email" id="g-email" placeholder="your@email.com"/>
-      <button class="gate-btn" onclick="startCourse()">Start Course →</button>
-      <p class="gate-notice">🔒 Your information is used only to issue your BSIS Certificate of Completion. MACCESS INC. PPO #122729.<br/>Session timer starts when you begin. ${TOTAL_MINUTES}-minute limit · ${IDLE_LOCK}-minute idle lock · 3 exam attempts.</p>
-      <p style="text-align:center;margin-top:12px;font-size:12px;color:var(--gray);cursor:pointer;" onclick="show('sc-sales')">← Back to course details</p>
+      <label class="gate-label">Phone (optional)</label>
+      <input class="gate-input" type="tel" id="g-phone" placeholder="(323) 000-0000"/>
+      <label class="gate-label">Guard Card # (optional)</label>
+      <input class="gate-input" type="text" id="g-gc" placeholder="CA-XXXXXXXX"/>
+      <button class="gate-go" onclick="startCourse()">Start Course →</button>
+      <p class="gate-notice">🔒 Your information is saved to issue your BSIS Certificate of Completion and kept on file so MACCESS INC. can resend it if ever lost. MACCESS INC. PPO #122729.</p>
+      <p class="gate-back" onclick="show('sc-sales')">← Back to course details</p>
     </div>
   </div>
 </div>
 
-<!-- ══════════════ SCREEN 3: COURSE PLAYER ══════════════ -->
+<!-- ═══ SCREEN: COURSE PLAYER ════════════════════════════════════ -->
 <div class="screen" id="sc-player">
-  <div class="timer-bar">
-    <div class="timer-label">SESSION TIME REMAINING</div>
-    <div class="timer-progress"><div class="timer-progress-fill" id="timer-fill" style="width:100%"></div></div>
-    <div class="timer-display" id="timer-display">--:--</div>
+  <div class="g-header">
+    <div class="g-logo">MACCESS INC. / PSLAW</div>
+    <div class="g-meta" id="player-hdr-meta">PPO #122729</div>
   </div>
-  <div class="player-wrap">
+  <div class="gold-bar"></div>
+  <div class="timer-strip">
+    <div class="timer-label">SESSION TIME REMAINING</div>
+    <div class="timer-track"><div class="timer-fill" id="tfill" style="width:100%"></div></div>
+    <div class="timer-clock" id="tclock">--:--</div>
+  </div>
+  <div class="player-layout">
     <aside class="sidebar">
-      <div class="sidebar-header">
-        <div class="sidebar-logo">MACCESS INC. / PSLAW</div>
-        <div class="sidebar-course">${course.title}</div>
-        <div class="sidebar-prog"><div class="sidebar-prog-fill" id="sb-fill" style="width:0%"></div></div>
-        <div class="sidebar-prog-label" id="sb-label">0% complete</div>
+      <div class="sb-head">
+        <div class="sb-logo">MACCESS INC. / PSLAW</div>
+        <div class="sb-course">${course.title}</div>
+        <div class="sb-prog-track"><div class="sb-prog-fill" id="sb-fill" style="width:0%"></div></div>
+        <div class="sb-prog-label" id="sb-label">0% complete</div>
       </div>
-      <div class="sidebar-modules" id="sb-modules">
-        ${course.modules.map((mod,i)=>`
-          <div class="sbm ${i===0?'s-active':'s-locked'}" id="sbm-${i}" onclick="jumpMod(${i})">
-            <div class="sbm-header">
-              <div class="sbm-icon">${mod.icon}</div>
-              <div>
-                <div class="sbm-num">Module ${mod.num}</div>
-                <div class="sbm-name">${mod.title}</div>
-                <div class="sbm-dur">${mod.duration}</div>
-              </div>
-              <div class="sbm-status" id="sbms-${i}">${i===0?'▶':'🔒'}</div>
+      <div class="sb-mods" id="sb-mods">
+        ${course.modules.map((m,i)=>`
+        <div class="sbm ${i===0?'sbm-active':'sbm-locked'}" id="sbm-${i}" onclick="jumpMod(${i})">
+          <div class="sbm-row">
+            <div class="sbm-icon">${m.icon}</div>
+            <div class="sbm-info">
+              <div class="sbm-num">Module ${m.num}</div>
+              <div class="sbm-name">${m.title}</div>
+              <div class="sbm-dur">${m.duration}</div>
             </div>
-          </div>`).join('')}
+            <div class="sbm-status" id="sbms-${i}">${i===0?'▶':'🔒'}</div>
+          </div>
+        </div>`).join('')}
       </div>
-      <div class="sidebar-exam">
-        <div class="sbm-exam s-locked" id="sb-exam-link" onclick="jumpExam()">
-          <span>📝</span><span>Final BSIS Assessment</span>
-        </div>
+      <div class="sb-exam-row sb-locked" id="sb-exam-link" onclick="goExam()">
+        <span>📝</span><span>Final BSIS Assessment</span>
       </div>
     </aside>
     <div class="player-main">
       <div class="player-topbar">
-        <div class="player-bc" id="player-bc"><strong>${course.title}</strong></div>
-        <div class="player-sc" id="player-sc">Section 1</div>
+        <div class="player-bc" id="player-bc"></div>
+        <div class="player-sc" id="player-sc"></div>
       </div>
-      <div class="player-content" id="player-content"></div>
+      <div class="player-body" id="player-body"></div>
       <div class="player-nav">
-        <button class="nav-btn nav-back" id="nav-back" onclick="navBack()" style="display:none">← Back</button>
+        <button class="nav-back" id="nav-back" onclick="navBack()" style="display:none">← Back</button>
         <div class="slide-dots" id="slide-dots"></div>
-        <button class="nav-btn nav-next" id="nav-next" onclick="navNext()">Next →</button>
+        <button class="nav-next" id="nav-next" onclick="navNext()">Next →</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ══════════════ SCREEN 4: FINAL EXAM ══════════════ -->
-<div class="screen" id="sc-exam">
-  <div class="timer-bar">
-    <div class="timer-label">SESSION TIME REMAINING</div>
-    <div class="timer-progress"><div class="timer-progress-fill" id="timer-fill-exam" style="width:100%"></div></div>
-    <div class="timer-display" id="timer-display-exam">--:--</div>
+<!-- ═══ SCREEN: QUESTION (shared for check-in, module quiz, exam) ═ -->
+<div class="screen" id="sc-question">
+  <div class="g-header">
+    <div class="g-logo">MACCESS INC. / PSLAW</div>
+    <div class="g-meta" id="q-hdr-meta">PPO #122729</div>
   </div>
-  <div class="player-wrap">
+  <div class="gold-bar"></div>
+  <div class="timer-strip">
+    <div class="timer-label">SESSION TIME REMAINING</div>
+    <div class="timer-track"><div class="timer-fill" id="tfill2" style="width:100%"></div></div>
+    <div class="timer-clock" id="tclock2">--:--</div>
+  </div>
+  <div class="player-layout">
     <aside class="sidebar">
-      <div class="sidebar-header">
-        <div class="sidebar-logo">MACCESS INC. / PSLAW</div>
-        <div class="sidebar-course">Final BSIS Assessment</div>
-        <div class="sidebar-prog"><div class="sidebar-prog-fill" id="ex-fill" style="width:0%"></div></div>
-        <div class="sidebar-prog-label" id="ex-label">0 of ${course.exam.length} answered</div>
+      <div class="sb-head">
+        <div class="sb-logo">MACCESS INC. / PSLAW</div>
+        <div class="sb-course" id="q-sidebar-title">${course.title}</div>
+        <div class="sb-prog-track"><div class="sb-prog-fill" id="sb-fill2" style="width:0%"></div></div>
+        <div class="sb-prog-label" id="sb-label2">0% complete</div>
       </div>
-      <div class="sidebar-modules" style="padding:18px;">
-        <div class="attempt-indicator" id="attempt-ind">
-          ${Array.from({length:MAX_ATTEMPTS},(_,i)=>`<div class="attempt-dot" id="adot-${i}"></div>`).join('')}
-          <span class="attempt-label" id="attempt-label">Attempt 1 of ${MAX_ATTEMPTS}</span>
-        </div>
-        <div style="font-size:12px;color:#CADCFC;line-height:1.8;">
-          <strong style="color:var(--gold);">BSIS Written Examination</strong><br/>
-          ${course.exam.length} questions · 100% required<br/>${course.bpcRef}<br/><br/>
-          Answer every question. Instant feedback after each selection.<br/><br/>
-          <strong style="color:var(--red);">⚠ ${MAX_ATTEMPTS} attempts maximum.</strong><br/>
-          After ${MAX_ATTEMPTS} failed attempts, re-enrollment is required.
-        </div>
+      <div class="sb-mods" id="sb-mods2"></div>
+      <div class="sb-exam-row sb-locked" id="sb-exam-link2" onclick="goExam()">
+        <span>📝</span><span>Final BSIS Assessment</span>
       </div>
     </aside>
     <div class="player-main">
       <div class="player-topbar">
-        <div class="player-bc"><strong>${course.title}</strong> — Final Assessment</div>
-        <div class="player-sc" id="exam-sc">Q 1 of ${course.exam.length}</div>
+        <div class="player-bc" id="q-bc"></div>
+        <div class="player-sc" id="q-sc"></div>
       </div>
-      <div class="exam-wrap">
-        <h2 class="exam-title">BSIS Written Examination</h2>
-        <div class="exam-sub">${course.title} · ${course.exam.length} questions · Pass: 100%</div>
-        <div class="exam-warn">⚠️ A score of 100% is required per ${course.bpcRef}. Each incorrect answer shows the correct response with a legal citation. Review it before continuing. Full retake required if you do not pass.</div>
-        <div class="exam-pw"><div class="exam-pb"><div class="exam-pf" id="exam-fill" style="width:0%"></div></div><div class="exam-pt" id="exam-pt">Q 1 of ${course.exam.length}</div></div>
-        <div id="exam-qa"></div>
-        <div class="exam-nav">
-          <button class="exam-btn exam-back-btn" id="exam-back" onclick="examPrev()" style="display:none">← Previous</button>
-          <button class="exam-btn exam-fwd-btn" id="exam-fwd" onclick="examNext()">Next →</button>
+      <div class="player-body">
+        <div class="q-screen-wrap">
+          <div class="q-screen-header">
+            <div class="q-screen-badge" id="q-badge">✏️ <span id="q-badge-text">Section Check-In</span></div>
+            <h2 class="q-screen-title" id="q-screen-title"></h2>
+            <p class="q-screen-sub" id="q-screen-sub"></p>
+          </div>
+          <div class="q-progress" id="q-progress"></div>
+          <div class="q-card" id="q-card">
+            <div class="q-num" id="q-num"></div>
+            <div class="q-text" id="q-text"></div>
+            <div class="q-opts" id="q-opts"></div>
+            <div id="q-feedback"></div>
+            <div class="q-hint" id="q-hint"></div>
+          </div>
+          <div id="q-result-banner"></div>
         </div>
+      </div>
+      <div class="player-nav">
+        <button class="nav-back" id="q-back" onclick="qNavBack()">← Back</button>
+        <div class="q-nav-info" id="q-nav-info"></div>
+        <button class="nav-next" id="q-next" onclick="qNavNext()">Next →</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ══════════════ SCREEN 5: RESULTS ══════════════ -->
+<!-- ═══ SCREEN: RESULTS ═══════════════════════════════════════════ -->
 <div class="screen" id="sc-results">
-  <div style="background:var(--navy);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;">
-    <div style="color:var(--gold);font-size:16px;font-weight:700;">MACCESS INC. / PSLAW</div>
-    <div style="color:#CADCFC;font-size:12px;">Assessment Results</div>
-  </div>
-  <div class="results-wrap">
+  <div class="g-header"><div class="g-logo">MACCESS INC. / PSLAW</div><div class="g-meta">Assessment Results</div></div>
+  <div class="gold-bar"></div>
+  <div class="results-outer">
     <div class="results-card">
-      <div class="score-ring" id="res-ring"><span id="res-pct"></span><span class="ring-label" id="res-label"></span></div>
+      <div class="score-ring" id="res-ring"><span id="res-pct"></span><span class="ring-sub" id="res-sub-lbl"></span></div>
       <h2 class="res-title" id="res-title"></h2>
       <p class="res-sub" id="res-sub"></p>
-      <div class="breakdown" id="res-breakdown"></div>
+      <div class="res-breakdown" id="res-bd"></div>
       <div class="res-btns" id="res-btns"></div>
       <div class="bsis-note" id="res-note"></div>
     </div>
   </div>
 </div>
 
-<!-- ══════════════ SCREEN 6: CERTIFICATE ══════════════ -->
+<!-- ═══ SCREEN: CERTIFICATE ════════════════════════════════════════ -->
 <div class="screen" id="sc-cert">
-  <div class="no-print" style="background:var(--navy);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;">
-    <div style="color:var(--gold);font-size:16px;font-weight:700;">MACCESS INC. / PSLAW — Certificate of Completion</div>
+  <div class="g-header no-print" style="display:flex;justify-content:space-between;align-items:center;">
+    <div class="g-logo">Certificate of Completion</div>
     <div style="display:flex;gap:10px;">
-      <button onclick="window.print()" style="background:var(--gold);color:var(--navy);border:none;padding:9px 20px;border-radius:7px;font-weight:700;cursor:pointer;">🖨️ Print Certificate</button>
-      <button onclick="show('sc-results')" style="background:transparent;color:var(--white);border:1.5px solid var(--white);padding:9px 20px;border-radius:7px;font-weight:600;cursor:pointer;">← Results</button>
+      <button onclick="window.print()" style="background:var(--gold);color:var(--navy);border:none;padding:8px 18px;border-radius:7px;font-weight:700;cursor:pointer;">🖨️ Print</button>
+      <button onclick="show('sc-results')" style="background:transparent;color:#fff;border:1.5px solid #fff;padding:8px 18px;border-radius:7px;font-weight:600;cursor:pointer;">← Results</button>
     </div>
   </div>
+  <div class="gold-bar no-print"></div>
   <div class="cert-page"><div class="cert-wrap" id="cert-area"></div></div>
 </div>
 
-<!-- ══════════════ SCREEN 7: REPURCHASE LOCK ══════════════ -->
+<!-- ═══ SCREEN: REPURCHASE LOCK ════════════════════════════════════ -->
 <div class="screen" id="sc-lock">
-  <div class="lock-wrap">
+  <div class="lock-outer">
     <div class="lock-card">
       <div class="lock-icon">🔒</div>
       <h2 class="lock-title">Maximum Attempts Reached</h2>
-      <p class="lock-sub">You have used all <strong>${MAX_ATTEMPTS} attempts</strong> for the <strong>${course.title}</strong> final exam without achieving a passing score of 100%.</p>
+      <p class="lock-sub">You have used all <strong>${MAX_TRIES} attempts</strong> for the <strong>${course.title}</strong> final exam without achieving a passing score of 100%.</p>
       <div class="lock-stripe"></div>
       <div class="lock-policy">
         <strong>MACCESS INC. Assessment Policy:</strong><br/>
-        Per BSIS training standards, the Powers to Arrest and all skills courses require demonstrated proficiency. After ${MAX_ATTEMPTS} failed attempts, re-enrollment is required to ensure adequate review of course material before retesting.<br/><br/>
-        Re-enrollment includes full access to all course content and a fresh set of ${MAX_ATTEMPTS} exam attempts.
+        Re-enrollment is required after ${MAX_TRIES} failed attempts. Re-enrollment gives you full course access and ${MAX_TRIES} fresh exam attempts.
       </div>
       <button class="lock-btn" onclick="window.location.reload()">Re-Enroll — \$${course.price}</button>
-      <button class="lock-btn-outline" onclick="show('sc-sales')">Return to Course Information</button>
+      <button class="lock-outline" onclick="show('sc-sales')">Return to Course Info</button>
     </div>
   </div>
 </div>
 
 <script>
-// ── Course data ────────────────────────────────────────────────────────
-const MODULES  = JSON.parse(\`${modulesJ}\`);
-const EXAM_QS  = JSON.parse(\`${examJ}\`);
-const LT       = ['A','B','C','D'];
+// ── Data ────────────────────────────────────────────────────────────────
+const MODS    = JSON.parse(\`${modulesJ}\`);
+const EXAM    = JSON.parse(\`${examJ}\`);
+const LT      = ['A','B','C','D'];
+const TOTAL_S = ${TOTAL_MINS} * 60;
+const IDLE_W  = ${IDLE_WARN} * 60;
+const IDLE_L  = ${IDLE_LOCK} * 60;
+const MAX_T   = ${MAX_TRIES};
 
-// ── Config ─────────────────────────────────────────────────────────────
-const TOTAL_SECS  = ${TOTAL_MINUTES} * 60;
-const IDLE_WARN   = ${IDLE_MINUTES} * 60;   // seconds before warning
-const IDLE_LOCK_S = ${IDLE_LOCK}  * 60;   // seconds before hard lock
-const MAX_ATT     = ${MAX_ATTEMPTS};
+// ── Student state ────────────────────────────────────────────────────────
+let sName='', sEmail='', sPhone='', sGC='';
 
-// ── Session state ──────────────────────────────────────────────────────
-let studentName  = '';
-let studentEmail = '';
+// ── Timer state ──────────────────────────────────────────────────────────
+let secsLeft   = TOTAL_S;
+let timerID    = null;
+let idleSecs   = 0;
+let idleID     = null;
+let idleWarned = false;
+let idleCdown  = 60;
 
-// Timer
-let sessionSecsLeft = TOTAL_SECS;
-let timerInterval   = null;
-let idleSeconds     = 0;
-let idleInterval    = null;
-let idleCountdown   = 60;
-let idleWarned      = false;
-
-// Player state
+// ── Course navigation state ──────────────────────────────────────────────
+// STEP TYPES: 'slide' | 'checkin' | 'modquiz' | 'exam_q'
 let curMod   = 0;
-let curSlide = 0;                            // -1 = showing module final quiz
-let modDone  = new Array(MODULES.length).fill(false);
+let curSlide = 0;   // index within module slides
+// After last slide of module: module quiz
+// After passing module quiz: advance to next module or exam
 
-// Section check-in state: [modIdx][slideIdx][questionIdx] = picked answer | null
-let ciPicks  = MODULES.map(m => m.slides.map(s => s.quiz ? s.quiz.map(()=>null) : []));
-let ciDone   = MODULES.map(m => m.slides.map(()=>false));
+// Per-slide check-in answers: [modIdx][slideIdx][qIdx] = picked answer | null
+let ciPicks  = MODS.map(m => m.slides.map(s => (s.quiz||[]).map(()=>null)));
+let ciDone   = MODS.map(m => m.slides.map(()=>false));
 
-// Module final quiz state: [modIdx][questionIdx] = picked | null
-let fqPicks  = MODULES.map(m => m.quiz ? m.quiz.map(()=>null) : []);
-let fqDone   = new Array(MODULES.length).fill(false);
+// Per-module final quiz
+let fqPicks  = MODS.map(m => (m.quiz||[]).map(()=>null));
+let fqDone   = MODS.map(()=>false);
+let modDone  = MODS.map(()=>false);
 
-// Exam state
-let examCur      = 0;
-let examAns      = new Array(EXAM_QS.length).fill(null);
-let examAnswered = new Array(EXAM_QS.length).fill(false);
-let examAttempts = 0;
+// Shared question-screen state
+// mode: 'checkin' | 'modquiz' | 'exam'
+let qMode    = 'checkin';
+let qIdx     = 0;   // current question index within the set
+let qDone    = [];  // was this question answered?
+let qTotal   = 0;
 
-// ── Screen switching ───────────────────────────────────────────────────
+// Exam
+let examIdx  = 0;
+let examAns  = EXAM.map(()=>null);
+let examDone = EXAM.map(()=>false);
+let examTries= 0;
+
+// ── Screen ───────────────────────────────────────────────────────────────
 function show(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
+  syncSidebars();
 }
 
-function goEnroll(){ show('sc-gate'); }
+function goGate(){ show('sc-gate'); }
 
+// ── Enrollment ───────────────────────────────────────────────────────────
 function startCourse(){
   const nm = document.getElementById('g-name').value.trim();
   const em = document.getElementById('g-email').value.trim();
   if(!nm){ alert('Please enter your full legal name.'); return; }
   if(!em||!em.includes('@')){ alert('Please enter a valid email address.'); return; }
-  studentName  = nm;
-  studentEmail = em;
+  sName  = nm;
+  sEmail = em;
+  sPhone = document.getElementById('g-phone').value.trim();
+  sGC    = document.getElementById('g-gc').value.trim();
+
+  // Save profile immediately to localStorage so admin dashboard can pull it
+  saveProfile();
+
   show('sc-player');
   startTimer();
   startIdleWatch();
   renderPlayer();
 }
 
-// ── TIMER ──────────────────────────────────────────────────────────────
+function saveProfile(){
+  try {
+    const key = 'pslaw_students_v1';
+    let records = JSON.parse(localStorage.getItem(key)||'[]');
+    let rec = records.find(r=>r.email.toLowerCase()===sEmail.toLowerCase());
+    if(!rec){
+      rec = { id:Date.now().toString(), name:sName, email:sEmail, phone:sPhone, guardCard:sGC,
+              createdAt:new Date().toISOString(), certificates:[], status:'progress', attempts:0 };
+      records.unshift(rec);
+    }
+    rec.name=sName; rec.phone=sPhone; rec.guardCard=sGC; rec.status='progress';
+    localStorage.setItem(key, JSON.stringify(records));
+  } catch(e){}
+}
+
+function saveCompletion(courseName, score){
+  try {
+    const key = 'pslaw_students_v1';
+    let records = JSON.parse(localStorage.getItem(key)||'[]');
+    let rec = records.find(r=>r.email.toLowerCase()===sEmail.toLowerCase());
+    if(!rec){ rec={id:Date.now().toString(),name:sName,email:sEmail,phone:sPhone,guardCard:sGC,createdAt:new Date().toISOString(),certificates:[],status:'pass',attempts:examTries}; records.unshift(rec); }
+    rec.status='pass'; rec.course=courseName; rec.score=score; rec.date=new Date().toLocaleDateString();
+    rec.attempts=examTries;
+    rec.certificates = rec.certificates||[];
+    rec.certificates.push({ course:courseName, date:rec.date, score, issuedAt:new Date().toISOString() });
+    localStorage.setItem(key, JSON.stringify(records));
+    // Post to admin dashboard if open in same browser
+    try{ window.parent.postMessage({type:'PSLAW_COMPLETION',name:sName,email:sEmail,course:courseName,score,date:rec.date},'*'); }catch(e){}
+  } catch(e){}
+}
+
+// ── Timer ────────────────────────────────────────────────────────────────
 function startTimer(){
-  updateTimerDisplay();
-  timerInterval = setInterval(()=>{
-    sessionSecsLeft--;
-    updateTimerDisplay();
-    if(sessionSecsLeft <= 0) onTimeExpired();
-  }, 1000);
+  updateTimer();
+  timerID = setInterval(()=>{ secsLeft--; updateTimer(); if(secsLeft<=0) onTimeUp(); },1000);
 }
-
-function updateTimerDisplay(){
-  const m  = Math.floor(sessionSecsLeft/60);
-  const s  = sessionSecsLeft % 60;
-  const txt = \`\${String(m).padStart(2,'0')}:\${String(s).padStart(2,'0')}\`;
-  const pct = (sessionSecsLeft / TOTAL_SECS) * 100;
-  ['timer-display','timer-display-exam'].forEach(id=>{
-    const el = document.getElementById(id);
-    if(!el) return;
-    el.textContent = txt;
-    el.className   = 'timer-display' + (sessionSecsLeft < 300 ? ' critical' : sessionSecsLeft < 600 ? ' warn' : '');
-  });
-  ['timer-fill','timer-fill-exam'].forEach(id=>{
-    const el = document.getElementById(id);
-    if(!el) return;
-    el.style.width   = pct + '%';
-    el.className     = 'timer-progress-fill' + (sessionSecsLeft < 300 ? ' critical' : sessionSecsLeft < 600 ? ' warn' : '');
-  });
+function updateTimer(){
+  const m=Math.floor(secsLeft/60), s=secsLeft%60;
+  const txt=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  const pct=(secsLeft/TOTAL_S)*100;
+  const cls=secsLeft<300?'crit':secsLeft<600?'warn':'';
+  ['tfill','tfill2'].forEach(id=>{const el=document.getElementById(id);if(el){el.style.width=pct+'%';el.className='timer-fill '+cls;}});
+  ['tclock','tclock2'].forEach(id=>{const el=document.getElementById(id);if(el){el.textContent=txt;el.className='timer-clock '+cls;}});
 }
-
-function onTimeExpired(){
-  clearInterval(timerInterval);
-  clearInterval(idleInterval);
-  alert('⏰ Your session time has expired. Your progress has been saved. Please re-enroll to continue.');
+function onTimeUp(){
+  clearInterval(timerID); clearInterval(idleID);
+  alert('⏰ Session time expired. Please re-enroll to continue.');
   show('sc-sales');
 }
 
-// ── IDLE DETECTION ──────────────────────────────────────────────────────
+// ── Idle detection ────────────────────────────────────────────────────────
 function startIdleWatch(){
-  idleInterval = setInterval(()=>{
-    idleSeconds++;
-    if(idleSeconds >= IDLE_LOCK_S){
-      clearInterval(idleInterval);
-      clearInterval(timerInterval);
-      document.getElementById('idle-overlay').classList.remove('show');
-      alert('Your session has been locked due to inactivity. Please re-enroll to continue.');
-      show('sc-sales');
-      return;
-    }
-    if(idleSeconds >= IDLE_WARN && !idleWarned){
-      idleWarned = true;
-      showIdleWarning();
-    }
-    if(idleWarned){
-      idleCountdown = Math.max(0, IDLE_LOCK_S - idleSeconds);
-      const cd = document.getElementById('idle-countdown');
-      if(cd) cd.textContent = idleCountdown;
-    }
-  }, 1000);
+  idleID=setInterval(()=>{
+    idleSecs++;
+    if(idleSecs>=IDLE_L){ clearInterval(idleID); clearInterval(timerID); alert('Session locked due to inactivity.'); show('sc-sales'); return; }
+    if(idleSecs>=IDLE_W && !idleWarned){ idleWarned=true; showIdleWarn(); }
+    if(idleWarned){ idleCdown=Math.max(0,IDLE_L-idleSecs); const el=document.getElementById('idle-count'); if(el)el.textContent=idleCdown; }
+  },1000);
 }
-
 function resetIdle(){
-  idleSeconds = 0;
-  idleWarned  = false;
-  document.getElementById('idle-overlay').classList.remove('show');
+  idleSecs=0; idleWarned=false;
+  document.getElementById('idle-overlay').classList.remove('idle-show');
 }
-
-function showIdleWarning(){
-  idleCountdown = IDLE_LOCK_S - idleSeconds;
-  document.getElementById('idle-overlay').classList.add('show');
+function showIdleWarn(){
+  document.getElementById('idle-overlay').classList.add('idle-show');
 }
+['click','keydown','mousemove','touchstart'].forEach(e=>document.addEventListener(e,resetIdle,{passive:true}));
 
-function dismissIdle(){
-  resetIdle();
-}
-
-// Reset idle on any user interaction
-['click','keydown','mousemove','touchstart'].forEach(evt=>{
-  document.addEventListener(evt, resetIdle, {passive:true});
-});
-
-// ── SIDEBAR ────────────────────────────────────────────────────────────
-function updateSidebar(){
+// ── Sidebar sync ─────────────────────────────────────────────────────────
+function syncSidebars(){
   const done  = modDone.filter(Boolean).length;
-  const total = MODULES.length + 1;
+  const total = MODS.length+1;
   const pct   = Math.round(done/total*100);
-  document.getElementById('sb-fill').style.width  = pct + '%';
-  document.getElementById('sb-label').textContent = pct + '% complete';
+  ['sb-fill','sb-fill2'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.width=pct+'%';});
+  ['sb-label','sb-label2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=pct+'% complete';});
 
-  MODULES.forEach((_,i)=>{
-    const el = document.getElementById('sbm-'+i);
-    const st = document.getElementById('sbms-'+i);
-    if(!el||!st) return;
-    el.className = 'sbm' + (i===curMod?' s-active':modDone[i]?' s-done':(i>0&&!modDone[i-1])?' s-locked':'');
-    st.textContent = modDone[i]?'✓':(i===curMod?'▶':(i===0||modDone[i-1])?'▶':'🔒');
+  const allDone = modDone.every(Boolean);
+  ['sb-exam-link','sb-exam-link2'].forEach(id=>{const el=document.getElementById(id);if(el)el.className='sb-exam-row'+(allDone?'':' sb-locked');});
+
+  ['sb-mods','sb-mods2'].forEach(sbId=>{
+    const sb=document.getElementById(sbId); if(!sb)return;
+    sb.innerHTML = MODS.map((m,i)=>{
+      const isActive  = i===curMod;
+      const isDone    = modDone[i];
+      const isLocked  = i>0 && !modDone[i-1];
+      const cls = 'sbm'+(isActive?' sbm-active':isDone?' sbm-done':isLocked?' sbm-locked':'');
+      const stat= isDone?'✓':isActive?'▶':isLocked?'🔒':'▶';
+      return \`<div class="\${cls}" onclick="jumpMod(\${i})">
+        <div class="sbm-row">
+          <div class="sbm-icon">\${m.icon}</div>
+          <div class="sbm-info">
+            <div class="sbm-num">Module \${m.num}</div>
+            <div class="sbm-name">\${m.title}</div>
+            <div class="sbm-dur">\${m.duration}</div>
+          </div>
+          <div class="sbm-status">\${stat}</div>
+        </div>
+      </div>\`;
+    }).join('');
   });
-
-  const examEl = document.getElementById('sb-exam-link');
-  if(examEl) examEl.className = 'sbm-exam' + (modDone.every(Boolean)?'':' s-locked');
 }
 
 function jumpMod(i){
@@ -2081,379 +2082,374 @@ function jumpMod(i){
   renderPlayer();
 }
 
-function jumpExam(){
+function goExam(){
   if(!modDone.every(Boolean)) return;
-  show('sc-exam');
-  renderExamQ();
+  qMode='exam'; examIdx=0;
+  show('sc-question');
+  renderQScreen();
 }
 
-// ── PLAYER ─────────────────────────────────────────────────────────────
+// ── Player ───────────────────────────────────────────────────────────────
 function renderPlayer(){
-  updateSidebar();
-  const mod    = MODULES[curMod];
+  syncSidebars();
+  const mod    = MODS[curMod];
   const slides = mod.slides;
-  const inFQ   = curSlide === slides.length;   // showing module final quiz
+  const total  = slides.length;
 
-  document.getElementById('player-bc').innerHTML =
-    \`<strong>\${mod.icon} Module \${mod.num}: \${mod.title}</strong>\`;
+  document.getElementById('player-bc').innerHTML = \`<strong>\${mod.icon} Module \${mod.num}: \${mod.title}</strong>\`;
+  document.getElementById('player-sc').textContent = \`Section \${curSlide+1} of \${total}\`;
+  document.getElementById('player-hdr-meta').textContent = 'PPO #122729';
+  document.getElementById('nav-back').style.display = (curSlide===0 && curMod===0) ? 'none' : 'inline-block';
 
-  if(inFQ){
-    document.getElementById('player-sc').textContent = 'Module Quiz';
-    document.getElementById('nav-next').textContent  = fqDone[curMod] ? 'Continue →' : 'Submit Quiz';
-    document.getElementById('nav-back').style.display = 'inline-block';
-    document.getElementById('slide-dots').innerHTML  = '';
-    renderFinalQuiz();
-  } else {
-    const isLast = curSlide === slides.length - 1;
-    document.getElementById('player-sc').textContent = \`Section \${curSlide+1} of \${slides.length}\`;
-    document.getElementById('nav-next').textContent  = isLast ? 'Module Quiz →' : 'Next Section →';
-    document.getElementById('nav-back').style.display = (curSlide===0 && curMod===0) ? 'none' : 'inline-block';
-    renderDots(slides.length, curSlide);
-    renderSlideWithCheckIn(slides[curSlide], curMod, curSlide);
-  }
-}
-
-function renderDots(total, cur){
+  // Slide dots
   document.getElementById('slide-dots').innerHTML =
     Array.from({length:total},(_,i)=>
-      \`<div class="dot \${i<cur?'d-done':i===cur?'d-active':''}"></div>\`
+      \`<div class="dot \${i<curSlide?'d-done':i===curSlide?'d-active':''}"></div>\`
     ).join('');
-}
 
-// ── SLIDE + INLINE CHECK-IN ─────────────────────────────────────────────
-function renderSlideWithCheckIn(slide, mi, si){
-  const hasCI   = slide.quiz && slide.quiz.length > 0;
-  const isDone  = ciDone[mi][si];
+  // Next label
+  const isLastSlide = curSlide === total-1;
+  document.getElementById('nav-next').textContent = isLastSlide ? 'Module Quiz →' : 'Next Section →';
+  document.getElementById('nav-next').disabled = false;
 
-  let html = \`<div class="slide-wrap">
-    <div class="slide-heading">\${slide.heading}</div>
-    <div class="slide-subheading">\${slide.subheading}</div>
-    <div class="slide-body">\${slide.renderedHTML||''}</div>\`;
-
-  if(hasCI){
-    html += \`<div class="check-in">
-      <div class="check-in-header">
-        <div class="check-in-icon">✏️</div>
-        <div class="check-in-title">Section Check-In — Answer to continue</div>
-      </div>
-      <div class="check-in-body">\`;
-
-    slide.quiz.forEach((q,qi)=>{
-      const picked = ciPicks[mi][si][qi];
-      const done   = picked !== null;
-      html += \`<div class="ci-q">
-        <div class="ci-qtext">\${qi+1}. \${q.q}</div>
-        <div class="ci-opts">\`;
-      q.options.forEach((opt,oi)=>{
-        let cls = 'ci-opt';
-        if(done){ cls += oi===q.answer?' ci-ok':(oi===picked?' ci-no':''); cls += ' ci-done'; }
-        else if(oi===picked) cls += ' ci-sel';
-        const clk = done ? '' : \`onclick="pickCI(\${mi},\${si},\${qi},\${oi},\${q.answer})"\`;
-        html += \`<div class="\${cls}" \${clk}><div class="ci-ol">\${LT[oi]}</div><span>\${opt}</span></div>\`;
-      });
-      html += \`</div>\`; // ci-opts
-      if(done){
-        const ok = picked===q.answer;
-        html += \`<div class="ci-fb \${ok?'ci-fb-ok':'ci-fb-no'}">\${ok?'✓ Correct':'✗ Incorrect — Correct answer: '+LT[q.answer]+'. '+q.options[q.answer]}\${q.ref?' — '+q.ref:''}</div>\`;
-      }
-      html += \`</div>\`; // ci-q
-    });
-
-    if(!isDone){
-      html += \`<div class="check-in-pending">Answer all questions above to proceed to the next section.</div>\`;
-    }
-
-    html += \`</div></div>\`; // check-in-body, check-in
-  }
-
-  html += \`</div>\`; // slide-wrap
-  document.getElementById('player-content').innerHTML = html;
-
-  // Lock Next button until check-in is complete
-  document.getElementById('nav-next').disabled = hasCI && !isDone;
-}
-
-function pickCI(mi, si, qi, picked, correct){
-  if(ciPicks[mi][si][qi] !== null) return; // already answered
-  ciPicks[mi][si][qi] = picked;
-
-  // Check if all questions in this slide answered
-  const allDone = ciPicks[mi][si].every(p => p !== null);
-  if(allDone) ciDone[mi][si] = true;
-
-  renderSlideWithCheckIn(MODULES[mi].slides[si], mi, si);
-}
-
-// ── MODULE FINAL QUIZ ──────────────────────────────────────────────────
-function renderFinalQuiz(){
-  const mod    = MODULES[curMod];
-  const done   = fqDone[curMod];
-
-  let html = \`<div class="final-quiz">
-    <div class="fq-header">
-      <div class="fq-title">Module \${mod.num} — Final Quiz</div>
-      <div class="fq-sub">Answer all \${mod.quiz.length} questions correctly to unlock the next module.</div>
-    </div>
-    <div class="fq-body">\`;
-
-  mod.quiz.forEach((q,qi)=>{
-    const picked = fqPicks[curMod][qi];
-    const answered = picked !== null;
-    html += \`<div class="fq-q">
-      <div class="fq-qtext">\${qi+1}. \${q.q}</div>
-      <div class="fq-opts">\`;
-    q.options.forEach((opt,oi)=>{
-      let cls = 'fq-opt';
-      if(answered){ cls += oi===q.answer?' fq-ok':(oi===picked?' fq-no':''); cls += ' fq-done'; }
-      else if(oi===picked) cls += ' fq-sel';
-      const clk = answered ? '' : \`onclick="pickFQ(\${curMod},\${qi},\${oi},\${q.answer})"\`;
-      html += \`<div class="\${cls}" \${clk}><div class="fq-ol">\${LT[oi]}</div><span>\${opt}</span></div>\`;
-    });
-    html += \`</div>\`;
-    if(answered){
-      const ok = picked===q.answer;
-      html += \`<div class="fq-fb \${ok?'fq-fb-ok':'fq-fb-no'}">\${ok?'✓ Correct':'✗ Incorrect — Correct answer: '+LT[q.answer]+'. '+q.options[q.answer]}\${q.ref?' — '+q.ref:''}</div>\`;
-    }
-    html += \`</div>\`;
-  });
-
-  html += \`</div>\`; // fq-body
-
-  const allAnswered = fqPicks[curMod].every(p=>p!==null);
-  const allCorrect  = allAnswered && mod.quiz.every((q,i)=>fqPicks[curMod][i]===q.answer);
-
-  if(done){
-    html += \`<div class="fq-complete">✓ Module quiz complete — click "Continue →" to proceed.</div>\`;
-  } else if(allAnswered && !allCorrect){
-    const wrong = mod.quiz.filter((q,i)=>fqPicks[curMod][i]!==q.answer).length;
-    html += \`<div style="padding:14px 18px;background:var(--red-lt);font-size:13px;color:var(--red);font-weight:600;border-top:1px solid #f5c6cb;">
-      \${wrong} incorrect answer\${wrong>1?'s':''}. Review the feedback above and click "Submit Quiz" to record your attempt. You must review the module slides and retake the quiz to proceed.
+  // Render slide content
+  const slide = slides[curSlide];
+  document.getElementById('player-body').innerHTML = \`
+    <div class="slide-wrap">
+      <div class="slide-heading">\${slide.heading}</div>
+      <div class="slide-sub">\${slide.subheading}</div>
+      <div class="slide-body">\${slide.renderedHTML||''}</div>
     </div>\`;
-  }
-
-  html += \`</div>\`; // final-quiz
-  document.getElementById('player-content').innerHTML = html;
-
-  // Lock Next unless quiz is done
-  document.getElementById('nav-next').disabled = !fqDone[curMod];
 }
 
-function pickFQ(mi, qi, picked, correct){
-  if(fqPicks[mi][qi] !== null) return;
-  fqPicks[mi][qi] = picked;
-  renderFinalQuiz();
-}
-
-// ── NAVIGATION ─────────────────────────────────────────────────────────
 function navNext(){
-  const mod    = MODULES[curMod];
+  const mod    = MODS[curMod];
   const slides = mod.slides;
-  const inFQ   = curSlide === slides.length;
+  const slide  = slides[curSlide];
+  const hasCI  = slide.quiz && slide.quiz.length > 0;
 
-  if(inFQ){
-    // Check if all final quiz questions answered
-    const allAnswered = fqPicks[curMod].every(p=>p!==null);
-    if(!allAnswered){ alert('Please answer all quiz questions.'); return; }
-
-    const allCorrect = mod.quiz.every((q,i)=>fqPicks[curMod][i]===q.answer);
-    if(!fqDone[curMod]){
-      if(allCorrect){
-        fqDone[curMod] = true;
-        modDone[curMod] = true;
-        renderFinalQuiz();
-        return;
-      } else {
-        // Incorrect answers shown — user must review
-        fqDone[curMod] = false;
-        renderFinalQuiz();
-        return;
-      }
-    }
-
-    // Quiz passed — advance
-    if(curMod < MODULES.length - 1){
-      curMod++;
-      curSlide = 0;
-      // Unlock next module in sidebar
-      const nxt = document.getElementById('sbm-'+curMod);
-      if(nxt) nxt.classList.remove('s-locked');
-      renderPlayer();
-    } else {
-      // All modules done — go to exam
-      const examEl = document.getElementById('sb-exam-link');
-      if(examEl) examEl.className = 'sbm-exam';
-      show('sc-exam');
-      renderExamQ();
-    }
-  } else {
-    // Check slide check-in complete
-    const slide = slides[curSlide];
-    if(slide.quiz && slide.quiz.length > 0 && !ciDone[curMod][curSlide]){
-      alert('Please answer the check-in questions before continuing.');
-      return;
-    }
-    curSlide++;
-    renderPlayer();
+  if(hasCI && !ciDone[curMod][curSlide]){
+    // Go to check-in question screen for this slide
+    qMode='checkin'; qIdx=0;
+    qDone = (slide.quiz||[]).map(()=>false);
+    qTotal = slide.quiz.length;
+    show('sc-question');
+    renderQScreen();
+    return;
   }
+
+  if(curSlide < slides.length-1){
+    curSlide++;
+    show('sc-player');
+    renderPlayer();
+    return;
+  }
+
+  // Last slide — go to module quiz
+  if(mod.quiz && mod.quiz.length>0){
+    qMode='modquiz'; qIdx=0;
+    qDone = (mod.quiz||[]).map(()=>false);
+    qTotal = mod.quiz.length;
+    show('sc-question');
+    renderQScreen();
+    return;
+  }
+
+  // No module quiz — mark done and advance
+  completeMod();
 }
 
 function navBack(){
-  if(curSlide > 0){ curSlide--; renderPlayer(); }
-  else if(curMod > 0){
-    curMod--;
-    curSlide = MODULES[curMod].slides.length; // go to FQ of previous module
+  if(curSlide>0){ curSlide--; show('sc-player'); renderPlayer(); }
+  else if(curMod>0){ curMod--; curSlide=MODS[curMod].slides.length-1; show('sc-player'); renderPlayer(); }
+}
+
+function completeMod(){
+  modDone[curMod]=true;
+  syncSidebars();
+  if(curMod < MODS.length-1){
+    curMod++; curSlide=0;
+    show('sc-player');
     renderPlayer();
+  } else {
+    // All modules done — go to exam
+    qMode='exam'; examIdx=0;
+    show('sc-question');
+    renderQScreen();
   }
 }
 
-// ── FINAL EXAM ─────────────────────────────────────────────────────────
-function renderExamQ(){
-  const q   = EXAM_QS[examCur];
-  const pct = Math.round(examCur/EXAM_QS.length*100);
-  document.getElementById('exam-fill').style.width = pct + '%';
-  document.getElementById('exam-pt').textContent   = \`Q \${examCur+1} of \${EXAM_QS.length}\`;
-  document.getElementById('exam-sc').textContent   = \`Q \${examCur+1} of \${EXAM_QS.length}\`;
-  document.getElementById('exam-back').style.display = examCur>0?'inline-block':'none';
-  document.getElementById('exam-fwd').textContent  =
-    examCur===EXAM_QS.length-1 ? 'Submit Assessment' : 'Next →';
+// ── Question Screen ───────────────────────────────────────────────────────
+function getQSet(){
+  if(qMode==='checkin') return MODS[curMod].slides[curSlide].quiz||[];
+  if(qMode==='modquiz') return MODS[curMod].quiz||[];
+  return EXAM;
+}
+function getQPicks(){
+  if(qMode==='checkin') return ciPicks[curMod][curSlide];
+  if(qMode==='modquiz') return fqPicks[curMod];
+  return examAns;
+}
+function getQDoneArr(){
+  if(qMode==='checkin') return ciDone[curMod];  // array per slide
+  if(qMode==='modquiz') return fqDone;           // array per mod
+  return examDone;
+}
 
-  // Update attempt dots
-  updateAttemptDots();
-  // Sidebar progress
-  const ans = examAnswered.filter(Boolean).length;
-  document.getElementById('ex-fill').style.width = Math.round(ans/EXAM_QS.length*100)+'%';
-  document.getElementById('ex-label').textContent = ans+' of '+EXAM_QS.length+' answered';
+function renderQScreen(){
+  syncSidebars();
+  const qs     = getQSet();
+  const picks  = getQPicks();
+  const qi     = (qMode==='exam') ? examIdx : qIdx;
+  const q      = qs[qi];
+  if(!q) return;
 
-  const sel = examAns[examCur];
-  const answered = examAnswered[examCur];
-  const oh = q.options.map((opt,oi)=>{
-    let cls='exam-opt';
-    if(answered){ if(oi===q.answer)cls+=' ok'; else if(oi===sel&&oi!==q.answer)cls+=' no'; }
-    else if(oi===sel) cls+=' sel';
-    const clk = answered?'':(\`onclick="pickExam(\${oi})"\`);
-    return \`<div class="\${cls}" \${clk}><div class="exam-ol">\${LT[oi]}</div><span>\${opt}</span></div>\`;
+  // Header / badge
+  const badges = { checkin:'✏️ Section Check-In', modquiz:'📋 Module Quiz', exam:'📝 BSIS Final Exam' };
+  const titles = {
+    checkin: MODS[curMod].slides[curSlide].heading,
+    modquiz: \`Module \${MODS[curMod].num} — \${MODS[curMod].title}\`,
+    exam:    'BSIS Written Examination'
+  };
+  const subs = {
+    checkin: \`Question \${qi+1} of \${qs.length} — Answer to continue to the next section\`,
+    modquiz: \`Question \${qi+1} of \${qs.length} — Pass this quiz to unlock the next module\`,
+    exam:    \`Question \${qi+1} of \${qs.length} · 100% required · \${MAX_T} attempts · \${course.bpcRef}\`
+  };
+
+  document.getElementById('q-badge-text').textContent = badges[qMode];
+  document.getElementById('q-screen-title').textContent = titles[qMode];
+  document.getElementById('q-screen-sub').textContent  = subs[qMode];
+  document.getElementById('q-bc').innerHTML = \`<strong>\${titles[qMode]}</strong>\`;
+  document.getElementById('q-sc').textContent = \`Q \${qi+1} of \${qs.length}\`;
+
+  // Attempt tracker for exam
+  if(qMode==='exam'){
+    const tracker = Array.from({length:MAX_T},(_,i)=>
+      \`<div class="att-dot \${i<examTries?'att-used':i===examTries?'att-current':''}"></div>\`
+    ).join('');
+    document.getElementById('q-num').innerHTML =
+      \`<div class="attempt-tracker">\${tracker}<span class="att-label">Attempt \${examTries+1} of \${MAX_T}</span></div>
+       <span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gold);">Question \${qi+1}</span><span class="q-ref">\${q.ref||''}</span>\`;
+  } else {
+    document.getElementById('q-num').innerHTML =
+      \`<span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gold);">Question \${qi+1}</span><span class="q-ref">\${q.ref||''}</span>\`;
+  }
+
+  // Progress dots
+  const dotsHTML = qs.map((_,i)=>
+    \`<div class="qp-dot \${i<qi?'qp-done':i===qi?'qp-active':''}"></div>\`
+  ).join('');
+  document.getElementById('q-progress').innerHTML = dotsHTML;
+
+  // Question text
+  document.getElementById('q-text').textContent = q.q;
+
+  // Options
+  const picked   = picks[qi];
+  const answered = picked !== null && picked !== undefined;
+  document.getElementById('q-opts').innerHTML = q.options.map((opt,oi)=>{
+    let cls = 'q-opt';
+    if(answered){ cls += oi===q.answer?' q-ok':(oi===picked?' q-no':''); cls+=' q-picked'; }
+    else if(oi===picked) cls+=' q-selected';
+    const clk = answered?'':(\`onclick="pickQ(\${oi})"\`);
+    return \`<div class="\${cls}" \${clk}><div class="q-letter">\${LT[oi]}</div><span>\${opt}</span></div>\`;
   }).join('');
-  let fb='';
+
+  // Feedback
   if(answered){
-    if(sel===q.answer) fb=\`<div class="exam-fb show exam-fb-ok">✓ Correct — \${q.ref}</div>\`;
-    else fb=\`<div class="exam-fb show exam-fb-no">✗ Incorrect. Correct: <strong>\${LT[q.answer]}. \${q.options[q.answer]}</strong> — \${q.ref}</div>\`;
+    const ok = picked===q.answer;
+    document.getElementById('q-feedback').innerHTML =
+      \`<div class="q-feedback \${ok?'q-fb-ok':'q-fb-no'}">\${ok?'✓ Correct':'✗ Incorrect — Correct answer: '+LT[q.answer]+'. '+q.options[q.answer]}\${q.ref?' — '+q.ref:''}</div>\`;
+  } else {
+    document.getElementById('q-feedback').innerHTML='';
   }
-  document.getElementById('exam-qa').innerHTML=\`
-    <div class="exam-qblock">
-      <span class="exam-mod-badge">\${q.module}<span class="exam-ref">\${q.ref}</span></span>
-      <div class="exam-qnum">Question \${examCur+1} of \${EXAM_QS.length}</div>
-      <div class="exam-qtext">\${q.q}</div>
-      <div class="exam-opts">\${oh}</div>
-      \${fb}
-    </div>\`;
-}
 
-function updateAttemptDots(){
-  document.getElementById('attempt-label').textContent =
-    \`Attempt \${examAttempts+1} of \${MAX_ATT}\`;
-  for(let i=0;i<MAX_ATT;i++){
-    const dot = document.getElementById('adot-'+i);
-    if(!dot) continue;
-    dot.className = 'attempt-dot' + (i<examAttempts?' used':i===examAttempts?' current':'');
+  // Hint
+  document.getElementById('q-hint').textContent = answered ? '' : 'Select your answer to continue.';
+
+  // Nav buttons
+  document.getElementById('q-back').style.display = qi>0 ? 'inline-block' : 'none';
+  document.getElementById('q-next').disabled = !answered;
+
+  // Next label
+  const isLast = qi === qs.length-1;
+  let nextLabel = isLast ? 'Submit →' : 'Next Question →';
+  if(isLast && qMode==='checkin')  nextLabel = 'Continue to Section →';
+  if(isLast && qMode==='modquiz') nextLabel = 'Submit Quiz →';
+  if(isLast && qMode==='exam')    nextLabel = 'Submit Assessment →';
+  document.getElementById('q-next').textContent = nextLabel;
+  document.getElementById('q-nav-info').textContent = \`\${qi+1} / \${qs.length}\`;
+
+  // Result banner (only after all answered in modquiz)
+  document.getElementById('q-result-banner').innerHTML = '';
+  if(qMode==='modquiz' && qi===qs.length-1 && answered){
+    const allAnswered = fqPicks[curMod].every(p=>p!==null&&p!==undefined);
+    if(allAnswered){
+      const correct = MODS[curMod].quiz.every((q2,i)=>fqPicks[curMod][i]===q2.answer);
+      document.getElementById('q-result-banner').innerHTML =
+        correct
+          ? \`<div class="quiz-result-banner qrb-pass">✓ Module quiz complete — click "Submit Quiz →" to continue.</div>\`
+          : \`<div class="quiz-result-banner qrb-fail">Some answers are incorrect. Review the feedback above. You'll need to retake this quiz to proceed — your slide content remains unlocked for review.</div>\`;
+    }
   }
 }
 
-function pickExam(oi){
-  if(examAnswered[examCur]) return;
-  examAns[examCur]      = oi;
-  examAnswered[examCur] = true;
-  renderExamQ();
+function pickQ(oi){
+  const qs    = getQSet();
+  const picks = getQPicks();
+  const qi    = (qMode==='exam') ? examIdx : qIdx;
+  if(picks[qi]!==null && picks[qi]!==undefined) return;
+
+  picks[qi] = oi;
+  if(qMode==='exam') examDone[examIdx]=true;
+  renderQScreen();
 }
 
-function examNext(){
-  if(!examAnswered[examCur]){ alert('Please select an answer before continuing.'); return; }
-  if(examCur < EXAM_QS.length-1){ examCur++; renderExamQ(); }
-  else showResults();
+function qNavNext(){
+  const qs  = getQSet();
+  const qi  = (qMode==='exam') ? examIdx : qIdx;
+  const picks = getQPicks();
+
+  if(picks[qi]===null || picks[qi]===undefined){
+    alert('Please select an answer.'); return;
+  }
+
+  if(qMode==='exam'){
+    if(examIdx < EXAM.length-1){ examIdx++; renderQScreen(); }
+    else showResults();
+    return;
+  }
+
+  const nextQI = qi+1;
+  if(nextQI < qs.length){
+    if(qMode==='checkin') qIdx=nextQI;
+    else if(qMode==='modquiz') qIdx=nextQI;
+    renderQScreen();
+    return;
+  }
+
+  // All questions answered
+  if(qMode==='checkin'){
+    ciDone[curMod][curSlide]=true;
+    // Advance to next slide
+    curSlide++;
+    show('sc-player');
+    renderPlayer();
+    return;
+  }
+
+  if(qMode==='modquiz'){
+    const allCorrect = MODS[curMod].quiz.every((q,i)=>fqPicks[curMod][i]===q.answer);
+    if(allCorrect){
+      fqDone[curMod]=true;
+      completeMod();
+    } else {
+      // Reset quiz picks so they must retake
+      fqPicks[curMod] = MODS[curMod].quiz.map(()=>null);
+      qIdx=0;
+      renderQScreen();
+    }
+  }
 }
 
-function examPrev(){
-  if(examCur > 0){ examCur--; renderExamQ(); }
+function qNavBack(){
+  const qi = (qMode==='exam') ? examIdx : qIdx;
+  if(qMode==='exam'){
+    if(examIdx>0){ examIdx--; renderQScreen(); }
+    return;
+  }
+  if(qi>0){
+    if(qMode==='checkin') qIdx--;
+    else if(qMode==='modquiz') qIdx--;
+    renderQScreen();
+    return;
+  }
+  // Back to slide
+  show('sc-player');
+  renderPlayer();
 }
 
-// ── RESULTS ─────────────────────────────────────────────────────────────
+// ── Results ───────────────────────────────────────────────────────────────
 function showResults(){
+  examTries++;
   show('sc-results');
+
   let correct=0;
   const mm={};
-  EXAM_QS.forEach((q,i)=>{
+  EXAM.forEach((q,i)=>{
     if(examAns[i]===q.answer) correct++;
     if(!mm[q.module]) mm[q.module]={c:0,t:0};
     mm[q.module].t++;
     if(examAns[i]===q.answer) mm[q.module].c++;
   });
-  const pct  = Math.round(correct/EXAM_QS.length*100);
+  const pct  = Math.round(correct/EXAM.length*100);
   const pass = pct===100;
+  const attLeft = MAX_T - examTries;
 
-  examAttempts++;
+  const ring=document.getElementById('res-ring');
+  ring.className='score-ring '+(pass?'ring-pass':'ring-fail');
+  document.getElementById('res-pct').textContent   = correct+'/'+EXAM.length;
+  document.getElementById('res-sub-lbl').textContent = pass?'PASSED':'NOT PASSED';
 
-  const ring = document.getElementById('res-ring');
-  ring.className = 'score-ring '+(pass?'ring-pass':'ring-fail');
-  document.getElementById('res-pct').textContent   = correct+'/'+EXAM_QS.length;
-  document.getElementById('res-label').textContent = pass?'PASSED':'NOT PASSED';
-
-  const rt = document.getElementById('res-title');
-  rt.className = 'res-title '+(pass?'rt-pass':'rt-fail');
+  const rt=document.getElementById('res-title');
+  rt.className='res-title '+(pass?'res-pass':'res-fail');
   rt.textContent = pass ? '✓ Assessment Passed' : '✗ Assessment Not Passed';
 
-  const attLeft = MAX_ATT - examAttempts;
   document.getElementById('res-sub').innerHTML = pass
-    ? \`Congratulations, <strong>\${studentName}</strong>. You scored \${correct}/\${EXAM_QS.length} (100%) and have satisfied the BSIS assessment requirement per ${course.bpcRef}.\`
-    : \`You scored \${correct}/\${EXAM_QS.length} (\${pct}%). A score of 100% is required per ${course.bpcRef}.\${attLeft>0?' You have <strong>'+attLeft+' attempt'+( attLeft>1?'s':'')+' remaining</strong>.':' <strong>This was your final attempt.</strong> Re-enrollment is required.'}\`;
+    ? \`Congratulations <strong>\${sName}</strong> — \${correct}/\${EXAM.length} (100%). BSIS assessment requirement satisfied per ${course.bpcRef}.\`
+    : \`You scored \${correct}/\${EXAM.length} (\${pct}%). 100% required per ${course.bpcRef}.\${attLeft>0?' <strong>'+attLeft+' attempt'+(attLeft>1?'s':'')+' remaining.</strong>':' <strong>No attempts remaining — re-enrollment required.</strong>'}\`;
 
   let bh='<h3>Score by Module</h3>';
   for(const[m,d] of Object.entries(mm)){
     const mp=Math.round(d.c/d.t*100);
-    bh+=\`<div class="bd-row"><span style="color:var(--gray)">\${m}</span><span class="\${d.c===d.t?'bd-pass':'bd-fail'}">\${d.c}/\${d.t} (\${mp}%)</span></div>\`;
+    bh+=\`<div class="bd-row"><span style="color:var(--gray)">\${m}</span><span class="\${d.c===d.t?'bd-p':'bd-f'}">\${d.c}/\${d.t} (\${mp}%)</span></div>\`;
   }
-  bh+=\`<div class="bd-row"><span>Overall</span><span class="\${pass?'bd-pass':'bd-fail'}">\${correct}/\${EXAM_QS.length} (\${pct}%)</span></div>\`;
-  document.getElementById('res-breakdown').innerHTML=bh;
+  bh+=\`<div class="bd-row"><span>Overall</span><span class="\${pass?'bd-p':'bd-f'}">\${correct}/\${EXAM.length} (\${pct}%)</span></div>\`;
+  document.getElementById('res-bd').innerHTML=bh;
 
-  let btns = '';
+  let btns='';
   if(pass){
-    btns += \`<button class="r-btn r-primary" onclick="showCert()">View Certificate →</button>\`;
-  } else if(examAttempts >= MAX_ATT){
-    // Lock out — no more retake button
-    btns += \`<button class="r-btn" style="background:var(--red);color:#fff;cursor:pointer;" onclick="show('sc-lock')">Re-Enrollment Required →</button>\`;
+    saveCompletion('${course.title}', correct+'/'+EXAM.length+' (100%)');
+    btns+=\`<button class="r-btn r-gold" onclick="showCert()">View Certificate →</button>\`;
+  } else if(attLeft<=0){
+    btns+=\`<button class="r-btn r-red" onclick="show('sc-lock')">Re-Enrollment Required →</button>\`;
   } else {
-    btns += \`<button class="r-btn r-outline" onclick="retakeExam()">↺ Retake Assessment (Attempt \${examAttempts+1}/\${MAX_ATT})</button>\`;
+    btns+=\`<button class="r-btn r-navy" onclick="retakeExam()">↺ Retake (Attempt \${examTries+1}/\${MAX_T})</button>\`;
   }
   document.getElementById('res-btns').innerHTML=btns;
 
   document.getElementById('res-note').innerHTML = pass
-    ? \`<strong>BSIS Compliance:</strong> This certificate satisfies the ${course.hours}-hour training requirement under ${course.bpcRef}. Print and retain until your guard card expires — Title 16 CCR §643(b). MACCESS INC. PPO #122729 maintains your training record.\`
-    : examAttempts >= MAX_ATT
-    ? \`<strong>Maximum Attempts Reached:</strong> You have used all \${MAX_ATT} attempts. Re-enrollment is required per MACCESS INC. assessment policy. Click above to re-enroll.\`
-    : \`<strong>BSIS Requirement:</strong> 100% is required per ${course.bpcRef}. Review the incorrect answers above before retaking. You have \${MAX_ATT - examAttempts} attempt\${MAX_ATT-examAttempts>1?'s':''} remaining.\`;
+    ? \`<strong>BSIS Compliance:</strong> This certificate satisfies the ${course.hours}-hour training requirement under ${course.bpcRef}. Print and retain until your guard card expires — Title 16 CCR §643(b). Record saved to MACCESS INC. file.\`
+    : attLeft<=0
+    ? \`<strong>Maximum Attempts Reached:</strong> Re-enrollment is required. Your training record has been saved.\`
+    : \`<strong>BSIS Requirement:</strong> 100% required per ${course.bpcRef}. Review incorrect answers above before retaking. \${attLeft} attempt\${attLeft>1?'s':''} remaining.\`;
 }
 
 function retakeExam(){
-  if(examAttempts >= MAX_ATT){ show('sc-lock'); return; }
-  examCur      = 0;
-  examAns      = new Array(EXAM_QS.length).fill(null);
-  examAnswered = new Array(EXAM_QS.length).fill(false);
-  show('sc-exam');
-  renderExamQ();
+  if(examTries>=MAX_T){ show('sc-lock'); return; }
+  examIdx=0;
+  examAns=EXAM.map(()=>null);
+  examDone=EXAM.map(()=>false);
+  qMode='exam';
+  show('sc-question');
+  renderQScreen();
 }
 
-// ── CERTIFICATE ──────────────────────────────────────────────────────────
+// ── Certificate ────────────────────────────────────────────────────────────
 function showCert(){
-  const d = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  const d=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
   document.getElementById('cert-area').innerHTML=\`
     <div class="cert-eyebrow">Certificate of Completion</div>
     <div class="cert-stripe"></div>
     <div class="cert-co">MACCESS INC.</div>
     <div class="cert-ppo">Private Patrol Operator | PPO License #122729 | BSIS-Authorized Training Provider</div>
     <div class="cert-certifies">This certifies that</div>
-    <div class="cert-name">\${studentName}</div>
+    <div class="cert-name">\${sName}</div>
     <div class="cert-body">has successfully completed the BSIS-compliant training course:</div>
     <div class="cert-course">${course.title}</div>
-    <div class="cert-badge">Score: 100% ✓ Passing</div>
-    <div class="cert-body">This completion satisfies the ${course.hours}-hour training requirement under ${course.bpcRef} and California BSIS training standards. Retain until guard card expires or is canceled — Title 16 CCR §643(b).</div>
+    <div class="cert-badge-pass">Score: 100% ✓ Passing</div>
+    <div class="cert-body">This completion satisfies the ${course.hours}-hour training requirement under ${course.bpcRef}. Retain until guard card expires — Title 16 CCR §643(b).</div>
     <div class="cert-stripe"></div>
     <div class="cert-sigs">
       <div class="cert-sig"><div class="cert-sig-line"></div><div class="cert-sig-label">Student Signature</div></div>
@@ -2466,32 +2462,982 @@ function showCert(){
 </body>
 </html>`;
 }
-
-// BUILD + EXPORT
 // ═══════════════════════════════════════════════════════════════════════════════
-const fs   = require('fs');
-const path = require('path');
+// BUNDLE DEFINITIONS
+// Smart-grouped pricing packages matching BSIS licensing requirements
+// ═══════════════════════════════════════════════════════════════════════════════
+const BUNDLES = {
+  guard_card_8hr: {
+    id:       "guard_card_8hr",
+    name:     "Guard Card Pre-Registration Package",
+    subtitle: "Everything required before submitting your BSIS guard card application",
+    price:    "79",
+    badge:    "BEST VALUE",
+    color:    "#1B2B5E",
+    hours:    "8",
+    description: "Completes the full 8-hour pre-registration requirement (SB 652, eff. Jan 1 2026). Must be completed with a single provider. Includes Powers to Arrest (3 hrs) + Appropriate Use of Force (5 hrs).",
+    includes: [
+      "Powers to Arrest — 3 Hours",
+      "Appropriate Use of Force — 5 Hours",
+      "Both BSIS 100% exams included",
+      "Certificates of Completion for both modules",
+      "Counts as your single-provider pre-registration",
+    ],
+    keys: [
+      "Powers_to_Arrest_BSIS_Certification_MACCESS_INC",
+      "Appropriate_Use_of_Force_BSIS_Certification_MACCESS_INC",
+    ],
+  },
+  skills_32hr: {
+    id:       "skills_32hr",
+    name:     "32-Hour Skills Training Package",
+    subtitle: "All 4 mandatory + 2 elective skills courses — complete your full skills requirement",
+    price:    "199",
+    badge:    "COMPLETE PACKAGE",
+    color:    "#1A5C3A",
+    hours:    "24",
+    description: "Covers all 4 BSIS mandatory skills courses (required within 6 months of registration) plus 2 high-value electives. 24 of your 32 required skills hours in one package.",
+    includes: [
+      "Public Relations & Community — 4 hrs (mandatory, within 30 days)",
+      "Observation & Documentation — 4 hrs (mandatory, within 30 days)",
+      "Communication & Its Significance — 4 hrs (mandatory, within 6 months)",
+      "Liability & Legal Aspects — 4 hrs (mandatory, within 6 months)",
+      "Officer Safety — 4 hrs (elective)",
+      "Handling Difficult People — 4 hrs (elective)",
+      "All 6 BSIS exams + Certificates of Completion",
+    ],
+    keys: [
+      "Public_Relations_Community_BSIS_Skills_MACCESS_INC",
+      "Observation_Documentation_BSIS_Skills_MACCESS_INC",
+      "Communication_Significance_BSIS_Skills_MACCESS_INC",
+      "Liability_Legal_Aspects_BSIS_Skills_MACCESS_INC",
+      "Officer_Safety_BSIS_Skills_MACCESS_INC",
+      "Handling_Difficult_People_BSIS_Skills_MACCESS_INC",
+    ],
+  },
+  full_licensing: {
+    id:       "full_licensing",
+    name:     "Complete Guard Licensing Bundle",
+    subtitle: "Everything from zero to fully licensed — 8-hr pre-registration + full skills training",
+    price:    "269",
+    badge:    "MOST POPULAR",
+    color:    "#C9A84C",
+    hours:    "32",
+    description: "The complete path to your guard card. 8-hour pre-registration + all 4 mandatory skills courses + 2 electives. Everything BSIS requires in one discounted package.",
+    includes: [
+      "Full 8-Hour Pre-Registration (PTA + AUF)",
+      "All 4 Mandatory Skills Courses",
+      "2 Elective Skills Courses",
+      "8 BSIS exams + 8 Certificates of Completion",
+      "32 total training hours",
+      "Priority email support from MACCESS INC.",
+    ],
+    keys: [
+      "Powers_to_Arrest_BSIS_Certification_MACCESS_INC",
+      "Appropriate_Use_of_Force_BSIS_Certification_MACCESS_INC",
+      "Public_Relations_Community_BSIS_Skills_MACCESS_INC",
+      "Observation_Documentation_BSIS_Skills_MACCESS_INC",
+      "Communication_Significance_BSIS_Skills_MACCESS_INC",
+      "Liability_Legal_Aspects_BSIS_Skills_MACCESS_INC",
+      "Officer_Safety_BSIS_Skills_MACCESS_INC",
+      "Handling_Difficult_People_BSIS_Skills_MACCESS_INC",
+    ],
+  },
+  baton_addon: {
+    id:       "baton_addon",
+    name:     "Baton Certification",
+    subtitle: "BSIS Baton Permit qualification course — add-on to any package",
+    price:    "59",
+    badge:    "ADD-ON",
+    color:    "#7B4500",
+    hours:    "4",
+    description: "4-hour BSIS elective covering all baton types, vital areas, use-of-force, and the 24-question official BSIS exam. Required before carrying a baton on duty. Note: Full BSIS permit issuance requires a certified TFB facility.",
+    includes: [
+      "All 4 authorized baton types covered",
+      "7 vital areas identification (exam requirement)",
+      "24 official BSIS baton exam questions",
+      "Vital areas interactive identification section",
+      "Certificate of Completion (4-hr elective credit)",
+    ],
+    keys: ["Baton_Certification_BSIS_MACCESS_INC"],
+  },
+  workplace_violence_addon: {
+    id:       "workplace_violence_addon",
+    name:     "Workplace Violence Prevention",
+    subtitle: "BSIS elective + CA SB 553 compliance — add-on to any package",
+    price:    "49",
+    badge:    "ADD-ON",
+    color:    "#8B1A1A",
+    hours:    "4",
+    description: "Covers all 5 BSIS Workplace Violence syllabus topics and satisfies the annual employee training requirement under CA Labor Code §6401.9 (SB 553, eff. July 1 2024).",
+    includes: [
+      "All 5 BSIS WV syllabus topics",
+      "CA SB 553 compliance training (Labor Code §6401.9)",
+      "Certificate satisfies annual SB 553 training requirement",
+      "4 elective credit hours toward 32-hour requirement",
+    ],
+    keys: ["Workplace_Violence_BSIS_Skills_MACCESS_INC"],
+  },
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// BUILD + PUSH
+// ═══════════════════════════════════════════════════════════════════════════════
+const fs    = require("fs");
+const path  = require("path");
+const https = require("https");
+
+const TOKEN = process.env.GITHUB_TOKEN;
+const REPO  = "MaccPSLAW/Licensing-Live-Scans-";
+const DIR   = "PSLAW-Courses/final-projects";
+
+function pushGH(localPath, repoPath, message) {
+  return new Promise(resolve => {
+    const data = fs.readFileSync(localPath);
+    const enc  = data.toString("base64");
+    const getO = { hostname:"api.github.com", path:`/repos/${REPO}/contents/${encodeURIComponent(repoPath)}`, method:"GET", headers:{"Authorization":`token ${TOKEN}`,"User-Agent":"MACCESS"} };
+    https.request(getO, r => {
+      let b=""; r.on("data",d=>b+=d);
+      r.on("end",() => {
+        let sha=""; try{sha=JSON.parse(b).sha||"";}catch{}
+        const pay = JSON.stringify({message,content:enc,branch:"main",...(sha&&{sha})});
+        const putO = {hostname:"api.github.com",path:`/repos/${REPO}/contents/${encodeURIComponent(repoPath)}`,method:"PUT",headers:{"Authorization":`token ${TOKEN}`,"Content-Type":"application/json","User-Agent":"MACCESS","Content-Length":Buffer.byteLength(pay)}};
+        const pr = https.request(putO, r2=>{let b2="";r2.on("data",d=>b2+=d);r2.on("end",()=>{try{resolve("content" in JSON.parse(b2));}catch{resolve(false);}});});
+        pr.write(pay); pr.end();
+      });
+    }).end();
+  });
+}
 
 function buildAll(outputDir) {
-  outputDir = outputDir || '/home/claude';
+  outputDir = outputDir || "/home/claude";
   const results = [];
+
+  // Build individual course pages
   for (const [key, course] of Object.entries(CATALOG)) {
-    const html     = buildPlatformHTML(key, course);
-    const outPath  = path.join(outputDir, `${key}-Test.html`);
+    const html    = buildPlatformHTML(key, course);
+    const outPath = path.join(outputDir, `${key}-Test.html`);
     fs.writeFileSync(outPath, html);
     const kb = Math.round(fs.statSync(outPath).size / 1024);
     console.log(`  ✓ ${key}-Test.html (${kb} KB)`);
     results.push({ key, outPath });
   }
+
+  // Build the store / bundle index page
+  const storePage = buildStorePage();
+  const storePath = path.join(outputDir, "index.html");
+  fs.writeFileSync(storePath, storePage);
+  console.log(`  ✓ index.html — Course Store (${Math.round(fs.statSync(storePath).size/1024)} KB)`);
+
+  // Build student profile / admin dashboard
+  const dashPage = buildAdminDashboard();
+  const dashPath = path.join(outputDir, "admin-dashboard.html");
+  fs.writeFileSync(dashPath, dashPage);
+  console.log(`  ✓ admin-dashboard.html — Student Records & Certificate Tracker`);
+
   return results;
 }
 
-module.exports = { buildAll, buildPlatformHTML, CATALOG };
+async function buildAndPush(outputDir) {
+  outputDir = outputDir || "/home/claude";
+  buildAll(outputDir);
 
-// Standalone run
-if (require.main === module) {
-  console.log('\nMACCESS INC. — Course Platform Builder');
-  console.log('Building purchasable course pages...\n');
-  buildAll('/home/claude');
-  console.log('\nDone. Open any -Test.html to preview the full platform.\n');
+  if (!TOKEN) { console.log("  (No GITHUB_TOKEN — skipping push)"); return; }
+
+  console.log("\n  Pushing to GitHub...");
+  const toPush = [
+    ["index.html",          "PSLAW-Courses/final-projects/index.html",          "feat: course store — bundle pricing page"],
+    ["admin-dashboard.html","PSLAW-Courses/final-projects/admin-dashboard.html","feat: admin dashboard — student records + certificate tracker"],
+  ];
+  for (const [fname, repoPath, msg] of toPush) {
+    const local = `${outputDir}/${fname}`;
+    if (!fs.existsSync(local)) continue;
+    const ok = await pushGH(local, repoPath, msg);
+    console.log(`    ${ok?"✅":"❌"} ${fname}`);
+  }
+  for (const [key] of Object.entries(CATALOG)) {
+    const local = `${outputDir}/${key}-Test.html`;
+    if (!fs.existsSync(local)) continue;
+    const ok = await pushGH(local, `${DIR}/${key}-Test.html`, `feat: ${key} — updated platform`);
+    console.log(`    ${ok?"✅":"❌"} ${key}-Test.html`);
+  }
+
+  // Auto-update README
+  try {
+    const { autoUpdateReadme } = require("./update_readme");
+    await autoUpdateReadme(TOKEN);
+  } catch(e) { console.log("  README update skipped:", e.message); }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// STORE PAGE — Bundle pricing + individual courses
+// ═══════════════════════════════════════════════════════════════════════════════
+function buildStorePage() {
+  const bundleCards = Object.values(BUNDLES).map(b => {
+    const isAddon   = b.badge === "ADD-ON";
+    const isBest    = b.badge === "MOST POPULAR";
+    const borderCol = isBest ? b.color : "#dde4f0";
+    return `
+    <div class="bundle-card ${isBest?'bundle-featured':''}" style="border-top:4px solid ${b.color};">
+      <div class="bundle-badge" style="background:${b.color}">${b.badge}</div>
+      <div class="bundle-name">${b.name}</div>
+      <div class="bundle-sub">${b.subtitle}</div>
+      <div class="bundle-price">\$${b.price}</div>
+      <div class="bundle-hours">${b.hours} Credit Hours</div>
+      <ul class="bundle-includes">
+        ${b.includes.map(i=>`<li>✓ ${i}</li>`).join('')}
+      </ul>
+      <p class="bundle-desc">${b.description}</p>
+      <button class="bundle-btn" style="background:${isBest?b.color:'#1B2B5E'};color:${isBest?'#1B2B5E':'#fff'}" 
+        onclick="enrollBundle('${b.id}')">
+        ${isAddon?'Add to Cart —':'Enroll Now —'} \$${b.price}
+      </button>
+    </div>`;
+  }).join('');
+
+  const courseRows = Object.entries(CATALOG).map(([key, c]) => `
+    <tr>
+      <td><strong>${c.title}</strong></td>
+      <td>${c.category}</td>
+      <td>${c.hours} hrs</td>
+      <td>${c.bpcRef}</td>
+      <td>\$${c.price}</td>
+      <td><a href="${key}-Test.html" class="table-link">Enroll →</a></td>
+    </tr>`).join('');
+
+  return `<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>PSLAW Academy — BSIS Security Guard Training | MACCESS INC.</title>
+<style>
+:root{--n:#1B2B5E;--g:#C9A84C;--r:#8B1A1A;--ok:#1A5C3A;--l:#F4F6FB;--gr:#4A5568;--wh:#fff;}
+*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Segoe UI',Arial,sans-serif;background:var(--l);color:#1A1A2E;}
+.hdr{background:var(--n);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;}
+.logo{color:var(--g);font-size:20px;font-weight:800;letter-spacing:.04em;}
+.hdr-meta{color:#CADCFC;font-size:11px;text-align:right;line-height:1.5;}
+.hdr-nav a{color:var(--g);font-size:13px;font-weight:600;text-decoration:none;margin-left:20px;}
+.gold-bar{height:5px;background:var(--g);}
+/* Hero */
+.hero{background:#12193A;color:#fff;padding:64px 24px 52px;text-align:center;}
+.hero-badge{display:inline-block;background:var(--r);color:#fff;font-size:11px;font-weight:700;padding:5px 16px;border-radius:4px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:18px;}
+.hero-title{font-size:46px;font-weight:800;line-height:1.1;margin-bottom:14px;}
+.hero-sub{font-size:18px;color:#CADCFC;max-width:640px;margin:0 auto 32px;}
+.hero-chips{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+.chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:8px 18px;font-size:13px;color:#fff;}
+/* Bundles */
+.bundles-section{padding:64px 24px;}
+.bundles-inner{max-width:1100px;margin:0 auto;}
+.section-eye{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--g);margin-bottom:8px;}
+.section-title{font-size:32px;font-weight:700;color:var(--n);margin-bottom:10px;}
+.section-sub{font-size:15px;color:var(--gr);margin-bottom:40px;max-width:640px;}
+.bundles-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:32px;}
+.addons-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
+.addons-label{font-size:13px;font-weight:700;color:var(--gr);text-transform:uppercase;letter-spacing:.08em;margin:40px 0 16px;padding-top:32px;border-top:2px solid var(--g);}
+.bundle-card{background:var(--wh);border-radius:12px;border:1px solid #dde4f0;padding:28px;display:flex;flex-direction:column;gap:12px;position:relative;}
+.bundle-featured{box-shadow:0 8px 32px rgba(27,43,94,.18);}
+.bundle-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border-radius:4px;color:#fff;align-self:flex-start;}
+.bundle-name{font-size:18px;font-weight:700;color:var(--n);line-height:1.3;}
+.bundle-sub{font-size:13px;color:var(--gr);line-height:1.5;}
+.bundle-price{font-size:40px;font-weight:800;color:var(--n);}
+.bundle-hours{font-size:12px;color:var(--gr);margin-top:-8px;}
+.bundle-includes{list-style:none;display:flex;flex-direction:column;gap:6px;flex:1;}
+.bundle-includes li{font-size:13px;color:#1A1A2E;padding-left:4px;}
+.bundle-desc{font-size:12px;color:var(--gr);line-height:1.6;padding:10px;background:var(--l);border-radius:6px;}
+.bundle-btn{padding:14px;border-radius:8px;font-size:15px;font-weight:700;border:none;cursor:pointer;text-align:center;transition:opacity .15s;}
+.bundle-btn:hover{opacity:.88;}
+/* Individual courses table */
+.courses-section{background:var(--wh);padding:64px 24px;}
+.courses-inner{max-width:1100px;margin:0 auto;}
+.courses-table{width:100%;border-collapse:collapse;margin-top:28px;}
+.courses-table th{background:var(--n);color:#fff;padding:12px 16px;font-size:12px;font-weight:600;text-align:left;letter-spacing:.04em;}
+.courses-table td{padding:12px 16px;border-bottom:1px solid #eee;font-size:14px;}
+.courses-table tr:hover td{background:var(--l);}
+.table-link{background:var(--n);color:#fff;padding:6px 14px;border-radius:6px;text-decoration:none;font-size:13px;font-weight:600;}
+.table-link:hover{background:#243a7a;}
+/* How it works */
+.hiw-section{background:var(--l);padding:64px 24px;}
+.hiw-inner{max-width:900px;margin:0 auto;}
+.hiw-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:32px;}
+.hiw-step{background:var(--wh);border-radius:10px;padding:24px;border:1px solid #dde4f0;text-align:center;}
+.hiw-num{width:44px;height:44px;border-radius:50%;background:var(--n);color:#fff;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;}
+.hiw-title{font-size:14px;font-weight:700;color:var(--n);margin-bottom:6px;}
+.hiw-text{font-size:13px;color:var(--gr);line-height:1.6;}
+/* Policy box */
+.policy-section{background:var(--n);padding:48px 24px;}
+.policy-inner{max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;}
+.policy-block{color:#CADCFC;}
+.policy-block h3{color:var(--g);font-size:14px;font-weight:700;margin-bottom:10px;}
+.policy-block p{font-size:13px;line-height:1.7;}
+/* Footer */
+.footer{background:#0A0F1E;color:#8899BB;padding:24px;text-align:center;font-size:12px;}
+/* Cart sidebar */
+.cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:none;}
+.cart-overlay.open{display:block;}
+.cart-panel{position:fixed;right:0;top:0;bottom:0;width:380px;background:var(--wh);box-shadow:-4px 0 24px rgba(0,0,0,.2);padding:28px;overflow-y:auto;z-index:101;transform:translateX(100%);transition:transform .3s;}
+.cart-panel.open{transform:none;}
+.cart-title{font-size:20px;font-weight:700;color:var(--n);margin-bottom:20px;}
+.cart-item{display:flex;justify-content:space-between;align-items:flex-start;padding:14px 0;border-bottom:1px solid #eee;gap:12px;}
+.cart-item-name{font-size:14px;font-weight:600;color:var(--n);}
+.cart-item-sub{font-size:12px;color:var(--gr);margin-top:2px;}
+.cart-item-price{font-size:16px;font-weight:700;color:var(--n);white-space:nowrap;}
+.cart-item-remove{color:var(--r);font-size:11px;cursor:pointer;margin-top:4px;display:block;}
+.cart-total{font-size:18px;font-weight:800;color:var(--n);padding:16px 0;display:flex;justify-content:space-between;}
+.cart-checkout-btn{display:block;width:100%;background:var(--g);color:var(--n);font-size:16px;font-weight:700;padding:15px;border-radius:8px;border:none;cursor:pointer;text-align:center;margin-top:12px;}
+.cart-checkout-btn:hover{background:#b8962a;}
+.pay-methods{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+.pay-badge{background:var(--l);border:1px solid #dde4f0;border-radius:4px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--gr);}
+.cart-btn-fixed{position:fixed;top:18px;right:24px;background:var(--g);color:var(--n);border:none;border-radius:8px;padding:10px 20px;font-size:14px;font-weight:700;cursor:pointer;z-index:99;display:flex;align-items:center;gap:8px;}
+.cart-count{background:var(--r);color:#fff;border-radius:50%;width:20px;height:20px;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+@media(max-width:768px){.bundles-grid,.addons-grid{grid-template-columns:1fr;}.hiw-steps{grid-template-columns:1fr 1fr;}.policy-inner{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="logo">PSLAW Academy</div>
+  <div style="display:flex;align-items:center;gap:24px;">
+    <div class="hdr-meta">PPO License #122729 | BSIS-Authorized<br/>Private Security LA Worldwide</div>
+    <nav><a href="admin-dashboard.html">Student Portal</a></nav>
+  </div>
+</header>
+<div class="gold-bar"></div>
+
+<!-- Cart button -->
+<button class="cart-btn-fixed" onclick="toggleCart()">
+  🛒 Cart <span class="cart-count" id="cart-count">0</span>
+</button>
+
+<!-- Cart panel -->
+<div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+<div class="cart-panel" id="cart-panel">
+  <h2 class="cart-title">Your Cart</h2>
+  <div id="cart-items"><p style="color:var(--gr);font-size:14px;">Your cart is empty.</p></div>
+  <div class="cart-total" id="cart-total" style="display:none"><span>Total</span><span id="cart-total-amt"></span></div>
+  <button class="cart-checkout-btn" id="cart-checkout" onclick="checkout()" style="display:none">Proceed to Checkout</button>
+  <div class="pay-methods" id="cart-pay-methods" style="display:none">
+    <div class="pay-badge">💳 Stripe</div>
+    <div class="pay-badge">PayPal</div>
+    <div class="pay-badge">Venmo</div>
+    <div class="pay-badge">Apple Pay</div>
+    <div class="pay-badge">Google Pay</div>
+    <div class="pay-badge">Klarna</div>
+    <div class="pay-badge">Afterpay</div>
+    <div class="pay-badge">Affirm</div>
+  </div>
+  <button onclick="toggleCart()" style="display:block;width:100%;background:transparent;border:1.5px solid #dde4f0;color:var(--gr);padding:11px;border-radius:8px;margin-top:12px;cursor:pointer;font-size:14px;">Continue Shopping</button>
+</div>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-badge">BSIS-Authorized Training Provider</div>
+  <h1 class="hero-title">PSLAW Academy</h1>
+  <p class="hero-sub">MACCESS INC. | PPO #122729 — Complete BSIS security guard licensing training. Start your guard card today.</p>
+  <div class="hero-chips">
+    <div class="chip">✓ BSIS-Compliant Certificates</div>
+    <div class="chip">✓ 100% Online</div>
+    <div class="chip">✓ Instant Access</div>
+    <div class="chip">✓ Los Angeles, CA</div>
+  </div>
+</section>
+
+<!-- Bundles -->
+<section class="bundles-section">
+  <div class="bundles-inner">
+    <div class="section-eye">Training Packages</div>
+    <h2 class="section-title">Choose Your Path</h2>
+    <p class="section-sub">Save money with smart bundles matched to your BSIS licensing stage. Individual courses also available below.</p>
+    <div class="bundles-grid">
+      ${Object.values(BUNDLES).filter(b=>b.badge!=='ADD-ON').map(b=>`
+      <div class="bundle-card ${b.badge==='MOST POPULAR'?'bundle-featured':''}" style="border-top:4px solid ${b.color};">
+        <div class="bundle-badge" style="background:${b.color}">${b.badge}</div>
+        <div class="bundle-name">${b.name}</div>
+        <div class="bundle-sub">${b.subtitle}</div>
+        <div class="bundle-price">\$${b.price}</div>
+        <div class="bundle-hours">${b.hours} Credit Hours</div>
+        <ul class="bundle-includes">${b.includes.map(i=>`<li>✓ ${i}</li>`).join('')}</ul>
+        <p class="bundle-desc">${b.description}</p>
+        <button class="bundle-btn" style="background:${b.badge==='MOST POPULAR'?b.color:'#1B2B5E'};color:${b.badge==='MOST POPULAR'?'#1B2B5E':'#fff'}" onclick="enrollBundle('${b.id}')">
+          Enroll Now — \$${b.price}
+        </button>
+      </div>`).join('')}
+    </div>
+    <div class="addons-label">⚡ Add-On Certifications — Add to any package</div>
+    <div class="addons-grid">
+      ${Object.values(BUNDLES).filter(b=>b.badge==='ADD-ON').map(b=>`
+      <div class="bundle-card" style="border-top:4px solid ${b.color};">
+        <div class="bundle-badge" style="background:${b.color}">${b.badge}</div>
+        <div class="bundle-name">${b.name}</div>
+        <div class="bundle-sub">${b.subtitle}</div>
+        <div class="bundle-price">\$${b.price}</div>
+        <div class="bundle-hours">${b.hours} Credit Hours</div>
+        <ul class="bundle-includes">${b.includes.map(i=>`<li>✓ ${i}</li>`).join('')}</ul>
+        <p class="bundle-desc">${b.description}</p>
+        <button class="bundle-btn" style="background:${b.color};color:#fff;" onclick="enrollBundle('${b.id}')">
+          Add to Cart — \$${b.price}
+        </button>
+      </div>`).join('')}
+    </div>
+  </div>
+</section>
+
+<!-- Individual Courses -->
+<section class="courses-section">
+  <div class="courses-inner">
+    <div class="section-eye">Individual Courses</div>
+    <h2 class="section-title">Enroll in a Single Course</h2>
+    <table class="courses-table">
+      <thead><tr><th>Course</th><th>Category</th><th>Hours</th><th>Authority</th><th>Price</th><th>Enroll</th></tr></thead>
+      <tbody>${courseRows}</tbody>
+    </table>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section class="hiw-section">
+  <div class="hiw-inner">
+    <div class="section-eye">How It Works</div>
+    <h2 class="section-title">From Enrollment to Certificate</h2>
+    <div class="hiw-steps">
+      <div class="hiw-step"><div class="hiw-num">1</div><div class="hiw-title">Enroll & Pay</div><div class="hiw-text">Choose a package or individual course. Pay securely via Stripe, PayPal, Venmo, Klarna, Afterpay, or Affirm.</div></div>
+      <div class="hiw-step"><div class="hiw-num">2</div><div class="hiw-title">Complete the Course</div><div class="hiw-text">Work through slide-by-slide content. Answer 2 check-in questions after each section. Complete the module quiz to advance.</div></div>
+      <div class="hiw-step"><div class="hiw-num">3</div><div class="hiw-title">Pass the Exam</div><div class="hiw-text">Take the BSIS written examination. 100% required to pass. 3 attempts included. Instant feedback on every question.</div></div>
+      <div class="hiw-step"><div class="hiw-num">4</div><div class="hiw-title">Get Certified</div><div class="hiw-text">Print your BSIS Certificate of Completion immediately. Your record is saved — contact MACCESS INC. if you ever need a replacement.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Policy -->
+<section class="policy-section">
+  <div class="policy-inner">
+    <div class="policy-block">
+      <h3>Assessment Policy</h3>
+      <p>100% passing score required per BPC §7583.7. All modules include inline section check-ins, a module quiz before advancing, and a final BSIS written exam. 3 exam attempts included per enrollment. Re-enrollment required after 3 failed attempts.</p>
+    </div>
+    <div class="policy-block">
+      <h3>Session & Timer Policy</h3>
+      <p>Each course includes a session timer (1 hour per credit hour). A 10-minute idle warning appears after inactivity. Sessions lock after 15 minutes of no interaction. Progress is saved per module.</p>
+    </div>
+    <div class="policy-block">
+      <h3>Certificates & Records</h3>
+      <p>Certificates are issued upon passing and include your name, date, course, and PPO #122729 as required by Title 16 CCR §643(b). Lost certificate? Contact MACCESS INC. — all student records are retained on file.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  MACCESS INC. / Private Security LA Worldwide (PSLAW) &nbsp;|&nbsp; PPO License #122729 &nbsp;|&nbsp; BSIS-Authorized Training Provider &nbsp;|&nbsp; gopslaw.com<br/>
+  © ${new Date().getFullYear()} MACCESS INC. All rights reserved.
+</footer>
+
+<script>
+const BUNDLES_DATA = ${JSON.stringify(Object.values(BUNDLES))};
+let cart = [];
+
+function enrollBundle(id) {
+  const b = BUNDLES_DATA.find(x=>x.id===id);
+  if(!b) return;
+  // Check if already in cart
+  if(cart.find(c=>c.id===id)){ toggleCart(); return; }
+  cart.push(b);
+  updateCartUI();
+  toggleCart();
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(c=>c.id!==id);
+  updateCartUI();
+}
+
+function updateCartUI() {
+  const count = document.getElementById('cart-count');
+  count.textContent = cart.length;
+  const itemsEl = document.getElementById('cart-items');
+  const totalEl = document.getElementById('cart-total');
+  const checkoutEl = document.getElementById('cart-checkout');
+  const payEl = document.getElementById('cart-pay-methods');
+
+  if(cart.length===0){
+    itemsEl.innerHTML='<p style="color:var(--gr);font-size:14px;">Your cart is empty.</p>';
+    totalEl.style.display='none'; checkoutEl.style.display='none'; payEl.style.display='none';
+    return;
+  }
+
+  const total = cart.reduce((a,c)=>a+parseInt(c.price),0);
+  itemsEl.innerHTML = cart.map(c=>\`
+    <div class="cart-item">
+      <div><div class="cart-item-name">\${c.name}</div>
+      <div class="cart-item-sub">\${c.hours} hrs · \${c.badge}</div>
+      <span class="cart-item-remove" onclick="removeFromCart('\${c.id}')">✕ Remove</span></div>
+      <div class="cart-item-price">\\\$\${c.price}</div>
+    </div>\`).join('');
+
+  document.getElementById('cart-total-amt').textContent = '\$'+total;
+  totalEl.style.display='flex'; checkoutEl.style.display='block'; payEl.style.display='flex';
+}
+
+function toggleCart() {
+  const panel = document.getElementById('cart-panel');
+  const overlay = document.getElementById('cart-overlay');
+  panel.classList.toggle('open');
+  overlay.classList.toggle('open');
+}
+
+function checkout() {
+  // Integration point: replace with Stripe Payment Link or Stripe Checkout session
+  // For now shows the payment method options prominently
+  const total = cart.reduce((a,c)=>a+parseInt(c.price),0);
+  const items = cart.map(c=>c.name).join(', ');
+  alert('Checkout: \$'+total+'\\n\\nCourses: '+items+'\\n\\nTo activate: Connect Stripe in your Netlify dashboard.\\nStripe handles cards, PayPal, Venmo, Apple Pay, Google Pay, Klarna, Afterpay, and Affirm from one integration.');
+}
+</script>
+</body>
+</html>`;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ADMIN DASHBOARD — Student records, certificates, profiles
+// ═══════════════════════════════════════════════════════════════════════════════
+function buildAdminDashboard() {
+  return `<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>PSLAW Admin — Student Records & Certificates | MACCESS INC.</title>
+<style>
+:root{--n:#1B2B5E;--g:#C9A84C;--r:#8B1A1A;--ok:#1A5C3A;--l:#F4F6FB;--gr:#4A5568;--wh:#fff;}
+*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Segoe UI',Arial,sans-serif;background:var(--l);color:#1A1A2E;}
+.hdr{background:var(--n);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;}
+.logo{color:var(--g);font-size:18px;font-weight:700;letter-spacing:.04em;}
+.gold-bar{height:4px;background:var(--g);}
+.admin-wrap{max-width:1100px;margin:0 auto;padding:32px 20px;}
+.admin-title{font-size:26px;font-weight:700;color:var(--n);margin-bottom:6px;}
+.admin-sub{font-size:14px;color:var(--gr);margin-bottom:28px;}
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px;}
+.stat-card{background:var(--wh);border-radius:10px;padding:20px;border:1px solid #dde4f0;text-align:center;}
+.stat-num{font-size:32px;font-weight:800;color:var(--n);}
+.stat-label{font-size:12px;color:var(--gr);margin-top:4px;text-transform:uppercase;letter-spacing:.06em;}
+/* Controls */
+.controls{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+.search-input{flex:1;padding:10px 14px;border:1.5px solid #dde4f0;border-radius:8px;font-size:14px;outline:none;min-width:200px;}
+.search-input:focus{border-color:var(--n);}
+.filter-btn{padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid #dde4f0;background:var(--wh);color:var(--gr);transition:all .15s;}
+.filter-btn.active{background:var(--n);color:#fff;border-color:var(--n);}
+.export-btn{padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:var(--g);color:var(--n);}
+/* Table */
+.table-wrap{background:var(--wh);border-radius:10px;border:1px solid #dde4f0;overflow:hidden;}
+.records-table{width:100%;border-collapse:collapse;}
+.records-table th{background:var(--n);color:#fff;padding:12px 16px;font-size:12px;font-weight:600;text-align:left;letter-spacing:.04em;}
+.records-table td{padding:12px 16px;border-bottom:1px solid #f0f0f0;font-size:13px;vertical-align:middle;}
+.records-table tr:hover td{background:var(--l);}
+.records-table tr:last-child td{border:none;}
+.status-badge{display:inline-block;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
+.status-pass{background:#EAF3DE;color:var(--ok);}
+.status-fail{background:#FFECEC;color:var(--r);}
+.status-progress{background:#FFF3CD;color:#7B4F00;}
+.action-btn{padding:5px 12px;border-radius:5px;font-size:12px;font-weight:600;cursor:pointer;border:none;}
+.btn-cert{background:var(--n);color:#fff;}
+.btn-email{background:var(--ok);color:#fff;}
+.btn-view{background:var(--l);color:var(--n);border:1px solid #dde4f0;}
+/* Student modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:100;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--wh);border-radius:12px;padding:32px;max-width:600px;width:90%;max-height:90vh;overflow-y:auto;}
+.modal-title{font-size:20px;font-weight:700;color:var(--n);margin-bottom:4px;}
+.modal-sub{font-size:13px;color:var(--gr);margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid var(--g);}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
+.profile-field{background:var(--l);border-radius:8px;padding:12px 14px;}
+.pf-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gr);margin-bottom:3px;}
+.pf-value{font-size:14px;font-weight:600;color:var(--n);}
+.cert-history{margin-top:16px;}
+.cert-history h3{font-size:13px;font-weight:700;color:var(--n);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em;}
+.cert-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--l);border-radius:7px;margin-bottom:6px;}
+.cert-row-name{font-size:13px;font-weight:600;color:var(--n);}
+.cert-row-date{font-size:12px;color:var(--gr);}
+.cert-row-score{font-size:12px;font-weight:700;color:var(--ok);}
+.modal-actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;}
+.modal-btn{padding:10px 20px;border-radius:7px;font-size:14px;font-weight:600;cursor:pointer;border:none;}
+.mb-primary{background:var(--g);color:var(--n);}
+.mb-outline{background:var(--wh);color:var(--n);border:1.5px solid var(--n);}
+.mb-close{background:var(--l);color:var(--gr);}
+/* Add student form */
+.add-form{background:var(--wh);border-radius:10px;border:1px solid #dde4f0;padding:24px;margin-top:24px;}
+.add-form h3{font-size:16px;font-weight:700;color:var(--n);margin-bottom:16px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px;}
+.form-field{display:flex;flex-direction:column;gap:4px;}
+.form-label{font-size:12px;font-weight:600;color:var(--gr);}
+.form-input{padding:9px 12px;border:1.5px solid #dde4f0;border-radius:7px;font-size:13px;outline:none;}
+.form-input:focus{border-color:var(--n);}
+.form-submit{padding:10px 24px;border-radius:7px;font-size:14px;font-weight:600;background:var(--n);color:#fff;border:none;cursor:pointer;}
+@media(max-width:768px){.stats-grid{grid-template-columns:1fr 1fr;}.profile-grid{grid-template-columns:1fr;}.form-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <div class="logo">PSLAW Admin — Student Records</div>
+  <div style="color:#CADCFC;font-size:12px;">MACCESS INC. | PPO #122729 | Confidential</div>
+</header>
+<div class="gold-bar"></div>
+
+<div class="admin-wrap">
+  <div class="admin-title">Student Records & Certificate Tracker</div>
+  <div class="admin-sub">All student enrollments, exam scores, certificates, and profiles. Click any student to view their full record and resend their certificate.</div>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-num" id="stat-total">0</div><div class="stat-label">Total Students</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-pass">0</div><div class="stat-label">Certificates Issued</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-progress">0</div><div class="stat-label">In Progress</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-courses">10</div><div class="stat-label">Active Courses</div></div>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <input class="search-input" type="text" id="search-input" placeholder="Search by name, email, course, or date..." oninput="filterRecords()"/>
+    <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+    <button class="filter-btn" onclick="setFilter('pass',this)">Passed</button>
+    <button class="filter-btn" onclick="setFilter('progress',this)">In Progress</button>
+    <button class="filter-btn" onclick="setFilter('fail',this)">Failed</button>
+    <button class="export-btn" onclick="exportCSV()">⬇ Export CSV</button>
+  </div>
+
+  <!-- Records table -->
+  <div class="table-wrap">
+    <table class="records-table">
+      <thead>
+        <tr>
+          <th>Student Name</th>
+          <th>Email</th>
+          <th>Course</th>
+          <th>Exam Date</th>
+          <th>Score</th>
+          <th>Status</th>
+          <th>Attempts</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="records-tbody">
+        <tr><td colspan="8" style="text-align:center;color:var(--gr);padding:32px;font-size:14px;">
+          No student records yet. Records are created automatically when students complete their enrollment and enter their name and email in a course.
+          <br/><br/>You can also add records manually below.
+        </td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Manual add form -->
+  <div class="add-form">
+    <h3>➕ Add Student Record Manually</h3>
+    <div class="form-grid">
+      <div class="form-field"><label class="form-label">Full Legal Name *</label><input class="form-input" id="f-name" placeholder="First Middle Last"/></div>
+      <div class="form-field"><label class="form-label">Email Address *</label><input class="form-input" id="f-email" type="email" placeholder="student@email.com"/></div>
+      <div class="form-field"><label class="form-label">Phone</label><input class="form-input" id="f-phone" placeholder="(323) 000-0000"/></div>
+      <div class="form-field"><label class="form-label">Guard Card Number</label><input class="form-input" id="f-guardcard" placeholder="CA-XXXXXXXX"/></div>
+      <div class="form-field"><label class="form-label">Course</label>
+        <select class="form-input" id="f-course">
+          <option value="">Select course...</option>
+          <option>Powers to Arrest</option>
+          <option>Appropriate Use of Force</option>
+          <option>Public Relations & Community</option>
+          <option>Observation & Documentation</option>
+          <option>Communication & Its Significance</option>
+          <option>Liability & Legal Aspects</option>
+          <option>Officer Safety</option>
+          <option>Handling Difficult People</option>
+          <option>Baton Certification</option>
+          <option>Workplace Violence</option>
+        </select>
+      </div>
+      <div class="form-field"><label class="form-label">Exam Date</label><input class="form-input" id="f-date" type="date"/></div>
+      <div class="form-field"><label class="form-label">Score</label><input class="form-input" id="f-score" placeholder="e.g. 100% or 20/24"/></div>
+      <div class="form-field"><label class="form-label">Status</label>
+        <select class="form-input" id="f-status">
+          <option value="pass">Passed — Certificate Issued</option>
+          <option value="progress">In Progress</option>
+          <option value="fail">Failed</option>
+        </select>
+      </div>
+      <div class="form-field"><label class="form-label">Notes</label><input class="form-input" id="f-notes" placeholder="Optional notes..."/></div>
+    </div>
+    <button class="form-submit" onclick="addRecord()">Add Student Record</button>
+  </div>
+</div>
+
+<!-- Student profile modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<script>
+// ── Storage key ───────────────────────────────────────────────
+const STORAGE_KEY = 'pslaw_students_v1';
+let currentFilter = 'all';
+
+// ── Load / save ───────────────────────────────────────────────
+function loadRecords(){
+  try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]'); }
+  catch{ return []; }
+}
+function saveRecords(records){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+}
+
+// ── Render table ──────────────────────────────────────────────
+function renderTable(){
+  const records = loadRecords();
+  const search  = document.getElementById('search-input').value.toLowerCase();
+
+  const filtered = records.filter(r=>{
+    const matchFilter = currentFilter==='all' || r.status===currentFilter;
+    const matchSearch = !search ||
+      r.name.toLowerCase().includes(search) ||
+      r.email.toLowerCase().includes(search) ||
+      (r.course||'').toLowerCase().includes(search) ||
+      (r.date||'').includes(search);
+    return matchFilter && matchSearch;
+  });
+
+  // Stats
+  document.getElementById('stat-total').textContent    = records.length;
+  document.getElementById('stat-pass').textContent     = records.filter(r=>r.status==='pass').length;
+  document.getElementById('stat-progress').textContent = records.filter(r=>r.status==='progress').length;
+
+  const tbody = document.getElementById('records-tbody');
+  if(filtered.length===0){
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--gr);padding:24px;font-size:14px;">No records match your search.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = filtered.map((r,i)=>\`
+    <tr>
+      <td><strong style="color:var(--n);">\${r.name}</strong></td>
+      <td style="color:var(--gr);">\${r.email}</td>
+      <td>\${r.course||'—'}</td>
+      <td>\${r.date||'—'}</td>
+      <td style="font-weight:700;">\${r.score||'—'}</td>
+      <td><span class="status-badge status-\${r.status}">\${r.status==='pass'?'Passed':r.status==='progress'?'In Progress':'Failed'}</span></td>
+      <td style="text-align:center;">\${r.attempts||1}</td>
+      <td style="display:flex;gap:6px;flex-wrap:wrap;">
+        <button class="action-btn btn-view" onclick="viewStudent(\${records.indexOf(r)})">View</button>
+        \${r.status==='pass'?'<button class="action-btn btn-cert" onclick="printCert('+records.indexOf(r)+')">🖨 Cert</button>':''}
+        <button class="action-btn btn-email" onclick="resendCert(\${records.indexOf(r)})">✉ Email</button>
+      </td>
+    </tr>\`).join('');
+}
+
+function filterRecords(){ renderTable(); }
+function setFilter(f, btn){
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable();
+}
+
+// ── Add record ────────────────────────────────────────────────
+function addRecord(){
+  const name = document.getElementById('f-name').value.trim();
+  const email= document.getElementById('f-email').value.trim();
+  if(!name||!email){ alert('Name and email are required.'); return; }
+
+  const records = loadRecords();
+  const record = {
+    id:       Date.now().toString(),
+    name,
+    email,
+    phone:     document.getElementById('f-phone').value.trim(),
+    guardCard: document.getElementById('f-guardcard').value.trim(),
+    course:    document.getElementById('f-course').value,
+    date:      document.getElementById('f-date').value,
+    score:     document.getElementById('f-score').value.trim(),
+    status:    document.getElementById('f-status').value,
+    attempts:  1,
+    notes:     document.getElementById('f-notes').value.trim(),
+    createdAt: new Date().toISOString(),
+    certificates: [],
+  };
+
+  if(record.status==='pass' && record.course){
+    record.certificates.push({
+      course: record.course,
+      date:   record.date || new Date().toLocaleDateString(),
+      score:  record.score || '100%',
+      issuedAt: new Date().toISOString(),
+    });
+  }
+
+  records.unshift(record);
+  saveRecords(records);
+  renderTable();
+
+  // Clear form
+  ['f-name','f-email','f-phone','f-guardcard','f-course','f-date','f-score','f-notes']
+    .forEach(id=>{ document.getElementById(id).value=''; });
+  document.getElementById('f-status').value='pass';
+}
+
+// ── View student profile ──────────────────────────────────────
+function viewStudent(idx){
+  const records = loadRecords();
+  const r = records[idx];
+  if(!r) return;
+
+  const certHistory = (r.certificates||[]).length > 0
+    ? r.certificates.map(c=>\`
+        <div class="cert-row">
+          <div><div class="cert-row-name">\${c.course}</div><div class="cert-row-date">Completed: \${c.date}</div></div>
+          <div class="cert-row-score">\${c.score}</div>
+        </div>\`).join('')
+    : '<p style="font-size:13px;color:var(--gr);">No certificates on file yet.</p>';
+
+  document.getElementById('modal-content').innerHTML = \`
+    <h2 class="modal-title">\${r.name}</h2>
+    <div class="modal-sub">Student Profile — MACCESS INC. / PSLAW</div>
+    <div class="profile-grid">
+      <div class="profile-field"><div class="pf-label">Email</div><div class="pf-value">\${r.email}</div></div>
+      <div class="profile-field"><div class="pf-label">Phone</div><div class="pf-value">\${r.phone||'—'}</div></div>
+      <div class="profile-field"><div class="pf-label">Guard Card #</div><div class="pf-value">\${r.guardCard||'—'}</div></div>
+      <div class="profile-field"><div class="pf-label">Student Since</div><div class="pf-value">\${r.createdAt?new Date(r.createdAt).toLocaleDateString():'—'}</div></div>
+      <div class="profile-field"><div class="pf-label">Last Course</div><div class="pf-value">\${r.course||'—'}</div></div>
+      <div class="profile-field"><div class="pf-label">Last Exam Date</div><div class="pf-value">\${r.date||'—'}</div></div>
+      <div class="profile-field"><div class="pf-label">Last Score</div><div class="pf-value">\${r.score||'—'}</div></div>
+      <div class="profile-field"><div class="pf-label">Exam Attempts</div><div class="pf-value">\${r.attempts||1}</div></div>
+    </div>
+    \${r.notes?'<div style="background:var(--l);border-radius:7px;padding:12px;font-size:13px;color:var(--gr);margin-bottom:16px;"><strong>Notes:</strong> '+r.notes+'</div>':''}
+    <div class="cert-history">
+      <h3>Certificate History (\${(r.certificates||[]).length})</h3>
+      \${certHistory}
+    </div>
+    <div class="modal-actions">
+      \${r.status==='pass'?'<button class="modal-btn mb-primary" onclick="printCert('+idx+')">🖨 Print Certificate</button>':''}
+      <button class="modal-btn mb-outline" onclick="resendCert(\${idx})">✉ Resend Certificate</button>
+      <button class="modal-btn" style="background:#FFECEC;color:var(--r);border:none;" onclick="deleteRecord(\${idx})">🗑 Delete Record</button>
+      <button class="modal-btn mb-close" onclick="closeModal()">Close</button>
+    </div>\`;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal(e){
+  if(!e||e.target===document.getElementById('modal-overlay'))
+    document.getElementById('modal-overlay').classList.remove('open');
+}
+
+// ── Certificate print ─────────────────────────────────────────
+function printCert(idx){
+  const records = loadRecords();
+  const r = records[idx];
+  if(!r) return;
+  const d = r.date || new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  const certWin = window.open('','_blank');
+  certWin.document.write(\`<!DOCTYPE html><html><head><title>Certificate — \${r.name}</title>
+  <style>
+    body{font-family:'Segoe UI',Arial,sans-serif;margin:0;padding:40px;background:#fff;}
+    .cw{border:3px double #1B2B5E;border-radius:4px;padding:50px 60px;max-width:780px;margin:0 auto;text-align:center;position:relative;}
+    .cw::before{content:'';position:absolute;inset:9px;border:1px solid #C9A84C;border-radius:2px;pointer-events:none;}
+    .stripe{height:5px;background:#C9A84C;border-radius:3px;margin:12px auto;width:80px;}
+    h1{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#1B2B5E;margin-bottom:5px;}
+    h2{font-size:22px;font-weight:800;color:#1B2B5E;margin-bottom:2px;}
+    .ppo{font-size:12px;color:#666;margin-bottom:22px;}
+    .certifies{font-size:13px;color:#666;margin-bottom:7px;}
+    .student{font-size:30px;font-weight:800;color:#1B2B5E;border-bottom:2px solid #1B2B5E;display:inline-block;min-width:280px;padding-bottom:4px;margin-bottom:16px;}
+    .course{font-size:17px;font-weight:700;color:#1B2B5E;margin:8px 0;}
+    .badge{display:inline-block;background:#EAF3DE;color:#1A5C3A;border-radius:6px;padding:4px 14px;font-size:12px;font-weight:700;margin-bottom:18px;}
+    .sigs{display:flex;justify-content:space-around;margin-top:32px;gap:18px;}
+    .sig{flex:1;text-align:center;} .sig-line{border-top:1.5px solid #1B2B5E;margin-bottom:5px;} .sig-label{font-size:11px;color:#666;}
+    @media print{body{padding:0;}}
+  </style></head><body>
+  <div class="cw">
+    <h1>Certificate of Completion</h1><div class="stripe"></div>
+    <h2>MACCESS INC.</h2><div class="ppo">Private Patrol Operator | PPO License #122729 | BSIS-Authorized Training Provider</div>
+    <div class="certifies">This certifies that</div>
+    <div class="student">\${r.name}</div>
+    <div style="font-size:13px;color:#666;margin-bottom:5px;">has successfully completed:</div>
+    <div class="course">\${r.course||'BSIS Security Guard Training'}</div>
+    <div class="badge">Score: \${r.score||'100%'} ✓ Passing</div>
+    <div style="font-size:12px;color:#666;line-height:1.8;margin-bottom:5px;">Completion Date: \${d} | Retain per Title 16 CCR §643(b)</div>
+    <div class="stripe"></div>
+    <div class="sigs">
+      <div class="sig"><div class="sig-line"></div><div class="sig-label">Student Signature</div></div>
+      <div class="sig"><div class="sig-line"></div><div class="sig-label">Date: \${d}</div></div>
+      <div class="sig"><div class="sig-line"></div><div class="sig-label">Instructor — MACCESS INC.</div></div>
+    </div>
+  </div>
+  <script>window.print();<\\/script></body></html>\`);
+}
+
+function resendCert(idx){
+  const records = loadRecords();
+  const r = records[idx];
+  if(!r) return;
+  alert(\`Certificate resend for: \${r.name}\\nEmail: \${r.email}\\n\\nTo wire this: connect SendGrid or Mailchimp to your Netlify backend. One-click email delivery of the certificate PDF to any student address.\`);
+}
+
+function deleteRecord(idx){
+  if(!confirm('Delete this student record permanently?')) return;
+  const records = loadRecords();
+  records.splice(idx,1);
+  saveRecords(records);
+  closeModal();
+  renderTable();
+}
+
+// ── Export CSV ────────────────────────────────────────────────
+function exportCSV(){
+  const records = loadRecords();
+  if(records.length===0){ alert('No records to export.'); return; }
+  const headers = ['Name','Email','Phone','Guard Card','Course','Exam Date','Score','Status','Attempts','Notes','Created'];
+  const rows = records.map(r=>[r.name,r.email,r.phone||'',r.guardCard||'',r.course||'',r.date||'',r.score||'',r.status,r.attempts||1,r.notes||'',r.createdAt?new Date(r.createdAt).toLocaleDateString():''].map(v=>'"'+String(v).replace(/"/g,'""')+'"'));
+  const csv = [headers.join(','),...rows.map(r=>r.join(','))].join('\\n');
+  const blob = new Blob([csv],{type:'text/csv'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href=url; a.download='PSLAW_Students_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click(); URL.revokeObjectURL(url);
+}
+
+// ── Auto-capture from course completion ───────────────────────
+// When a student completes a course in the same browser session,
+// the course page posts a message with their record.
+// This listener captures it and saves to the admin dashboard.
+window.addEventListener('message', function(e){
+  if(e.data && e.data.type === 'PSLAW_COMPLETION'){
+    const records = loadRecords();
+    const { name, email, course, score, date } = e.data;
+    // Check for existing student record
+    let existing = records.find(r=>r.email.toLowerCase()===email.toLowerCase());
+    if(existing){
+      existing.certificates = existing.certificates||[];
+      existing.certificates.push({ course, date, score, issuedAt:new Date().toISOString() });
+      existing.course=course; existing.score=score; existing.date=date; existing.status='pass';
+    } else {
+      records.unshift({
+        id: Date.now().toString(), name, email, course, score, date,
+        status:'pass', attempts:1, createdAt:new Date().toISOString(),
+        certificates:[{course,date,score,issuedAt:new Date().toISOString()}],
+      });
+    }
+    saveRecords(records);
+    renderTable();
+  }
+});
+
+// Init
+renderTable();
+</script>
+</body>
+</html>`;
+}
+
+module.exports = { buildAll, buildAndPush, buildStorePage, buildAdminDashboard, BUNDLES };
+
+// Standalone
+if(require.main===module){
+  console.log("\nMACCESS INC. — Course Platform Builder (Full Suite)");
+  console.log("Building individual courses + store + admin dashboard...\n");
+  buildAll("/home/claude");
+  if(process.env.GITHUB_TOKEN){
+    buildAndPush("/home/claude").then(()=>{
+      console.log("\nAll files pushed to GitHub.\n");
+    }).catch(console.error);
+  } else {
+    console.log("\nDone. Set GITHUB_TOKEN to push to GitHub.\n");
+  }
 }
