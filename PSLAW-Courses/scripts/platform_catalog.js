@@ -1,5 +1,5 @@
 /**
- * MACCESS INC. / PSLAW — Course Platform Builder
+ * MACCESS INC. — Course Platform Builder
  * Generates a complete purchasable, sequential course delivery page per module.
  *
  * Each HTML file includes:
