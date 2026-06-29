@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>PSLAW Admin — Student Records & Certificates | MACCESS INC.</title>
+<style>
+:root{--n:#1B2B5E;--g:#C9A84C;--r:#8B1A1A;--ok:#1A5C3A;--l:#F4F6FB;--gr:#4A5568;--wh:#fff;}
+*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Segoe UI',Arial,sans-serif;background:var(--l);color:#1A1A2E;}
+.hdr{background:var(--n);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;}
+.logo{color:var(--g);font-size:18px;font-weight:700;letter-spacing:.04em;}
+.gold-bar{height:4px;background:var(--g);}
+.admin-wrap{max-width:1100px;margin:0 auto;padding:32px 20px;}
+.admin-title{font-size:26px;font-weight:700;color:var(--n);margin-bottom:6px;}
+.admin-sub{font-size:14px;color:var(--gr);margin-bottom:28px;}
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px;}
+.stat-card{background:var(--wh);border-radius:10px;padding:20px;border:1px solid #dde4f0;text-align:center;}
+.stat-num{font-size:32px;font-weight:800;color:var(--n);}
+.stat-label{font-size:12px;color:var(--gr);margin-top:4px;text-transform:uppercase;letter-spacing:.06em;}
+/* Controls */
+.controls{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+.search-input{flex:1;padding:10px 14px;border:1.5px solid #dde4f0;border-radius:8px;font-size:14px;outline:none;min-width:200px;}
+.search-input:focus{border-color:var(--n);}
+.filter-btn{padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid #dde4f0;background:var(--wh);color:var(--gr);transition:all .15s;}
+.filter-btn.active{background:var(--n);color:#fff;border-color:var(--n);}
+.export-btn{padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:var(--g);color:var(--n);}
+/* Table */
+.table-wrap{background:var(--wh);border-radius:10px;border:1px solid #dde4f0;overflow:hidden;}
+.records-table{width:100%;border-collapse:collapse;}
+.records-table th{background:var(--n);color:#fff;padding:12px 16px;font-size:12px;font-weight:600;text-align:left;letter-spacing:.04em;}
+.records-table td{padding:12px 16px;border-bottom:1px solid #f0f0f0;font-size:13px;vertical-align:middle;}
+.records-table tr:hover td{background:var(--l);}
+.records-table tr:last-child td{border:none;}
+.status-badge{display:inline-block;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
+.status-pass{background:#EAF3DE;color:var(--ok);}
+.status-fail{background:#FFECEC;color:var(--r);}
+.status-progress{background:#FFF3CD;color:#7B4F00;}
+.action-btn{padding:5px 12px;border-radius:5px;font-size:12px;font-weight:600;cursor:pointer;border:none;}
+.btn-cert{background:var(--n);color:#fff;}
+.btn-email{background:var(--ok);color:#fff;}
+.btn-view{background:var(--l);color:var(--n);border:1px solid #dde4f0;}
+/* Student modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:100;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--wh);border-radius:12px;padding:32px;max-width:600px;width:90%;max-height:90vh;overflow-y:auto;}
+.modal-title{font-size:20px;font-weight:700;color:var(--n);margin-bottom:4px;}
+.modal-sub{font-size:13px;color:var(--gr);margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid var(--g);}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
+.profile-field{background:var(--l);border-radius:8px;padding:12px 14px;}
+.pf-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gr);margin-bottom:3px;}
+.pf-value{font-size:14px;font-weight:600;color:var(--n);}
+.cert-history{margin-top:16px;}
+.cert-history h3{font-size:13px;font-weight:700;color:var(--n);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em;}
+.cert-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--l);border-radius:7px;margin-bottom:6px;}
+.cert-row-name{font-size:13px;font-weight:600;color:var(--n);}
+.cert-row-date{font-size:12px;color:var(--gr);}
+.cert-row-score{font-size:12px;font-weight:700;color:var(--ok);}
+.modal-actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;}
+.modal-btn{padding:10px 20px;border-radius:7px;font-size:14px;font-weight:600;cursor:pointer;border:none;}
+.mb-primary{background:var(--g);color:var(--n);}
+.mb-outline{background:var(--wh);color:var(--n);border:1.5px solid var(--n);}
+.mb-close{background:var(--l);color:var(--gr);}
+/* Add student form */
+.add-form{background:var(--wh);border-radius:10px;border:1px solid #dde4f0;padding:24px;margin-top:24px;}
+.add-form h3{font-size:16px;font-weight:700;color:var(--n);margin-bottom:16px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px;}
+.form-field{display:flex;flex-direction:column;gap:4px;}
+.form-label{font-size:12px;font-weight:600;color:var(--gr);}
+.form-input{padding:9px 12px;border:1.5px solid #dde4f0;border-radius:7px;font-size:13px;outline:none;}
+.form-input:focus{border-color:var(--n);}
+.form-submit{padding:10px 24px;border-radius:7px;font-size:14px;font-weight:600;background:var(--n);color:#fff;border:none;cursor:pointer;}
+@media(max-width:768px){.stats-grid{grid-template-columns:1fr 1fr;}.profile-grid{grid-template-columns:1fr;}.form-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <div class="logo">PSLAW Admin — Student Records</div>
+  <div style="color:#CADCFC;font-size:12px;">MACCESS INC. | PPO #122729 | Confidential</div>
+</header>
+<div class="gold-bar"></div>
+
+<div class="admin-wrap">
+  <div class="admin-title">Student Records & Certificate Tracker</div>
+  <div class="admin-sub">All student enrollments, exam scores, certificates, and profiles. Click any student to view their full record and resend their certificate.</div>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-num" id="stat-total">0</div><div class="stat-label">Total Students</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-pass">0</div><div class="stat-label">Certificates Issued</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-progress">0</div><div class="stat-label">In Progress</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-courses">10</div><div class="stat-label">Active Courses</div></div>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <input class="search-input" type="text" id="search-input" placeholder="Search by name, email, course, or date..." oninput="filterRecords()"/>
+    <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+    <button class="filter-btn" onclick="setFilter('pass',this)">Passed</button>
+    <button class="filter-btn" onclick="setFilter('progress',this)">In Progress</button>
+    <button class="filter-btn" onclick="setFilter('fail',this)">Failed</button>
+    <button class="export-btn" onclick="exportCSV()">⬇ Export CSV</button>
+  </div>
+
+  <!-- Records table -->
+  <div class="table-wrap">
+    <table class="records-table">
+      <thead>
+        <tr>
+          <th>Student Name</th>
+          <th>Email</th>
+          <th>Course</th>
+          <th>Exam Date</th>
+          <th>Score</th>
+          <th>Status</th>
+          <th>Attempts</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="records-tbody">
+        <tr><td colspan="8" style="text-align:center;color:var(--gr);padding:32px;font-size:14px;">
+          No student records yet. Records are created automatically when students complete their enrollment and enter their name and email in a course.
+          <br/><br/>You can also add records manually below.
+        </td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Manual add form -->
+  <div class="add-form">
+    <h3>➕ Add Student Record Manually</h3>
+    <div class="form-grid">
+      <div class="form-field"><label class="form-label">Full Legal Name *</label><input class="form-input" id="f-name" placeholder="First Middle Last"/></div>
+      <div class="form-field"><label class="form-label">Email Address *</label><input class="form-input" id="f-email" type="email" placeholder="student@email.com"/></div>
+      <div class="form-field"><label class="form-label">Phone</label><input class="form-input" id="f-phone" placeholder="(323) 000-0000"/></div>
+      <div class="form-field"><label class="form-label">Guard Card Number</label><input class="form-input" id="f-guardcard" placeholder="CA-XXXXXXXX"/></div>
+      <div class="form-field"><label class="form-label">Course</label>
+        <select class="form-input" id="f-course">
+          <option value="">Select course...</option>
+          <option>Powers to Arrest</option>
+          <option>Appropriate Use of Force</option>
+          <option>Public Relations & Community</option>
+          <option>Observation & Documentation</option>
+          <option>Communication & Its Significance</option>
+          <option>Liability & Legal Aspects</option>
+          <option>Officer Safety</option>
+          <option>Handling Difficult People</option>
+          <option>Baton Certification</option>
+          <option>Workplace Violence</option>
+        </select>
+      </div>
+      <div class="form-field"><label class="form-label">Exam Date</label><input class="form-input" id="f-date" type="date"/></div>
+      <div class="form-field"><label class="form-label">Score</label><input class="form-input" id="f-score" placeholder="e.g. 100% or 20/24"/></div>
+      <div class="form-field"><label class="form-label">Status</label>
+        <select class="form-input" id="f-status">
+          <option value="pass">Passed — Certificate Issued</option>
+          <option value="progress">In Progress</option>
+          <option value="fail">Failed</option>
+        </select>
+      </div>
+      <div class="form-field"><label class="form-label">Notes</label><input class="form-input" id="f-notes" placeholder="Optional notes..."/></div>
+    </div>
+    <button class="form-submit" onclick="addRecord()">Add Student Record</button>
+  </div>
+</div>
+
+<!-- Student profile modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<script>
+// ── Storage key ───────────────────────────────────────────────
+const STORAGE_KEY = 'pslaw_students_v1';
+let currentFilter = 'all';
+
+// ── Load / save ───────────────────────────────────────────────
+function loadRecords(){
+  try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]'); }
+  catch{ return []; }
+}
+function saveRecords(records){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+}
+
+// ── Render table ──────────────────────────────────────────────
+function renderTable(){
+  const records = loadRecords();
+  const search  = document.getElementById('search-input').value.toLowerCase();
+
+  const filtered = records.filter(r=>{
+    const matchFilter = currentFilter==='all' || r.status===currentFilter;
+    const matchSearch = !search ||
+      r.name.toLowerCase().includes(search) ||
+      r.email.toLowerCase().includes(search) ||
+      (r.course||'').toLowerCase().includes(search) ||
+      (r.date||'').includes(search);
+    return matchFilter && matchSearch;
+  });
+
+  // Stats
+  document.getElementById('stat-total').textContent    = records.length;
+  document.getElementById('stat-pass').textContent     = records.filter(r=>r.status==='pass').length;
+  document.getElementById('stat-progress').textContent = records.filter(r=>r.status==='progress').length;
+
+  const tbody = document.getElementById('records-tbody');
+  if(filtered.length===0){
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--gr);padding:24px;font-size:14px;">No records match your search.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = filtered.map((r,i)=>`
+    <tr>
+      <td><strong style="color:var(--n);">${r.name}</strong></td>
+      <td style="color:var(--gr);">${r.email}</td>
+      <td>${r.course||'—'}</td>
+      <td>${r.date||'—'}</td>
+      <td style="font-weight:700;">${r.score||'—'}</td>
+      <td><span class="status-badge status-${r.status}">${r.status==='pass'?'Passed':r.status==='progress'?'In Progress':'Failed'}</span></td>
+      <td style="text-align:center;">${r.attempts||1}</td>
+      <td style="display:flex;gap:6px;flex-wrap:wrap;">
+        <button class="action-btn btn-view" onclick="viewStudent(${records.indexOf(r)})">View</button>
+        ${r.status==='pass'?'<button class="action-btn btn-cert" onclick="printCert('+records.indexOf(r)+')">🖨 Cert</button>':''}
+        <button class="action-btn btn-email" onclick="resendCert(${records.indexOf(r)})">✉ Email</button>
+      </td>
+    </tr>`).join('');
+}
+
+function filterRecords(){ renderTable(); }
+function setFilter(f, btn){
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable();
+}
+
+// ── Add record ────────────────────────────────────────────────
+function addRecord(){
+  const name = document.getElementById('f-name').value.trim();
+  const email= document.getElementById('f-email').value.trim();
+  if(!name||!email){ alert('Name and email are required.'); return; }
+
+  const records = loadRecords();
+  const record = {
+    id:       Date.now().toString(),
+    name,
+    email,
+    phone:     document.getElementById('f-phone').value.trim(),
+    guardCard: document.getElementById('f-guardcard').value.trim(),
+    course:    document.getElementById('f-course').value,
+    date:      document.getElementById('f-date').value,
+    score:     document.getElementById('f-score').value.trim(),
+    status:    document.getElementById('f-status').value,
+    attempts:  1,
+    notes:     document.getElementById('f-notes').value.trim(),
+    createdAt: new Date().toISOString(),
+    certificates: [],
+  };
+
+  if(record.status==='pass' && record.course){
+    record.certificates.push({
+      course: record.course,
+      date:   record.date || new Date().toLocaleDateString(),
+      score:  record.score || '100%',
+      issuedAt: new Date().toISOString(),
+    });
+  }
+
+  records.unshift(record);
+  saveRecords(records);
+  renderTable();
+
+  // Clear form
+  ['f-name','f-email','f-phone','f-guardcard','f-course','f-date','f-score','f-notes']
+    .forEach(id=>{ document.getElementById(id).value=''; });
+  document.getElementById('f-status').value='pass';
+}
+
+// ── View student profile ──────────────────────────────────────
+function viewStudent(idx){
+  const records = loadRecords();
+  const r = records[idx];
+  if(!r) return;
+
+  const certHistory = (r.certificates||[]).length > 0
+    ? r.certificates.map(c=>`
+        <div class="cert-row">
+          <div><div class="cert-row-name">${c.course}</div><div class="cert-row-date">Completed: ${c.date}</div></div>
+          <div class="cert-row-score">${c.score}</div>
+        </div>`).join('')
+    : '<p style="font-size:13px;color:var(--gr);">No certificates on file yet.</p>';
+
+  document.getElementById('modal-content').innerHTML = `
+    <h2 class="modal-title">${r.name}</h2>
+    <div class="modal-sub">Student Profile — MACCESS INC. / PSLAW</div>
+    <div class="profile-grid">
+      <div class="profile-field"><div class="pf-label">Email</div><div class="pf-value">${r.email}</div></div>
+      <div class="profile-field"><div class="pf-label">Phone</div><div class="pf-value">${r.phone||'—'}</div></div>
+      <div class="profile-field"><div class="pf-label">Guard Card #</div><div class="pf-value">${r.guardCard||'—'}</div></div>
+      <div class="profile-field"><div class="pf-label">Student Since</div><div class="pf-value">${r.createdAt?new Date(r.createdAt).toLocaleDateString():'—'}</div></div>
+      <div class="profile-field"><div class="pf-label">Last Course</div><div class="pf-value">${r.course||'—'}</div></div>
+      <div class="profile-field"><div class="pf-label">Last Exam Date</div><div class="pf-value">${r.date||'—'}</div></div>
+      <div class="profile-field"><div class="pf-label">Last Score</div><div class="pf-value">${r.score||'—'}</div></div>
+      <div class="profile-field"><div class="pf-label">Exam Attempts</div><div class="pf-value">${r.attempts||1}</div></div>
+    </div>
+    ${r.notes?'<div style="background:var(--l);border-radius:7px;padding:12px;font-size:13px;color:var(--gr);margin-bottom:16px;"><strong>Notes:</strong> '+r.notes+'</div>':''}
+    <div class="cert-history">
+      <h3>Certificate History (${(r.certificates||[]).length})</h3>
+      ${certHistory}
+    </div>
+    <div class="modal-actions">
+      ${r.status==='pass'?'<button class="modal-btn mb-primary" onclick="printCert('+idx+')">🖨 Print Certificate</button>':''}
+      <button class="modal-btn mb-outline" onclick="resendCert(${idx})">✉ Resend Certificate</button>
+      <button class="modal-btn" style="background:#FFECEC;color:var(--r);border:none;" onclick="deleteRecord(${idx})">🗑 Delete Record</button>
+      <button class="modal-btn mb-close" onclick="closeModal()">Close</button>
+    </div>`;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal(e){
+  if(!e||e.target===document.getElementById('modal-overlay'))
+    document.getElementById('modal-overlay').classList.remove('open');
+}
+
+// ── Certificate print ─────────────────────────────────────────
+function printCert(idx){
+  const records = loadRecords();
+  const r = records[idx];
+  if(!r) return;
+  const d = r.date || new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  const certWin = window.open('','_blank');
+  certWin.document.write(`<!DOCTYPE html><html><head><title>Certificate — ${r.name}</title>
+  <style>
+    body{font-family:'Segoe UI',Arial,sans-serif;margin:0;padding:40px;background:#fff;}
+    .cw{border:3px double #1B2B5E;border-radius:4px;padding:50px 60px;max-width:780px;margin:0 auto;text-align:center;position:relative;}
+    .cw::before{content:'';position:absolute;inset:9px;border:1px solid #C9A84C;border-radius:2px;pointer-events:none;}
+    .stripe{height:5px;background:#C9A84C;border-radius:3px;margin:12px auto;width:80px;}
+    h1{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#1B2B5E;margin-bottom:5px;}
+    h2{font-size:22px;font-weight:800;color:#1B2B5E;margin-bottom:2px;}
+    .ppo{font-size:12px;color:#666;margin-bottom:22px;}
+    .certifies{font-size:13px;color:#666;margin-bottom:7px;}
+    .student{font-size:30px;font-weight:800;color:#1B2B5E;border-bottom:2px solid #1B2B5E;display:inline-block;min-width:280px;padding-bottom:4px;margin-bottom:16px;}
+    .course{font-size:17px;font-weight:700;color:#1B2B5E;margin:8px 0;}
+    .badge{display:inline-block;background:#EAF3DE;color:#1A5C3A;border-radius:6px;padding:4px 14px;font-size:12px;font-weight:700;margin-bottom:18px;}
+    .sigs{display:flex;justify-content:space-around;margin-top:32px;gap:18px;}
+    .sig{flex:1;text-align:center;} .sig-line{border-top:1.5px solid #1B2B5E;margin-bottom:5px;} .sig-label{font-size:11px;color:#666;}
+    @media print{body{padding:0;}}
+  </style></head><body>
+  <div class="cw">
+    <h1>Certificate of Completion</h1><div class="stripe"></div>
+    <h2>MACCESS INC.</h2><div class="ppo">Private Patrol Operator | PPO License #122729 | BSIS-Authorized Training Provider</div>
+    <div class="certifies">This certifies that</div>
+    <div class="student">${r.name}</div>
+    <div style="font-size:13px;color:#666;margin-bottom:5px;">has successfully completed:</div>
+    <div class="course">${r.course||'BSIS Security Guard Training'}</div>
+    <div class="badge">Score: ${r.score||'100%'} ✓ Passing</div>
+    <div style="font-size:12px;color:#666;line-height:1.8;margin-bottom:5px;">Completion Date: ${d} | Retain per Title 16 CCR §643(b)</div>
+    <div class="stripe"></div>
+    <div class="sigs">
+      <div class="sig"><div class="sig-line"></div><div class="sig-label">Student Signature</div></div>
+      <div class="sig"><div class="sig-line"></div><div class="sig-label">Date: ${d}</div></div>
+      <div class="sig"><div class="sig-line"></div><div class="sig-label">Instructor — MACCESS INC.</div></div>
+    </div>
+  </div>
+  <script>window.print();<\/script></body></html>`);
+}
+
+function resendCert(idx){
+  const records = loadRecords();
+  const r = records[idx];
+  if(!r) return;
+  alert(`Certificate resend for: ${r.name}\nEmail: ${r.email}\n\nTo wire this: connect SendGrid or Mailchimp to your Netlify backend. One-click email delivery of the certificate PDF to any student address.`);
+}
+
+function deleteRecord(idx){
+  if(!confirm('Delete this student record permanently?')) return;
+  const records = loadRecords();
+  records.splice(idx,1);
+  saveRecords(records);
+  closeModal();
+  renderTable();
+}
+
+// ── Export CSV ────────────────────────────────────────────────
+function exportCSV(){
+  const records = loadRecords();
+  if(records.length===0){ alert('No records to export.'); return; }
+  const headers = ['Name','Email','Phone','Guard Card','Course','Exam Date','Score','Status','Attempts','Notes','Created'];
+  const rows = records.map(r=>[r.name,r.email,r.phone||'',r.guardCard||'',r.course||'',r.date||'',r.score||'',r.status,r.attempts||1,r.notes||'',r.createdAt?new Date(r.createdAt).toLocaleDateString():''].map(v=>'"'+String(v).replace(/"/g,'""')+'"'));
+  const csv = [headers.join(','),...rows.map(r=>r.join(','))].join('\n');
+  const blob = new Blob([csv],{type:'text/csv'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href=url; a.download='PSLAW_Students_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click(); URL.revokeObjectURL(url);
+}
+
+// ── Auto-capture from course completion ───────────────────────
+// When a student completes a course in the same browser session,
+// the course page posts a message with their record.
+// This listener captures it and saves to the admin dashboard.
+window.addEventListener('message', function(e){
+  if(e.data && e.data.type === 'PSLAW_COMPLETION'){
+    const records = loadRecords();
+    const { name, email, course, score, date } = e.data;
+    // Check for existing student record
+    let existing = records.find(r=>r.email.toLowerCase()===email.toLowerCase());
+    if(existing){
+      existing.certificates = existing.certificates||[];
+      existing.certificates.push({ course, date, score, issuedAt:new Date().toISOString() });
+      existing.course=course; existing.score=score; existing.date=date; existing.status='pass';
+    } else {
+      records.unshift({
+        id: Date.now().toString(), name, email, course, score, date,
+        status:'pass', attempts:1, createdAt:new Date().toISOString(),
+        certificates:[{course,date,score,issuedAt:new Date().toISOString()}],
+      });
+    }
+    saveRecords(records);
+    renderTable();
+  }
+});
+
+// Init
+renderTable();
+</script>
+</body>
+</html>
